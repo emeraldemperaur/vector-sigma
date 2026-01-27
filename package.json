@@ -1,0 +1,16 @@
+{
+  "name": "vector-sigma",
+  "version": "1.0.0",
+  "description": "Dynamic Form Orchestrator: NPM Package",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emeraldemperaur/vector-sigma"
+  },
+  "license": "MIT",
+  "author": "ME",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
