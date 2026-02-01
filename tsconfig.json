@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "lib": [ "es6", "dom" ],
+        "sourceMap": true,
+        "jsx": "react",
+        "rootDir": "src",
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "esModuleInterop": true,
+        "baseUrl": "src/",
+        "paths": {
+            "common": ["src/common/*"],
+            "components": ["src/components/*"],
+            "layouts": ["src/layouts/*"],
+            "styles": ["src/styles/*"],
+            "utils": ["src/utils/*"]
+            },
+        //
+        "declaration": true,
+        "declarationDir": "lib/types",
+        "target": "es6",
+        "moduleResolution": "node"
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "lib", "build", "dist", "scripts", "acceptance-tests", "webpack", "jest"],
+    "types": ["typePatches"]
+}

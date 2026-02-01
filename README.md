@@ -3,19 +3,23 @@
 
 ### Overview
 <p style="text-align: justify;">
-Vector Sigma is a dynamic form orchestrator package for rapidly creating and managing the complex lifecycle of interactive input forms that can be embedded into a React front-end client for use in data capturing & onboarding applications or systems. 
+Vector Sigma is a dynamic form orchestrator package for rapidly creating and managing the complex lifecycle of interactive extensible input forms that can be easily embedded into a React front-end client interface for use in data capturing & onboarding applications or systems. 
 
-Fields, Input Validation and Submission can be defined and parametized in real-time predicated on a JSON (JavaScript Object Notation) form definition.
+ Fields, Input Validation and Submission can be defined and parametized in real-time predicated on a JSON (JavaScript Object Notation) xForm definition or builder object pattern.
 </p>
  
 #### Key Features
 <ol>
-<li><strong>Real-Time Form Adaptation:</strong> Adapt the form layout by adding/removing fields, sections or entire steps based on conditional logic.</li>
-<li><strong>Validation Logic Management:</strong> Centralize business rules such as complex field validation, visibility constraints, and facilitate input value pre-population from external APIs.
+<li>
+<strong>Real-Time Form Adaptation:</strong> Adapt the form layout by adding/removing fields, sections or entire steps based on conditional logic.</li>
+<li>
+<strong>Validation Logic Management:</strong> Centralize business rules such as complex field validation, visibility constraints, and facilitate input value pre-population from external APIs.
 </li>
-<li><strong>Form State Coordination:</strong> Monitor the "state" of the form across multi-step processes, allowing users to save progress and resume later.
+<li>
+<strong>Form State Coordination:</strong> Monitor the "state" of the form across multi-step processes, allowing users to save progress and resume later.
 </li>
-<li><strong>Application UI Integration:</strong> Connects the form data to backend workflows, CRM systems, or databases immediately upon submission.</li>
+<li>
+<strong>Application UI Integration:</strong> Connects the form data to backend workflows, CRM systems, or databases immediately upon submission.</li>
 </ol>
 
 ### Installation
@@ -32,6 +36,7 @@ alert(s);
 
 ### Screenshots
 
+### Design Tenets
 
 ### Tool Stack
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
@@ -40,6 +45,7 @@ alert(s);
 ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
 ![React](https://img.shields.io/badge/react-%2320232A.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![SASS](https://img.shields.io/badge/SASS-hotpink.svg?style=for-the-badge&logo=SASS&logoColor=white)
+![Zod](https://img.shields.io/badge/zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white)
 ![Radix UI](https://img.shields.io/badge/radix%20ui-161616.svg?style=for-the-badge&logo=radix-ui&logoColor=white)
 ![Formik](https://img.shields.io/badge/formik-161616?style=for-the-badge&logo=formik&logoColor=white)
 ![Yup](https://img.shields.io/badge/yup-161616?style=for-the-badge&logo=yup&logoColor=white)
