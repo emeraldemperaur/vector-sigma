@@ -1,10 +1,8 @@
 import React from "react";
 
-const xTitle = () => {
+export const xTitle = () => {
     return(
     <>
     </>
     )
 }
-
-export default xTitle;

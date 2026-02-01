@@ -1,10 +1,8 @@
 import React from "react";
 
-const DateRangePicker = () => {
+export const DateRangePicker = () => {
     return(
     <>
     </>
     )
 }
-
-export default DateRangePicker;

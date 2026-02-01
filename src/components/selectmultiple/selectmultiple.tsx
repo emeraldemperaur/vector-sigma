@@ -1,10 +1,8 @@
 import React from "react";
 
-const MultiSelect = () => {
+export const MultiSelect = () => {
     return(
     <>
     </>
     )
 }
-
-export default MultiSelect;

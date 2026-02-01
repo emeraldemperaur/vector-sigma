@@ -1,10 +1,8 @@
 import React from "react";
 
-const Button = () => {
+export const Button = () => {
     return(
     <>
     </>
     )
 }
-
-export default Button;

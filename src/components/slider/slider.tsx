@@ -1,10 +1,8 @@
 import React from "react";
 
-const Slider = () => {
+export const Slider = () => {
     return(
     <>
     </>
     )
 }
-
-export default Slider;

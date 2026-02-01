@@ -1,10 +1,8 @@
 import React from "react";
 
-const Select = () => {
+export const Select = () => {
     return(
     <>
     </>
     )
 }
-
-export default Select;

@@ -1,10 +1,8 @@
 import React from "react";
 
-const Checkbox = () => {
+export const Checkbox = () => {
     return(
     <>
     </>
     )
 }
-
-export default Checkbox;

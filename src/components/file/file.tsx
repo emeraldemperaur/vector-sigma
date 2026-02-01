@@ -1,10 +1,8 @@
 import React from "react";
 
-const File = () => {
+export const File = () => {
     return(
     <>
     </>
     )
 }
-
-export default File;

@@ -1,10 +1,8 @@
 import React from "react";
 
-const InputCurrency = () => {
+export const InputCurrency = () => {
     return(
     <>
     </>
     )
 }
-
-export default InputCurrency;

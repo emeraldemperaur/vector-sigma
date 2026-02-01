@@ -1,10 +1,8 @@
 import React from "react";
 
-const Dropdown = () => {
+export const Dropdown = () => {
     return(
     <>
     </>
     )
 }
-
-export default Dropdown;

@@ -1,10 +1,8 @@
 import React from "react";
 
-const Toggle = () => {
+export const Toggle = () => {
     return(
     <>
     </>
     )
 }
-
-export default Toggle;

@@ -17,6 +17,13 @@ export default {
             format: "esm"
         },
     ],
+    onwarn(warning, warn) {
+        // If it's a circular dependency and inside node_modules, ignore it
+        if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.message.includes('node_modules')) {
+            return;
+        }
+        warn(warning);
+    },
     plugins: [
         del({ targets: ["lib/*"]}),
         typescript({ useTsconfigDeclarationDir: true }),

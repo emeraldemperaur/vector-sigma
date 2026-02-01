@@ -1,10 +1,8 @@
 import React from "react";
 
-const DateTimePicker = () => {
+export const DateTimePicker = () => {
     return(
     <>
     </>
     )
 }
-
-export default DateTimePicker;

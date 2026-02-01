@@ -1,10 +1,8 @@
 import React from "react";
 
-const DatePicker = () => {
+export const DatePicker = () => {
     return(
     <>
     </>
     )
 }
-
-export default DatePicker;

@@ -1,10 +1,8 @@
 import React from "react";
 
-const Input = () => {
+export const Input = () => {
     return(
     <>
     </>
     )
 }
-
-export default Input;

@@ -1,10 +1,8 @@
 import React from "react";
 
-const Radio = () => {
+export const Radio = () => {
     return(
     <>
     </>
     )
 }
-
-export default Radio;
