@@ -24,8 +24,16 @@ Vector Sigma is a dynamic form orchestrator package for rapidly creating and man
 
 ### Installation
 ```bash
-npm install 
+npm install @emeraldemperaur/vector-sigma
+```
 
+### Peer Dependencies
+```bash
+    npm install bootstrap@latest
+    npm install react@latest
+    npm install react-bootstrap@latest
+    npm install react-dom@latest
+    npm install sass@latest
 ```
 
 ### Usage
@@ -37,6 +45,15 @@ alert(s);
 ### Screenshots
 
 ### Design Tenets
+<ul>
+<li><strong>CJS/ESM Compatible</strong></br></li>
+<li><strong>JSON Schema Validation</strong></br></li>
+<li><strong>Builder Object Pattern</strong></br></li>
+<li><strong>Input Validation</strong></br></li>
+<li><strong>Form State Management</strong></br></li>
+<li><strong>Theming Extensibilty</strong></br></li>
+<li><strong>Mobile Responsive</strong></br></li>
+</ul>
 
 ### Tool Stack
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
