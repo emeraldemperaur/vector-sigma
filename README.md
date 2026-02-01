@@ -29,7 +29,7 @@ npm install @emeraldemperaur/vector-sigma
 
 ### Peer Dependencies
 ```bash
-    npm install bootstrap@latest react@latest react-bootstrap@latest react-dom@latest sass@latest
+npm install bootstrap@latest react@latest react-bootstrap@latest react-dom@latest sass@latest
 ```
 
 ### Usage
