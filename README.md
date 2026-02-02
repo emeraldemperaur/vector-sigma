@@ -74,6 +74,11 @@ alert(s);
 
 <li><strong>🎨Theming Extensibilty</strong></br>
 <p style="text-align: justify;">Customizable to fit seamlessly into an existing Design System and allow developer control of the visual layer through standard CSS patterns</p>
+
+```javascript
+var s = "JavaScript/TypeScript Style Snippet";
+alert(s);
+```
 </li>
 
 <li><strong>🧩Exported UI Components</strong></br>
