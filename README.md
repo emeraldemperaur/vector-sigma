@@ -49,7 +49,7 @@ alert(s);
 <li><strong>Form State Management</strong></br></li>
 <li><strong>Theming Extensibilty</strong></br></li>
 <li><strong>Exported UI Components</strong></br>
-<p style="text-align: justify;">Explicitly exported reusable form UI components from package entry point `src/index.ts` to enable developer-friendly use as lightweight component library</p>
+<p style="text-align: justify;">Explicitly exported reusable form UI components from package entry point <sup>src/index.ts</sup> to enable developer-friendly use as lightweight component library</p>
 </li>
 <li><strong>Mobile Responsive</strong></br></li>
 </ul>
