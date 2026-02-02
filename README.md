@@ -1,4 +1,4 @@
-#  Vector Sigma 💠Σ
+#  💠 Vector Sigma
 ## Dynamic Form Orchestrator: NPM Package 📦
 
 ### Overview
