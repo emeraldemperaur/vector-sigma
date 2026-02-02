@@ -22,8 +22,6 @@ Vector Sigma is a dynamic form orchestrator package for rapidly creating and man
 <strong>Application UI Integration:</strong> Connects the form data to backend workflows, CRM systems, or databases immediately upon submission.</li>
 </ol>
 
-### Documentation
-
 ### Installation
 ```bash
 npm install @emeraldemperaur/vector-sigma
@@ -33,6 +31,8 @@ npm install @emeraldemperaur/vector-sigma
 ```bash
 npm install bootstrap@latest react@latest react-bootstrap@latest react-dom@latest sass@latest
 ```
+
+### Documentation
 
 ### Usage
 ```javascript
