@@ -1,5 +1,5 @@
-# Vector Sigma
-## Dynamic Form Orchestrator: NPM Package
+#  Vector Sigma 💠Σ
+## Dynamic Form Orchestrator: NPM Package 📦
 
 ### Overview
 <p style="text-align: justify;">
