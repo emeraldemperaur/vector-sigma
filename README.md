@@ -2,7 +2,7 @@
 ## Dynamic Form Orchestrator: NPM Package 📦
 
 ### Overview
-<p style="text-align: justify;">
+<p align="justify">
 Vector Sigma is a dynamic form orchestrator package for rapidly creating and managing the complex lifecycle of interactive extensible input forms that can be easily embedded into a React front-end client interface for use in data capturing & onboarding applications or systems. 
 
  Fields, Input Validation and Submission can be defined and parametized in real-time predicated on a JSON (JavaScript Object Notation) xForm definition or builder object pattern.
@@ -48,15 +48,15 @@ alert(s);
 ### Design Tenets
 <ul>
 <li><strong>📦CJS/ESM Compatible</strong></br>
-<p style="text-align: justify;">Dual mode package comprised of both CommonJS (CJS) & ES Modules (ESM) builds bundled using <code>Rollup.js</code> to facilitate Universal Module Compatibility and enable effortless integration across legacy and modern JavaScript ecosystems.</p>
+<p align="justify">Dual mode package comprised of both CommonJS (CJS) & ES Modules (ESM) builds bundled using <code>Rollup.js</code> to facilitate Universal Module Compatibility and enable effortless integration across legacy and modern JavaScript ecosystems.</p>
 </li>
 
 <li><strong>🔒JSON Schema Validation</strong></br>
-<p style="text-align: justify;">Adopted <code>Zod</code> as the native engine for JSON schema validation to provide a TypeScript-first validation layer. Schema validation guarantees any schema object provided strictly adheres with the expected API model before rendering to client viewport.</p>
+<p align="justify">Adopted <code>Zod</code> as the native engine for JSON schema validation to provide a TypeScript-first validation layer. Schema validation guarantees any schema object provided strictly adheres with the expected API model before rendering to client viewport.</p>
 </li>
 
 <li><strong>🏗️Builder Object Pattern</strong></br>
-<p style="text-align: justify;">Method chaining offers a modern, fluent alternative to static JSON object configuration that elevates the Developer Experience (DX) by enabling rapid form creation using intuitive method chains that are human-readable and generate type-safe xForm schema definitions automatically.</p>
+<p align="justify">Method chaining offers a modern, fluent alternative to static JSON object configuration that elevates the Developer Experience (DX) by enabling rapid form creation using intuitive method chains that are human-readable and generate type-safe xForm schema definitions automatically.</p>
 
 ```javascript
 var s = "JavaScript/TypeScript Code Builder Snippet";
@@ -65,15 +65,15 @@ alert(s);
 </li>
 
 <li><strong>🛡️Input Validation</strong></br>
-<p style="text-align: justify;">Declarative schema (JSON) facilitates a validation engine that is comprehensive, accessible and easy to maintain. <code>onChange()</code>, <code>onBlur()</code> input event control state updates, errors and <code>values</code> are handled automatically. <code>onSubmit()</code> handler is automatically blocked if the input is invalid</p>
+<p align="justify">Declarative schema (JSON) facilitates a validation engine that is comprehensive, accessible and easy to maintain. <code>onChange()</code>, <code>onBlur()</code> input event control state updates, errors and <code>values</code> are handled automatically. <code>onSubmit()</code> handler is automatically blocked if the input is invalid</p>
 </li>
 
 <li><strong>🧠Form State Management</strong></br>
-<p style="text-align: justify;">Leveraged Formik for robust React state management and Yup for declarative schema validation to adhere strictly to the standard React form lifecycle, ensuring compatibility with Redux DevTools & standard debugging workflows.</p>
+<p align="justify">Leveraged Formik for robust React state management and Yup for declarative schema validation to adhere strictly to the standard React form lifecycle, ensuring compatibility with Redux DevTools & standard debugging workflows.</p>
 </li>
 
 <li><strong>🎨Theming Extensibilty</strong></br>
-<p style="text-align: justify;">Customizable to fit seamlessly into an existing Design System and allow developer control of the visual layer through standard CSS patterns</p>
+<p align="justify">Customizable to fit seamlessly into an existing Design System and allow developer control of the visual layer through standard CSS patterns</p>
 
 ```javascript
 var s = "JavaScript/TypeScript Style Snippet";
@@ -82,7 +82,7 @@ alert(s);
 </li>
 
 <li><strong>🧩Exported UI Components</strong></br>
-<p style="text-align: justify;">Explicitly exported reusable form UI components from package entry point <code>src/index.ts</code> to enable developer-friendly use as lightweight component library</p>
+<p align="justify">Explicitly exported reusable form UI components from package entry point <code>src/index.ts</code> to enable developer-friendly use as lightweight component library</p>
 <p><em>Avatar, Button, Checkbox, Conditional, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, Input, InputCurrency, Radio, Select, SelectMultiple, Slider, Toggle, xTitle</em></p>
 
 ```javascript
@@ -92,7 +92,7 @@ alert(s);
 </li>
 
 <li><strong>📱Mobile Responsive</strong></br>
-<p style="text-align: justify;">'Mobile-First' layout design ensures that complex form orchestrations remain usable, accessible, and performant on any viewport</p>
+<p align="justify">'Mobile-First' layout design ensures that complex form orchestrations remain usable, accessible, and performant on any viewport</p>
 </li>
 </ul>
 
