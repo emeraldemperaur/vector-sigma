@@ -48,6 +48,9 @@ alert(s);
 <li><strong>Input Validation</strong></br></li>
 <li><strong>Form State Management</strong></br></li>
 <li><strong>Theming Extensibilty</strong></br></li>
+<li><strong>Exported UI Components</strong></br>
+<p style="text-align: justify;">Explicitly exported reusable form UI components from package entry point `src/index.ts` to enable developer-friendly use as lightweight component library</p>
+</li>
 <li><strong>Mobile Responsive</strong></br></li>
 </ul>
 
