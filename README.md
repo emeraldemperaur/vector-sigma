@@ -50,6 +50,7 @@ alert(s);
 <li><strong>Theming Extensibilty</strong></br></li>
 <li><strong>Exported UI Components</strong></br>
 <p style="text-align: justify;">Explicitly exported reusable form UI components from package entry point <sup>src/index.ts</sup> to enable developer-friendly use as lightweight component library</p>
+<p><em>Avatar, Button, Checkbox, Conditional, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, Input, InputCurrency, Radio, Select, SelectMultiple, Slider, Toggle, xTitle</em></p>
 
 ```javascript
 var s = "JavaScript/TypeScript Component Snippet";
