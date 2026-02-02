@@ -47,13 +47,36 @@ alert(s);
 
 ### Design Tenets
 <ul>
-<li><strong>CJS/ESM Compatible</strong></br></li>
-<li><strong>JSON Schema Validation</strong></br></li>
-<li><strong>Builder Object Pattern</strong></br></li>
-<li><strong>Input Validation</strong></br></li>
-<li><strong>Form State Management</strong></br></li>
-<li><strong>Theming Extensibilty</strong></br></li>
-<li><strong>Exported UI Components</strong></br>
+<li><strong>📦CJS/ESM Compatible</strong></br>
+<p style="text-align: justify;">Dual mode package comprised of both CommonJS (CJS) & ES Modules (ESM) builds bundled using Rollup.js to facilitate Universal Module Compatibility and enable effortless integration across legacy and modern JavaScript ecosystems.</p>
+</li>
+
+<li><strong>🔒JSON Schema Validation</strong></br>
+<p style="text-align: justify;">Adopted Zod as the native engine for JSON schema validation to provide a TypeScript-first validation layer. Schema validation guarantees any schema object provided strictly adheres with the expected API model before rendering to client viewport.</p>
+</li>
+
+<li><strong>🏗️Builder Object Pattern</strong></br>
+<p style="text-align: justify;">Method chaining offers a modern, fluent alternative to static JSON object configuration. Elevates the Developer Experience (DX) by enabling rapid form creation using intuitive method chains that are human-readable and generate type-safe xForm schema definitions automatically.</p>
+
+```javascript
+var s = "JavaScript/TypeScript Code Builder Snippet";
+alert(s);
+```
+</li>
+
+<li><strong>🛡️Input Validation</strong></br>
+<p style="text-align: justify;">Declarative schema (JSON) facilitates a validation engine that is comprehensive, accessible and easy to maintain.<code>onChange()</code>, <code>onBlur()</code> input event control state updates, errors and <code>values</code> are handled automatically.<code>onSubmit()</code> handler is automatically blocked if the input is invalid</p>
+</li>
+
+<li><strong>🧠Form State Management</strong></br>
+<p style="text-align: justify;">Leveraged Formik for robust React state management and Yup for declarative schema validation to adhere strictly to the standard React form lifecycle, ensuring compatibility with Redux DevTools & standard debugging workflows.</p>
+</li>
+
+<li><strong>🎨Theming Extensibilty</strong></br>
+<p style="text-align: justify;">Customizable to fit seamlessly into an existing Design System and allow developer control of the visual layer through standard CSS patterns</p>
+</li>
+
+<li><strong>🧩Exported UI Components</strong></br>
 <p style="text-align: justify;">Explicitly exported reusable form UI components from package entry point <sup>src/index.ts</sup> to enable developer-friendly use as lightweight component library</p>
 <p><em>Avatar, Button, Checkbox, Conditional, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, Input, InputCurrency, Radio, Select, SelectMultiple, Slider, Toggle, xTitle</em></p>
 
@@ -62,7 +85,10 @@ var s = "JavaScript/TypeScript Component Snippet";
 alert(s);
 ```
 </li>
-<li><strong>Mobile Responsive</strong></br></li>
+
+<li><strong>📱Mobile Responsive</strong></br>
+<p style="text-align: justify;">'Mobile-First' layout design ensures that complex form orchestrations remain usable, accessible, and performant on any viewport</p>
+</li>
 </ul>
 
 ### Tool Stack
