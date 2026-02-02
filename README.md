@@ -40,6 +40,10 @@ alert(s);
 
 ### Screenshots
 
+#### Automation Workflow Use Case
+
+#### Web Application Use Case
+
 ### Design Tenets
 <ul>
 <li><strong>CJS/ESM Compatible</strong></br></li>
