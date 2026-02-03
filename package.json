@@ -1,5 +1,5 @@
 {
-  "name": "vector-sigma",
+  "name": "@emeraldemperaur/vector-sigma",
   "version": "1.0.0",
   "description": "Dynamic Form Orchestrator: NPM Package",
   "repository": {
@@ -11,15 +11,20 @@
   "type": "module",
   "main": "lib/index.cjs",
   "module": "lib/index.esm.js",
+  "browser": "lib/index.esm.js",
+  "types": "lib/types/index.d.ts",
   "exports": {
     ".": {
       "import": "./lib/index.esm.js",
       "require": "./lib/index.cjs",
       "types": "./lib/types/index.d.ts"
-    }
+    },
+    "./lib/index.css": "./lib/index.css"
   },
+  "files": ["lib"],
   "scripts": {
     "build": "rollup -c",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -46,17 +51,20 @@
   },
   "peerDependencies": {
     "bootstrap": "^5.3.8",
-    "formik": "^2.4.9",
     "react": ">=18.0.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": ">=18.0.0",
-    "sass": "^1.0.0",
-    "yup": "^1.7.1"
+    "sass": "^1.0.0"
+    
   },
   "dependencies": {
     "@radix-ui/themes": "^3.3.0",
     "formik": "^2.4.9",
     "yup": "^1.7.1",
     "zod": "^4.3.6"
-  }
+  },
+  "publishConfig": {
+  "access": "public"
+}
+
 }
