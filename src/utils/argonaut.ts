@@ -3,7 +3,7 @@
 // Return JSON object if valid JSON and schema
 import { xForm, xFormSchema, xFormSection } from "./architect";
 
-class Argonaut{
+export class Argonaut{
     isValid: boolean;
     jsonDefinition: string;
     object: xForm
