@@ -14,7 +14,7 @@ type ColProps = React.ComponentProps<typeof Box> & {
   children?: React.ReactNode;
 }
 
-export const Col = ({ newLine, span, xs, sm, md, lg, xl, children, ...props }: ColProps) => {
+export const Column = ({ newLine, span, xs, sm, md, lg, xl, children, ...props }: ColProps) => {
   
   const getSpan = (value?: ColSize) => {
     if (value === undefined) return undefined;
