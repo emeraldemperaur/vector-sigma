@@ -3,16 +3,18 @@ import { getTimeStamp } from "utils/chronos";
 
 export class xForm {
     uuid: string;
-    title: string;
+    title?: string;
+    logoUrl?: string;
+    logoPosition?: string;
     jsonDefinition: object;
     jsonObject: JSON;
     formStatus: number;
     timeStampOrigin: string;
-    timeStampInProgress: string | null;
-    timeStampComplete: string | null;
-    errors: any[] | null;
-    data: any[];
-    component: object
+    timeStampInProgress?: string | null;
+    timeStampComplete?: string | null;
+    errors?: any[] | null;
+    data?: any[];
+    component?: object
 
 
     constructor( 

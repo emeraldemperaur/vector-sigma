@@ -6,4 +6,4 @@ export const Button = () => {
     <div>Button Component</div>
     </>
     )
-}
+};

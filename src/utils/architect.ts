@@ -53,6 +53,8 @@ const SectionSchema = z.object({
 export const xFormSchema = z.object({
   uuid: z.uuid(),
   name: z.string(),
+  logo: z.string().nullable(),
+  logoPosition: z.string().nullable(), 
   model: z.array(SectionSchema),
 });
 

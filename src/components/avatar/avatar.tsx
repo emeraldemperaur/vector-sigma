@@ -6,4 +6,4 @@ export const Avatar = () => {
     <div>Avatar Component</div>
     </>
     )
-}
+};

@@ -1,0 +1,10 @@
+@layer radix, custom;
+
+@import "@radix-ui/themes/styles.css" layer(radix);
+
+@layer custom {
+  // Your custom SCSS here
+  .my-button {
+    background: red; // This will win over Radix styles comfortably
+  }
+}

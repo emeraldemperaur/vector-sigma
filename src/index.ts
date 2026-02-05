@@ -17,4 +17,7 @@ export * from './components/selectmultiple/selectmultiple';
 export * from './components/slider/slider';
 export * from './components/toggle/toggle';
 export * from './components/xtitle/xtitle';
+export * from "./layouts/container/container";
+export * from "./layouts/column/column";
+export * from "./layouts/row/row";
 export * from "./utils/architect";

@@ -2,6 +2,7 @@ import typescript from "rollup-plugin-typescript2";
 import del from "rollup-plugin-delete";
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import * as sass from 'sass-embedded';
 import postcss from "rollup-plugin-postcss";
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -22,6 +23,9 @@ export default {
         if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.message.includes('node_modules')) {
             return;
         }
+        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+            return;
+        }
         warn(warning);
     },
     plugins: [
@@ -30,8 +34,12 @@ export default {
         resolve(),
         commonjs(),
         postcss({
-            extract: true,
-            minimize: true
+            extract: 'styles.css',
+            minimize: true,
+            use: [['sass', {
+                implementation: sass, 
+                silenceDeprecations: ['legacy-js-api']
+            }]],
         }),
         visualizer({
             filename: 'vector-sigma-bundle-analysis.html',
