@@ -2,9 +2,18 @@
 
 @import "@radix-ui/themes/styles.css" layer(radix);
 
-@layer custom {
-  // Your custom SCSS here
-  .my-button {
-    background: red; // This will win over Radix styles comfortably
-  }
+@layer custom {  
+    .core-input-label{
+    text-align: start;
+    }
+    .core-input-label-error{
+    margin-bottom: 13px;
+    font-family: 'Montserrat';
+    color: #800020;
+    font-weight: 500;
+    font-size: 0.8rem;
+    letter-spacing: 0.13em;
+    }
+
+
 }

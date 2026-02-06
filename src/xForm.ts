@@ -8,7 +8,7 @@ export class xForm {
     logoPosition?: string;
     jsonDefinition: object;
     jsonObject: JSON;
-    formStatus: number;
+    formStatus?: number;
     timeStampOrigin: string;
     timeStampInProgress?: string | null;
     timeStampComplete?: string | null;
@@ -19,7 +19,7 @@ export class xForm {
 
     constructor( 
         jsonDefinition: string,  
-        formStatus: number  = 0, 
+        formStatus?: number, 
         title?: string,
         timeStampOrigin?: string, 
         uuid?: string, 
@@ -31,7 +31,7 @@ export class xForm {
             this.title = title || this.uuid;
             this.jsonDefinition = jsonArgonaut.object;
             this.jsonObject = jsonArgonaut.json();
-            this.formStatus = formStatus;
+            this.formStatus = formStatus || 0;
             this.timeStampOrigin =  timeStampOrigin || getTimeStamp();
             this.timeStampInProgress = timeStampInProgress || null;
             this.timeStampComplete = timeStampComplete || null;
