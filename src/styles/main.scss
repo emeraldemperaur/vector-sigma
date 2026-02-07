@@ -3,6 +3,14 @@
 @import "@radix-ui/themes/styles.css" layer(radix);
 
 @layer custom {  
+
+    $text-main: #333333; // Your SCSS variable
+
+    :root {
+    // Expose it to the browser/React
+    --text-main-color: #{$text-main}; 
+    }
+
     .core-input-label{
     text-align: start;
     }
@@ -13,6 +21,22 @@
     font-weight: 500;
     font-size: 0.8rem;
     letter-spacing: 0.13em;
+    }
+
+    .core-input-section-ribbon{
+    border-radius: 0px;
+    margin-top: 33px;
+    margin-bottom: 33px;
+    }
+
+    .core-input-section-text{
+        font-family: 'Montserrat' !important;
+        font-weight: 400;
+        letter-spacing: 0.33em;
+        margin-left: 13px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        text-align: left;
     }
 
 

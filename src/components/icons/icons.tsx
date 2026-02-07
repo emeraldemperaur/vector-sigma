@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ComponentProps } from "react";
 import { SunIcon, MoonIcon, GearIcon, PersonIcon, QuestionMarkCircledIcon, 
     QuestionMarkIcon, CheckCircledIcon, CheckIcon, ExitIcon, CalendarIcon, 
     StarIcon, CameraIcon, CodeIcon, CodeSandboxLogoIcon, LayersIcon, InputIcon, 
@@ -16,7 +16,13 @@ import { SunIcon, MoonIcon, GearIcon, PersonIcon, QuestionMarkCircledIcon,
     DrawingPinFilledIcon, ReaderIcon, ZoomInIcon, ZoomOutIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon,
     DoubleArrowUpIcon, DoubleArrowDownIcon, TokensIcon, MixerHorizontalIcon, MixerVerticalIcon, ArchiveIcon,
     CrumpledPaperIcon, StarFilledIcon, StopwatchIcon, LapTimerIcon, ClipboardIcon, ClipboardCopyIcon,
-    DesktopIcon, LaptopIcon, MobileIcon, EnterFullScreenIcon, ExitFullScreenIcon, ChatBubbleIcon} from '@radix-ui/react-icons';
+    DesktopIcon, LaptopIcon, MobileIcon, EnterFullScreenIcon, ExitFullScreenIcon, ChatBubbleIcon,
+    FileTextIcon,
+    CheckboxIcon,
+    TableIcon,
+    CopyIcon,
+    EnterIcon,
+    EyeNoneIcon} from '@radix-ui/react-icons';
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   sun: SunIcon,
@@ -31,6 +37,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   checkcircled: CheckCircledIcon,
   check: CheckIcon,
   chat: ChatBubbleIcon,
+  enter: EnterIcon,
   exit: ExitIcon,
   calendar: CalendarIcon,
   camera: CameraIcon,
@@ -57,6 +64,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   twitter: TwitterLogoIcon,
   linkedin: LinkedInLogoIcon,
   file: FileIcon,
+  filetext: FileTextIcon,
   home: HomeIcon,
   delete: TrashIcon,
   bell: BellIcon,
@@ -97,14 +105,17 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   hyperlink: Link2Icon,
   scissors: ScissorsIcon,
   keyboard: KeyboardIcon,
-  eye: EyeOpenIcon,
+  eyeopen: EyeOpenIcon,
+  eyeclosed: EyeNoneIcon,
   avatar: AvatarIcon,
   dashboard: DashboardIcon,
+  table: TableIcon,
   listbullet: ListBulletIcon,
   activitylog: ActivityLogIcon,
   barchart: BarChartIcon,
   piechart: PieChartIcon,
   dropdown: DropdownMenuIcon,
+  checkbox: CheckboxIcon,
   quote: QuoteIcon,
   globe: GlobeIcon,
   rocket: RocketIcon,
@@ -128,10 +139,15 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   laptop: LaptopIcon,
   mobile: MobileIcon,
   enterfullscreen: EnterFullScreenIcon,
-  exitfullscreen: ExitFullScreenIcon
+  exitfullscreen: ExitFullScreenIcon,
+  copy: CopyIcon
 };
 
-export const Icon = ({ name, ...props }: { name: string }) => {
+interface DynamicIconProps extends ComponentProps<typeof SunIcon> {
+  name: keyof typeof iconMap;
+}
+
+export const Icon = ({ name, ...props }: DynamicIconProps) => {
   const IconComponent = iconMap[name];
 
   if (!IconComponent) return null;

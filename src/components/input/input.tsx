@@ -17,9 +17,7 @@ export const Input = (
         <TextField.Root size="2" type={inputtype} id={`${alias}FormInput`} name={alias} aria-describedby={`${alias}InputLabel`}
         readOnly={readOnly} placeholder={placeholder || ""} defaultValue={defaultValue} value={value} 
         onChange={onChange}>
-            <TextField.Slot>
-               
-            </TextField.Slot>
+            
         </TextField.Root>
         <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
