@@ -23,8 +23,11 @@ const NestedQuerySchema = z.object({
   hintText: z.string().nullish(),
   hintUrl: z.url().nullish(),
   queryResponse: z.any().nullable(),
-  inputOptions: z.array(InputOptionSchema).nullish(),
+  inputOptions: z.array(InputOptionSchema).nullable().optional(),
+  toggledInput: z.any().nullable().optional(),
+  toggleTrigger: z.any().nullable().optional()
 });
+
 
 const QuerySchema = z.object({
   queryId: z.number().or(z.uuid()),
@@ -43,7 +46,8 @@ const QuerySchema = z.object({
   hintUrl: z.url().nullable(),
   queryResponse: z.any().nullable(),
   inputOptions: z.array(InputOptionSchema).optional(),
-  toggledInput: NestedQuerySchema.nullable()
+  toggledInput: NestedQuerySchema.nullable().optional(),
+  toggleTrigger: z.any().nullable().optional()
 });
 
 const SectionSchema = z.object({
