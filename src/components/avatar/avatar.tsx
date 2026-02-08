@@ -60,7 +60,7 @@ const getStyles = (inputtype: AvatarDesign, shape: AvatarShape, hasError: boolea
   return { ...base, borderRadius, ...designStyles };
 };
 
-export const AvatarUpload = ({
+export const xAvatar = ({
   inputtype = 'avatar',
   alias, readOnly, width,
   placeholder = '', value,

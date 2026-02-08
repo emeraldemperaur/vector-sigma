@@ -27,7 +27,7 @@ const getFileIcon = (type: string, name: string) => {
   return <Icon name='filetext' width="24" height="24" />;
 };
 
-export const FileInput = ({
+export const File = ({
   inputtype = 'fileinput',
   alias, readOnly, width,
   placeholder = '', value,

@@ -84,7 +84,7 @@ alert(s);
 
 <li><strong>🧩Exported UI Components</strong></br>
 <p align="justify">Explicitly exported reusable form UI components from package entry point <code>src/index.ts</code> to enable developer-friendly use as lightweight component library.</p>
-<p><em>Container, Row, Column, Avatar, xButton, CheckboxGroup, Conditional, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, Image, Input, InputCurrency, xRadioGroup, OptionSelect, MultipleSelect, RangeSlider, Toggle, xTitle</em></p>
+<p><em>Container, Row, Column, xAvatar, xButton, CheckboxGroup, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, UUIDInput, xCreditCardInput, InputCurrency, StockInput, xRadioGroup, OptionSelect, MultipleSelect, RangeSlider, Toggle, xTitle</em></p>
 
 ```javascript
 var s = "JavaScript/TypeScript Component Snippet";
