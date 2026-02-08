@@ -64,3 +64,42 @@ export const adjustColor = (color: string, amount: number): string => {
 
   return (usePound ? '#' : '') + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 };
+
+// Allowed extensions mapped to MIME types for 'accept' attribute
+export const ACCEPTED_FORMATS = [
+  "image/jpeg", "image/png", "image/gif", // Images
+  "application/pdf", // PDF
+  ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // Word
+  ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Excel
+  ".csv", "text/csv", // CSV
+  "text/plain", // TXT
+  "application/json", // JSON
+  ".zip", "application/zip", "application/x-zip-compressed" // ZIP
+].join(',');
+
+export const ACCEPTED_EXTENSIONS = [
+  ".jpeg", ".jpg", ".pdf", ".png", ".gif", 
+  ".docx", ".xlsx", ".csv", ".txt", ".json", ".zip"
+].join(",");
+
+// Byte Formatter
+export const formatBytes = (bytes: number, decimals = 2) => {
+  if (!+bytes) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+};
+
+export const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ');
+
+export interface InputOption {
+   optionid: number | string;
+   text: string; 
+   optionvalue: string;
+   tag?: string;
+   score?: number | string;
+   note?: string; 
+   optionurl?: string;
+}

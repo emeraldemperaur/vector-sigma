@@ -22,7 +22,11 @@ import { SunIcon, MoonIcon, GearIcon, PersonIcon, QuestionMarkCircledIcon,
     TableIcon,
     CopyIcon,
     EnterIcon,
-    EyeNoneIcon} from '@radix-ui/react-icons';
+    EyeNoneIcon,
+    ChevronUpIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon} from '@radix-ui/react-icons';
+import { ChevronDownIcon } from "@radix-ui/themes";
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   sun: SunIcon,
@@ -74,6 +78,10 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   caretleft: CaretLeftIcon,
   caretright: CaretRightIcon,
   caretsort: CaretSortIcon,
+  chevronup: ChevronUpIcon,
+  chevrondown: ChevronDownIcon,
+  chevronleft: ChevronLeftIcon,
+  chevronright: ChevronRightIcon,
   doublearrowup: DoubleArrowUpIcon,
   doublearrowdown: DoubleArrowDownIcon,
   doublearrowleft: DoubleArrowLeftIcon,

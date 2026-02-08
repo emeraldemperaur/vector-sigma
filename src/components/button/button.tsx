@@ -7,6 +7,7 @@ export type ButtonDesign = 'button' | 'button-material' | 'button-outline' | 'bu
 import { MouseEventHandler } from 'react';
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
+import '../../styles/main.scss';
 
 interface DesignButtonProps extends ButtonProps {
   inputtype?: ButtonDesign,

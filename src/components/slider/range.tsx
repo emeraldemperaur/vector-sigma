@@ -1,48 +1,59 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Flex, Text, Slider, Tooltip } from '@radix-ui/themes';
+import '../../styles/main.scss';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
-import '../../styles/main.scss';
 
-export type SliderDesign = 'slider' | 'slider-material' | 'slider-outline' | 'slider-neumorphic';
+export type RangeDesign = 'range' | 'range-material' | 'range-outline' | 'range-neumorphic';
 
-interface SliderProps {
-  inputtype?: SliderDesign,
+interface RangeProps {
+  inputtype?: RangeDesign,
   alias: string, inputLabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: string, value: string, newRow?: boolean, 
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   minvalue?: number;
   maxvalue?: number;
   stepvalue?: number;
+  minStepsBetweenThumbs?: number; 
+  design?: RangeDesign;
   className?: string;
   style?: React.CSSProperties;
 }
 
 
-export const xSlider = ({
-  inputtype = 'slider',
+export const RangeSlider = ({
+  inputtype = 'range',
   alias, readOnly, width,
   placeholder = '',
   value,
   minvalue = 0,
   maxvalue = 100,
   stepvalue = 1,
+  minStepsBetweenThumbs = 0,
   className,
   style, ...props
-}: SliderProps) => {
+}: RangeProps) => {
   
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
-  const fieldValue = Array.isArray(field.value) ? field.value : [field.value || minvalue];
+  
+  // Range Formik Logic 
+  // Synopsis
+  // Radix slider component requires an array. 
+  // If field.value is [20, 80] pass [20, 80].
+  // If field.value is 50 we pass [50].
+  // If field.value is undefined, default to [min] or [min, max].
+  const isRange = Array.isArray(field.value);
+  const fieldValue = isRange ? field.value : [field.value || minvalue];
   
   const hasError = Boolean(meta.touched && meta.error);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
 
   useEffect(() => {
-    if (inputtype === 'slider-neumorphic' && containerRef.current) {
+    if (inputtype === 'range-neumorphic' && containerRef.current) {
       const parentBg = getNearestParentBackground(containerRef.current.parentElement);
       setNeuVars({
         '--neu-bg': parentBg,
@@ -65,65 +76,38 @@ export const xSlider = ({
     >
       <Flex justify="between" align="center">
         <Text size="2" color="gray" style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {fieldValue[0]}
+          {fieldValue.join(' - ')}
         </Text>
       </Flex>
 
       <style dangerouslySetInnerHTML={{__html: `
-        /* --- NEUMORPHIC --- */
-        
-        /* Groove (Track) */
+        /* Neumorphic */
         .neu-slider .rt-SliderTrack {
           background-color: var(--neu-bg);
-          height: 8px; /* Thicker track for the groove effect */
-          box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), 
-                      inset -2px -2px 5px var(--neu-shadow-light);
+          height: 8px;
+          box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light);
           border-radius: 99px;
         }
-
-        /* Fill (Range) */
         .neu-slider .rt-SliderRange {
           background-color: var(--neu-accent);
           border-radius: 99px;
-          /* Optional: Add inner glow to the fill */
-          box-shadow: inset 0 0 2px rgba(0,0,0,0.2); 
         }
-
-        /* Puck (Thumb) */
         .neu-slider .rt-SliderThumb {
           background-color: var(--neu-bg);
-          border: 2px solid var(--neu-bg); /* subtle border */
-          width: 24px;
-          height: 24px;
-          /* Floating effect */
-          box-shadow: 3px 3px 6px var(--neu-shadow-dark), 
-                      -3px -3px 6px var(--neu-shadow-light);
+          border: 2px solid var(--neu-bg);
+          width: 24px; height: 24px;
+          box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
         }
-        
-        /* Thumb Hover/Active */
-        .neu-slider .rt-SliderThumb:hover {
-          transform: scale(1.1);
-          cursor: grab;
-        }
-        .neu-slider .rt-SliderThumb:active {
-          cursor: grabbing;
-          /* Press it slightly */
-          transform: scale(0.95);
-        }
+        .neu-slider .rt-SliderThumb:hover { transform: scale(1.1); cursor: grab; }
+        .neu-slider .rt-SliderThumb:active { transform: scale(0.95); cursor: grabbing; }
 
-        /* --- OUTLINE --- */
+        /* Outline */
         .outline-slider .rt-SliderTrack {
-           height: 4px;
-           background-color: transparent;
-           border: 1px solid var(--gray-8);
+           height: 4px; background-color: transparent; border: 1px solid var(--gray-8);
         }
-        .outline-slider .rt-SliderRange {
-           background-color: var(--accent-9);
-        }
+        .outline-slider .rt-SliderRange { background-color: var(--accent-9); }
         .outline-slider .rt-SliderThumb {
-           background-color: white;
-           border: 2px solid var(--accent-9);
-           box-shadow: none;
+           background-color: white; border: 2px solid var(--accent-9); box-shadow: none;
         }
       `}} />
 
@@ -135,16 +119,16 @@ export const xSlider = ({
         min={minvalue} 
         max={maxvalue} 
         step={stepvalue}
+        minStepsBetweenThumbs={minStepsBetweenThumbs}
         value={fieldValue}
         onValueChange={(val) => {
-          // Formik Implementation - For array, pass 'val' directly
-          setFieldValue(alias, val[0]);
+          // LOGIC SYNOPSIS:
+          // If Range, set value as array.
+          // If Slider, set value as first value.
+          setFieldValue(alias, isRange ? val : val[0]);
         }}
-        onValueCommit={() => {
-          setFieldTouched(alias, true);
-        }}
-        
-        className={ inputtype === 'slider-neumorphic' ? 'neu-slider' : inputtype === 'slider-outline' ? 'outline-slider' : ''}
+        onValueCommit={() => setFieldTouched(alias, true)}
+        className={inputtype === 'range-neumorphic' ? 'neu-slider' : inputtype === 'range-outline' ? 'outline-slider' : ''}
         style={neuVars}
       />
 
