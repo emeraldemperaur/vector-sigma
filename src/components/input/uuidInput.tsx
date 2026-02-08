@@ -3,10 +3,9 @@ import { TextField, IconButton, Tooltip, Flex, Text } from '@radix-ui/themes';
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons';
 import { IMaskInput } from 'react-imask';
 import { Icon } from "components/icons/icons";
-import { useField } from "formik/dist/Field";
-import { useFormikContext } from "formik/dist/FormikContext";
-import { Column } from "index";
+import { Column } from "../../layouts/column/column";
 import { parseUuidFormat } from "utils/uuidparser";
+import { useField, useFormikContext } from 'formik';
 import '../../styles/main.scss';
 type startsWithUuid = `uuid${string}`;
 

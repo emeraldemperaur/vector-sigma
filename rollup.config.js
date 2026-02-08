@@ -26,6 +26,9 @@ export default {
         if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
             return;
         }
+        if (warning.code === 'THIS_IS_UNDEFINED') {
+            return;
+        }
         warn(warning);
     },
     plugins: [

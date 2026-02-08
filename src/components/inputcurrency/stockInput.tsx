@@ -4,7 +4,7 @@ import { Flex, Text, Badge, Tooltip } from '@radix-ui/themes';
 import { IMaskInput } from 'react-imask';
 import { Icon } from "components/icons/icons";
 import { FaChartLine } from '@react-icons/all-files/fa/FaChartLine'; 
-import { Column } from "index";
+import { Column } from "../../layouts/column/column";
 import '../../styles/main.scss';
 
 export const StockInput = (

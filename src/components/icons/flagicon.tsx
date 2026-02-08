@@ -1,5 +1,4 @@
 import React, { ComponentProps } from "react";
-import type { Country } from 'react-phone-number-input';
 import * as Flags from "country-flag-icons/react/3x2";
 type CountryCode = keyof typeof Flags;
 

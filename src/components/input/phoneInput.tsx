@@ -7,8 +7,7 @@ import Input, { getCountries, getCountryCallingCode } from 'react-phone-number-i
 import en from 'react-phone-number-input/locale/en.json';
 import { Icon } from "components/icons/icons";
 import { FlagIcon } from "components/icons/flagicon";
-import { useFormikContext } from "formik/dist/FormikContext";
-import { useField } from "formik/dist/Field";
+import { useField, useFormikContext } from 'formik';
 import '../../styles/main.scss';
 
 export const PhoneInput = (
