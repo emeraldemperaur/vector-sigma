@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - prometheus
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
+
+      - name: setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run: npm ci
+
+    #  - name: run unit tests
+    #    run: npm test 
+
+      - name: Create release pull request
+        id: changeset_action
+        uses: changesets/action@v1
+        with:
+          publish: npm run release-package
+        env:
+          GITHUB_TOKEN: ${{ secrets.SIGMA_CHANGESET_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_CHANGESET_TOKEN }}
+
+
+
+
+
+# name: VΣ Release (Multijob Workflow)
+
+# on:
+#   push:
+#     branches:
+#       - prometheus
+
+# concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+# jobs:
+#   test:
+#     name: VΣ Tests
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: checkout repository code
+#         uses: actions/checkout@v4
+#         with:
+#           token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
+#       - name: setup node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 20
+#           cache: 'npm'
+#       - name: install dependencies
+#         run: npm ci
+#       - name: run jest
+#         run: npm test
+
+#   release:
+#     name: VΣ Release
+#     needs: [test]
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: checkout VΣ repository code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+#           token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
+#       - name: setup node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 20
+#       - name: install VΣ dependencies
+#         run: npm ci
+#       - name: Create VΣ release pull request
+#         id: changeset_action
+#         uses: changesets/action@v1
+#         with:
+#           publish: npm run release-package
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.SIGMA_CHANGESET_TOKEN }}
+#           NPM_TOKEN: ${{ secrets.NPM_CHANGESET_TOKEN }}
