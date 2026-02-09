@@ -111,3 +111,61 @@ alert(s);
 ![Testing Library](https://img.shields.io/badge/-Testing%20Library-%23E33332?style=for-the-badge&logo=testing-library&logoColor=white)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+
+
+### Changeset Versioning Synopsis
+<ol>
+<li>
+<p align="justify"><strong>Create new working 'changeset' branch</strong></p>
+
+```bash
+git checkout -b new-changeset-branchname
+```
+</li>
+
+<li><p align="justify"><strong>Update/Modify source code</strong></p></li>
+
+<li>
+<p align="justify"><strong>Run Changeset CLI</strong></p>
+
+```bash
+npx changeset
+```
+</li>
+
+<li>
+<p align="justify"><strong>Commit source code changes to git</strong></p>
+
+```bash
+git add .
+git commit -m "Changeset :: commit message"
+git status
+# confirm clean working tree before push
+git push origin new-changeset-branchname
+
+```
+</li>
+
+<li>
+<p align="justify"><strong>Merge Changeset 'workflow' and 'version packages' PRs on Github repository</strong></p>
+</li>
+
+<li>
+<p align="justify"><strong>Checkout 'main | prometheus' origin branch</strong></p>
+
+```bash
+git checkout prometheus
+
+```
+</li>
+
+<li>
+<p align="justify"><strong>Pull remote version changes merged from working 'changeset' branch to 'main | prometheus' origin branch</strong></p>
+
+```bash
+git pull origin prometheus
+
+```
+</li>
+
+</ol>
