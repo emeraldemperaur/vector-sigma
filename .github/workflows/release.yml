@@ -80,6 +80,8 @@ jobs:
         run: npm test -- --reporters=default --reporters=jest-junit          
         env:
           JEST_JUNIT_OUTPUT_FILE: "./junit.xml"
+      - name: Create VΣ test badges directory
+        run: mkdir -p badges
       - name: create VΣ test badge
         uses: jaywcjlove/generated-badges@v1.0.1
         with:
