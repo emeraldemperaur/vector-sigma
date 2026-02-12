@@ -1,4 +1,4 @@
-name: Release
+name: VΣ Release
 
 on:
   push:
@@ -9,10 +9,10 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
-    name: Release
+    name: VΣ Release
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repository code
+      - name: checkout VΣ repository code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -23,11 +23,20 @@ jobs:
         with:
           node-version: 20
 
-      - name: install dependencies
+      - name: install VΣ dependencies
         run: npm ci
 
-    #  - name: run unit tests
-    #    run: npm test 
+    #  - name: run VΣ build tests
+    #    run: npm test -- --reporters=default --reporters=jest-junit
+   #     env:
+   #       JEST_JUNIT_OUTPUT_FILE: "./junit.xml"
+
+    #  - name: Create Test Badge
+    #    uses: jaywcjlove/generated-badges@v1
+    #    with:
+    #      source: junit.xml
+    #      output: ./badges/test.svg
+    #      label: tests
 
       - name: Create release pull request
         id: changeset_action
@@ -56,7 +65,7 @@ jobs:
 #     name: VΣ Tests
 #     runs-on: ubuntu-latest
 #     steps:
-#       - name: checkout repository code
+#       - name: checkout VΣ repository code
 #         uses: actions/checkout@v4
 #         with:
 #           token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
@@ -65,10 +74,19 @@ jobs:
 #         with:
 #           node-version: 20
 #           cache: 'npm'
-#       - name: install dependencies
+#       - name: install VΣ dependencies
 #         run: npm ci
 #       - name: run jest
-#         run: npm test
+#         run: npm test -- --reporters=default --reporters=jest-junit          
+#         env:
+#           JEST_JUNIT_OUTPUT_FILE: "./junit.xml"
+#       - name: create VΣ test badge
+#         uses: jaywcjlove/generated-badges@v1
+#         with:
+#           source: junit.xml
+#           output: ./badges/test.svg
+#           label: tests
+
 
 #   release:
 #     name: VΣ Release

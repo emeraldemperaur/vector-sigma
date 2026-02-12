@@ -25,6 +25,7 @@
         "moduleResolution": "node"
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "lib", "build", "dist", "scripts", "acceptance-tests", "webpack", "jest"],
+    "exclude": ["node_modules", "lib", "build", "dist", "scripts", "acceptance-tests", "webpack", 
+    "jest", "**/*.test.ts", "**/*.test.tsx", "jest.setup.ts"],
     "types": ["typePatches"]
 }

@@ -11,10 +11,6 @@ export function getExtantDate(): string {
     return isoDateOnly;
 }
 
-export function getExtantFullDate(): string {
-    return "";
-}
-
 export const ensureDate = (date: Date | string | undefined): Date | undefined => {
   if (!date) return undefined;
   if (date instanceof Date) return date; 

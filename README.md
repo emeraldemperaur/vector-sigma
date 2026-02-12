@@ -1,6 +1,10 @@
 #  💠 Vector Sigma
 ## Dynamic Form Orchestrator 📦
-![Changesets](https://img.shields.io/badge/maintained%20with-changesets-176de3?style=flat-square&logo=changesets&logoColor=white)
+[![NPM Version](https://img.shields.io/npm/v/@emeraldemperaur/vector-sigma.svg)](https://www.npmjs.com/package/@emeraldemperaur/vector-sigma)
+![Changesets](https://img.shields.io/badge/maintained%20with-changesets-176de3?style=flat-square&logo=changesets&logoColor=white) 
+[![Release Status](https://github.com/emeraldemperaur/vector-sigma/actions/workflows/release.yml/badge.svg)](https://github.com/emeraldemperaur/vector-sigma/actions)
+![Tests](https://raw.githubusercontent.com/emeraldemperaur/vector-sigma/prometheus/badges/test.svg)
+
 
 ### Overview
 <p align="justify">
@@ -84,7 +88,7 @@ alert(s);
 
 <li><strong>🧩Exported UI Components</strong></br>
 <p align="justify">Explicitly exported reusable form UI components with material, outline and neumorphic design variants from package entry point <code>src/index.ts</code> to enable developer-friendly use as lightweight component library.</p>
-<p><em>Container, Row, Column, xAvatar, xButton, CheckboxGroup, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, UUIDInput, xCreditCardInput, InputCurrency, StockInput, xRadioGroup, OptionSelect, MultipleSelect, RangeSlider, Toggle, xTitle</em></p>
+<p><em>Container, Row, Column, xAvatar, xButton, CheckboxGroup, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, UUIDInput, xCreditCardInput, CurrencyInput, StockInput, xRadioGroup, OptionSelect, MultipleSelect, RangeSlider, Toggle, xTitle</em></p>
 
 ```javascript
 var s = "JavaScript/TypeScript Component Snippet";
@@ -116,6 +120,13 @@ alert(s);
 ### Changeset Versioning Synopsis
 <ol>
 <li>
+<p align="justify"><strong>Install Changeset CLI on 'main | prometheus' branch</strong></p>
+
+```bash
+npm install --save-dev @changesets/cli
+```
+</li>
+<li>
 <p align="justify"><strong>Create new working 'changeset' branch</strong></p>
 
 ```bash
@@ -126,9 +137,10 @@ git checkout -b new-changeset-branchname
 <li><p align="justify"><strong>Update/Modify source code</strong></p></li>
 
 <li>
-<p align="justify"><strong>Run Changeset CLI</strong></p>
+<p align="justify"><strong>Run Changeset CLI to create changeset file</strong></p>
 
 ```bash
+# Changeset - patch, minor, major versioning
 npx changeset
 ```
 </li>
