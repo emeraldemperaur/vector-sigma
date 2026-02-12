@@ -8,7 +8,7 @@ import { Icon } from "components/icons/icons";
 import { Column } from "layouts/column/column";
 import '../../styles/main.scss';
 
-export const InputCurrency = (
+export const CurrencyInput = (
     alias: string, 
     inputtype: SupportedCurrency | "currency", 
     onChange: React.ChangeEventHandler<HTMLInputElement, HTMLInputElement>, touched: object, errorText: ReactNode | string | null, 
