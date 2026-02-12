@@ -1,57 +1,4 @@
-name: VΣ Release
-
-on:
-  push:
-    branches:
-      - prometheus
-
-concurrency: ${{ github.workflow }}-${{ github.ref }}
-
-jobs:
-  release:
-    name: VΣ Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout VΣ repository code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
-
-      - name: setup node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: install VΣ dependencies
-        run: npm ci
-
-    #  - name: run VΣ build tests
-    #    run: npm test -- --reporters=default --reporters=jest-junit
-   #     env:
-   #       JEST_JUNIT_OUTPUT_FILE: "./junit.xml"
-
-    #  - name: Create Test Badge
-    #    uses: jaywcjlove/generated-badges@v1
-    #    with:
-    #      source: junit.xml
-    #      output: ./badges/test.svg
-    #      label: tests
-
-      - name: Create release pull request
-        id: changeset_action
-        uses: changesets/action@v1
-        with:
-          publish: npm run release-package
-        env:
-          GITHUB_TOKEN: ${{ secrets.SIGMA_CHANGESET_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_CHANGESET_TOKEN }}
-
-
-
-
-
-# name: VΣ Release (Multijob Workflow)
+# name: VΣ Release
 
 # on:
 #   push:
@@ -61,50 +8,37 @@ jobs:
 # concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 # jobs:
-#   test:
-#     name: VΣ Tests
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: checkout VΣ repository code
-#         uses: actions/checkout@v4
-#         with:
-#           token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
-#       - name: setup node.js
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: 20
-#           cache: 'npm'
-#       - name: install VΣ dependencies
-#         run: npm ci
-#       - name: run jest
-#         run: npm test -- --reporters=default --reporters=jest-junit          
-#         env:
-#           JEST_JUNIT_OUTPUT_FILE: "./junit.xml"
-#       - name: create VΣ test badge
-#         uses: jaywcjlove/generated-badges@v1
-#         with:
-#           source: junit.xml
-#           output: ./badges/test.svg
-#           label: tests
-
-
 #   release:
 #     name: VΣ Release
-#     needs: [test]
 #     runs-on: ubuntu-latest
 #     steps:
 #       - name: checkout VΣ repository code
-#         uses: actions/checkout@v4
+#         uses: actions/checkout@v2
 #         with:
 #           fetch-depth: 0
 #           token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
+
 #       - name: setup node.js
 #         uses: actions/setup-node@v4
 #         with:
 #           node-version: 20
+
 #       - name: install VΣ dependencies
 #         run: npm ci
-#       - name: Create VΣ release pull request
+
+#       - name: run VΣ build tests
+#         run: npm test -- --reporters=default --reporters=jest-junit
+#         env:
+#             JEST_JUNIT_OUTPUT_FILE: "./junit.xml"
+
+#       - name: Create Test Badge
+#         uses: jaywcjlove/generated-badges@v1
+#         with:
+#             source: junit.xml
+#             output: ./badges/test.svg
+#             label: tests
+
+#       - name: Create release pull request
 #         id: changeset_action
 #         uses: changesets/action@v1
 #         with:
@@ -112,3 +46,69 @@ jobs:
 #         env:
 #           GITHUB_TOKEN: ${{ secrets.SIGMA_CHANGESET_TOKEN }}
 #           NPM_TOKEN: ${{ secrets.NPM_CHANGESET_TOKEN }}
+
+
+
+
+
+name: VΣ Release (Multijob Workflow)
+
+on:
+  push:
+    branches:
+      - prometheus
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  test:
+    name: VΣ Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout VΣ repository code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
+      - name: setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: install VΣ dependencies
+        run: npm ci
+      - name: run jest
+        run: npm test -- --reporters=default --reporters=jest-junit          
+        env:
+          JEST_JUNIT_OUTPUT_FILE: "./junit.xml"
+      - name: create VΣ test badge
+        uses: jaywcjlove/generated-badges@v1
+        with:
+          source: junit.xml
+          output: ./badges/test.svg
+          label: tests
+
+
+  release:
+    name: VΣ Release
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout VΣ repository code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
+      - name: setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: install VΣ dependencies
+        run: npm ci
+      - name: Create VΣ release pull request
+        id: changeset_action
+        uses: changesets/action@v1
+        with:
+          publish: npm run release-package
+        env:
+          GITHUB_TOKEN: ${{ secrets.SIGMA_CHANGESET_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_CHANGESET_TOKEN }}
