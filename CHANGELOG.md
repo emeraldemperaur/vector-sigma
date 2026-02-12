@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.3.0
+
+### Minor Changes
+
+- 5fe38b6: Formik/Yup peer dependency fix
+
 ## 1.2.0
 
 ### Minor Changes
