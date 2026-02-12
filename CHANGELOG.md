@@ -1,5 +1,13 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.3.1
+
+### Patch Changes
+
+- 92f4971: Release.yml CI/CD Test Badge Fixes
+- dab3e96: Peer Dependency Fixes
+- 55c5633: CI/CD Test Badge Fix
+
 ## 1.3.0
 
 ### Minor Changes
