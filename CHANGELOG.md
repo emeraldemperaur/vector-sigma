@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.2.0
+
+### Minor Changes
+
+- 14de48b: TDD jest integration | styles.css export path error fix
+
 ## 1.1.1
 
 ### Patch Changes
