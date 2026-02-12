@@ -81,7 +81,7 @@ jobs:
         env:
           JEST_JUNIT_OUTPUT_FILE: "./junit.xml"
       - name: create VΣ test badge
-        uses: jaywcjlove/generated-badges@v1
+        uses: jaywcjlove/generated-badges@v1.0.1
         with:
           source: junit.xml
           output: ./badges/test.svg
