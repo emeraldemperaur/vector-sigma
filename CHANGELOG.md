@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.1
+
+### Patch Changes
+
+- 5f02d40: Radix Theme | Rollup Bundle Export Fix
+
 ## 1.4.0
 
 ### Minor Changes
