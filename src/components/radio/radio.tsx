@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Flex, Text, RadioGroup, Grid, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground, InputOption } from 'utils/vinci';
@@ -16,7 +16,7 @@ interface RadioGroupProps {
     inputoptions: InputOption[];
     direction?: 'row' | 'column'; // CSS Layout direction
     columns?: string; // CSS grid template columns (e.g., "1fr 1fr")
-    className?: string;
+    className?: string,  errorText?: ReactNode | string | null,
     style?: React.CSSProperties;
 }
 
@@ -144,7 +144,7 @@ export const xRadioGroup = ({
             {hasError ?
                 <>
                     <p className='core-input-label-error'>
-                            {meta.error}
+                            {props.errorText || `Required field`}
                     </p>
                 </> : null } 
                   

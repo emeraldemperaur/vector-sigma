@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, ReactNode } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Box, Flex, Text, IconButton, Avatar, Tooltip } from '@radix-ui/themes';
 import { Icon } from 'components/icons/icons';
@@ -12,7 +12,7 @@ export interface AvatarProps {
   alias: string, inputLabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  shape?: AvatarShape;
+  shape?: AvatarShape, errorText?: ReactNode | string | null
   size?: number; // Size in px
   className?: string;
   style?: React.CSSProperties;
@@ -202,7 +202,7 @@ export const xAvatar = ({
                  {hasError ?
                   <>
                   <p id={errorId} className='core-input-label-error'>
-                      {String(meta.error)}
+                      {props.errorText || `Required field`}
                   </p>
                   </> : null } 
         </div>

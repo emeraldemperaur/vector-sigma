@@ -6,75 +6,85 @@ import { IMaskInput } from 'react-imask';
 import { FlagIcon } from "components/icons/flagicon";
 import { Icon } from "components/icons/icons";
 import { Column } from "layouts/column/column";
+import { InputDesign } from "components/input/input";
 import '../../styles/main.scss';
 
-export const CurrencyInput = (
-    alias: string, 
-    inputtype: SupportedCurrency | "currency", 
-    onChange: React.ChangeEventHandler<HTMLInputElement, HTMLInputElement>, touched: object, errorText: ReactNode | string | null, 
-    inputLabel: string, width: number, defaultValue: string, value: string, newRow?: boolean, 
-    placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string) => {
+type CurrencyInputProps = {
+    alias: string, inputtype?: SupportedCurrency | "currency", 
+    inputLabel: string, width: number,
+    newRow?: boolean, defaultValue?: string,
+    placeholder?: string, readOnly?: boolean,
+    isHinted?: boolean, hintText?: string, errorText?: ReactNode | string | null,
+    hintUrl?: string, inputVariant?: InputDesign, className?: string
+};
 
-        const { setFieldValue, setFieldTouched } = useFormikContext(); 
-        const [amountField, amountMeta] = useField(alias);
-        const [currencyField] = useField(inputtype == "currency" ? "USD" : inputtype);
-        const hasError = Boolean(amountMeta.touched && amountMeta.error);
-        const activeCurrency = CURRENCIES[currencyField.value as SupportedCurrency] || CURRENCIES.USD;
+export const CurrencyInput = ({
+    alias, inputtype = "currency",
+    inputLabel, width,
+    defaultValue, placeholder,
+    readOnly=false, inputVariant = 'input-outline',
+    className, ...props}: CurrencyInputProps) => {
 
+    const { setFieldValue, setFieldTouched } = useFormikContext(); 
+    const [amountField, amountMeta] = useField(alias);
+    const currencyFieldName = inputtype === "currency" ? "USD" : inputtype;
+    const [currencyField] = useField(currencyFieldName);
+    
+    const hasError = Boolean(amountMeta.touched && amountMeta.error);
+    const activeCurrency = CURRENCIES[currencyField.value as SupportedCurrency] || CURRENCIES.USD;
+    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
+    const isOutline = inputVariant === 'input-outline';
 
-    return(
-        <>
-        <Column span={width} newLine={newRow}>
+    return (
+        <Column span={width} newLine={props.newRow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <Flex 
                     align="center"
-                    className="rt-TextFieldRoot rt-r-size-2 rt-variant-surface"
+                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${className || ''}`}
                     style={{
-                    width: '100%',
-                    boxShadow: hasError ? 'inset 0 0 0 1px var(--red-9)' : undefined,
-                    backgroundColor: 'var(--color-surface)',
-                    cursor: 'text'
+                        width: '100%',
+                        boxShadow: (isOutline && hasError) ? 'inset 0 0 0 1px var(--red-9)' : undefined,
+                        backgroundColor: isOutline ? 'var(--color-surface)' : undefined,
+                        cursor: 'text'
                     }}
                 >
-                    
-                    {/* 1. Currency Dropdown (Left) */}
                     <Select.Root 
-                    value={activeCurrency.code} 
-                    onValueChange={(val) => setFieldValue(inputtype == "currency" ? "USD" : inputtype, val)}  
+                        value={activeCurrency.code} 
+                        onValueChange={(val) => setFieldValue(currencyFieldName, val)}  
                     >
-                    <Select.Trigger 
-                        variant="ghost" 
-                        style={{ 
-                        height: '100%', 
-                        padding: '0 8px 0 12px', 
-                        gap: '6px',
-                        borderTopRightRadius: 0,
-                        borderBottomRightRadius: 0,
-                        backgroundColor: 'var(--gray-3)' 
-                        }}
-                    >
-                        <Flex align="center" gap="2">
-                        <FlagIcon country={activeCurrency.country} />
-                        <Text weight="bold" size="2">{activeCurrency.code}</Text>
-                        <Icon name="caret-down" style={{ opacity: 0.5 }} />
-                        </Flex>
-                    </Select.Trigger>
-                    
-                    <Select.Content position="popper">
-                        {Object.values(CURRENCIES).map((c: CurrencyOption) => (
-                        <Select.Item key={c.code} value={c.code}>
+                        <Select.Trigger 
+                            variant="ghost" 
+                            style={{ 
+                                height: '100%', 
+                                padding: '0 8px 0 12px', 
+                                gap: '6px',
+                                borderTopRightRadius: 0,
+                                borderBottomRightRadius: 0,
+                                backgroundColor: 'var(--gray-3)' 
+                            }}
+                        >
                             <Flex align="center" gap="2">
-                            <FlagIcon country={c.country} />
-                            <Text>{c.code}</Text>
-                            <Text color="gray" size="1">({c.symbol})</Text>
+                                <FlagIcon country={activeCurrency.country} />
+                                <Text weight="bold" size="2">{activeCurrency.code}</Text>
+                                <Icon name="caret-down" style={{ opacity: 0.5 }} />
                             </Flex>
-                        </Select.Item>
-                        ))}
-                    </Select.Content>
+                        </Select.Trigger>
+                        
+                        <Select.Content position="popper">
+                            {Object.values(CURRENCIES).map((c: CurrencyOption) => (
+                                <Select.Item key={c.code} value={c.code}>
+                                    <Flex align="center" gap="2">
+                                        <FlagIcon country={c.country} />
+                                        <Text>{c.code}</Text>
+                                        <Text color="gray" size="1">({c.symbol})</Text>
+                                    </Flex>
+                                </Select.Item>
+                            ))}
+                        </Select.Content>
                     </Select.Root>
 
                     <Text color="gray" size="2" style={{ paddingLeft: '12px', userSelect: 'none' }}>
-                    {activeCurrency.symbol}
+                        {activeCurrency.symbol}
                     </Text>
 
                     <IMaskInput
@@ -88,15 +98,15 @@ export const CurrencyInput = (
                         // @ts-expect-error: known library type definition gap
                         signed={false}            
                         thousandsSeparator=","
-                        padFractionalZeros={true} // Auto-fill .00
+                        padFractionalZeros={true}
                         normalizeZeros={true}
                         radix="."
                         mapToRadix={['.']}
-                        // Formik Binding
-                        value={amountField.value || value ? String(amountField.value || value) : ''}
-                        unmask={true} // Return raw number string
-                        onAccept={(val) => setFieldValue(alias, val)}
-                        onBlur={() => setFieldTouched(alias || value, true)} 
+                        // Bind to Amount Field
+                        value={amountField.value !== undefined && amountField.value !== null ? String(amountField.value) : ''}
+                        unmask={true}
+                        onAccept={(val: string) => setFieldValue(alias, val)}
+                        onBlur={() => setFieldTouched(alias, true)} 
                         placeholder={placeholder || '0.00'}
                         style={{
                             flex: 1,
@@ -114,29 +124,28 @@ export const CurrencyInput = (
                         inputMode="decimal"
                         autoComplete="off"
                     />
-
                 </Flex>
+
                 <div>
-                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
+                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
+                        {inputLabel}
+                    </Text>
 
-                    {hasError ?
-                    <>
-                    <p className='core-input-label-error'>
-                        {amountMeta.error}
-                    </p>
-                    </> : null } 
+                    {hasError && (
+                        <Text size="1" color="red" className='core-input-label-error'>
+                            {props.errorText || `Required field`}
+                        </Text>
+                    )} 
 
-                    {isHinted ?
-                    <>
-                    <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                        <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                        <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                        </a> 
-                    </Tooltip>
-                    </> : null} 
+                    {props.isHinted && (
+                        <Tooltip content={props.hintText || "No hint available"}>
+                            <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                                <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                            </a> 
+                        </Tooltip>
+                    )} 
                 </div>
             </Flex>
         </Column>
-        </>
-    )
+    );
 };

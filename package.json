@@ -18,9 +18,7 @@
       "import": "./lib/index.esm.js",
       "require": "./lib/index.cjs",
       "types": "./lib/types/index.d.ts"
-    },
-    "./lib/styles.css": "./lib/styles.css",
-    "./styles.css": "./lib/styles.css"
+    }
   },
   "files": [
     "lib"

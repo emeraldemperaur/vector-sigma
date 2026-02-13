@@ -39,5 +39,27 @@
         text-align: left;
     }
 
+    .input-material {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border-bottom: 2px solid var(--gray-6) !important;
+    
+    &:focus-within {
+        border-bottom-color: var(--accent-9) !important;
+    }
+    }
+
+    .input-neumorphic {
+    border: none !important;
+    border-radius: 12px !important;
+    background: #e0e5ec !important; // Adjust to match your background
+    box-shadow: 5px 5px 10px #b8b9be, -5px -5px 10px #ffffff !important;
+
+    &:focus-within {
+        box-shadow: inset 5px 5px 10px #b8b9be, inset -5px -5px 10px #ffffff !important;
+    }
+    }
+
 
 }

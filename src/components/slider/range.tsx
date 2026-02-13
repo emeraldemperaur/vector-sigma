@@ -1,24 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Flex, Text, Slider, Tooltip } from '@radix-ui/themes';
-import '../../styles/main.scss';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
+import '../../styles/main.scss';
 
 export type RangeDesign = 'range' | 'range-material' | 'range-outline' | 'range-neumorphic';
 
 interface RangeProps {
   inputtype?: RangeDesign,
   alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value: string, newRow?: boolean, 
+  width: number, defaultValue?: string, value: string, newRow?: boolean, errorText?: ReactNode | string | null,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  minvalue?: number;
-  maxvalue?: number;
-  stepvalue?: number;
-  minStepsBetweenThumbs?: number; 
-  design?: RangeDesign;
-  className?: string;
+  minvalue?: number,
+  maxvalue?: number,
+  stepvalue?: number,
+  minStepsBetweenThumbs?: number,
+  design?: RangeDesign,
+  className?: string, 
   style?: React.CSSProperties;
 }
 
@@ -138,7 +138,7 @@ export const RangeSlider = ({
                 {hasError ?
                         <>
                         <p className='core-input-label-error'>
-                            {meta.error}
+                            {props.errorText || `Required field`}
                         </p>
                         </> : null } 
             

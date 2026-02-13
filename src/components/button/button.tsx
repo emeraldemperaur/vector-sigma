@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Button, Text, Tooltip } from '@radix-ui/themes';
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 import { adjustColor, getNearestParentBackground } from '../../utils/vinci';
@@ -9,10 +9,10 @@ import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
 import '../../styles/main.scss';
 
-interface DesignButtonProps extends ButtonProps {
+export interface DesignButtonProps extends ButtonProps {
   inputtype?: ButtonDesign,
   alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value: string, newRow?: boolean, 
+  width: number, defaultValue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }

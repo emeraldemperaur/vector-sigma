@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Popover, Flex, Text, TextField, Tooltip } from '@radix-ui/themes';
 import { format } from 'date-fns';
@@ -11,13 +11,13 @@ import '../../styles/main.scss';
 
 export type DateRangePickerDesign = 'daterangepicker'| 'daterangepicker-material' | 'daterangepicker-outline' | 'daterangepicker-neumorphic';
 
-interface DateRangePickerProps {
+export interface DateRangePickerProps {
   inputtype?: DateRangePickerDesign,
   alias: string, inputLabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: string, value: string, newRow?: boolean, 
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  minvalue?: Date | string;
-  maxvalue?: Date | string;
+  minvalue?: Date | string,
+  maxvalue?: Date | string, errorText?: ReactNode | string | null,
   className?: string;
   style?: React.CSSProperties;
 }
@@ -171,7 +171,7 @@ export const DateRangePicker = ({
                 {hasError ?
                     <>
                        <p className='core-input-label-error'>
-                            {meta.error}
+                            {props.errorText || "Required field"}
                         </p>
                     </> : null } 
             

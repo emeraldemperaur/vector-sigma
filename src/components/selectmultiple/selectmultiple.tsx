@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Popover, Flex, Text, Checkbox, ScrollArea, Box, Tooltip, Select } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground, InputOption } from "utils/vinci";
 import { Icon } from 'components/icons/icons';
@@ -13,9 +13,9 @@ interface MultipleSelectProps {
     alias: string, inputLabel?: string, icon?: React.ReactNode,
     width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  inputoptions: InputOption[];
-  className?: string;
-  style?: React.CSSProperties;
+    inputoptions: InputOption[], errorText?: ReactNode | string | null,
+    className?: string,
+    style?: React.CSSProperties
 }
 
 export const MultipleSelect = ({
@@ -199,7 +199,7 @@ export const MultipleSelect = ({
                       {hasError ?
                               <>
                               <p className='core-input-label-error'>
-                                  {meta.error}
+                                  {props.errorText || `Required field`}
                               </p>
                               </> : null } 
                   

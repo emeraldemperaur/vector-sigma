@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Flex, Text, IconButton, Box, AspectRatio, Badge, Tooltip } from '@radix-ui/themes';
 import { ACCEPTED_FORMATS, adjustColor, formatBytes, getNearestParentBackground } from 'utils/vinci';
@@ -8,13 +8,13 @@ import '../../styles/main.scss';
 
 export type FileInputDesign = 'fileinput' | 'fileinput-material' | 'fileinput-outline' | 'fileinput-neumorphic';
 
-interface FileInputProps {
+export interface FileInputProps {
   inputtype?: FileInputDesign,
   alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
+  width: number, defaultValue?: any, value?: any, newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  preview?: boolean; // Enable thumbnail
-  className?: string;
+  preview?: boolean, // Enable thumbnail
+  className?: string, errorText?: ReactNode | string | null,
   style?: React.CSSProperties;
 }
 
@@ -216,7 +216,7 @@ export const File = ({
                 {hasError ?
                   <>
                   <p className='core-input-label-error'>
-                      {meta.error}
+                      {props.errorText || "Required field"}
                   </p>
                   </> : null } 
                 {props.isHinted ?

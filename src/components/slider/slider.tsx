@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Flex, Text, Slider, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
@@ -11,13 +11,13 @@ export type SliderDesign = 'slider' | 'slider-material' | 'slider-outline' | 'sl
 interface SliderProps {
   inputtype?: SliderDesign,
   alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value: string, newRow?: boolean, 
+  width: number, defaultValue?: string, value: string, newRow?: boolean, errorText?: ReactNode | string | null,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  minvalue?: number;
-  maxvalue?: number;
-  stepvalue?: number;
-  className?: string;
-  style?: React.CSSProperties;
+  minvalue?: number,
+  maxvalue?: number,
+  stepvalue?: number,
+  className?: string,
+  style?: React.CSSProperties
 }
 
 
@@ -154,7 +154,7 @@ export const xSlider = ({
                 {hasError ?
                         <>
                         <p className='core-input-label-error'>
-                            {meta.error}
+                            {props.errorText || `Required field`}
                         </p>
                         </> : null } 
             
