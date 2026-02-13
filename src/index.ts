@@ -1,5 +1,6 @@
 export { primeMatrix } from './primeMatrix';
 export { vectorSigma } from './vectorSigma';
+export { Theme, ThemePanel } from '@radix-ui/themes';
 export * from './components/avatar/avatar';
 export * from './components/button/button';
 export * from './components/checkbox/checkbox';
