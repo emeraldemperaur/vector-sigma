@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import * as TogglePrimitive from '@radix-ui/react-toggle';
 import { Button, Text, Tooltip } from '@radix-ui/themes'; 
 import type { ButtonProps } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground } from "utils/vinci";
 import { Column } from "layouts/column/column";
 import { Icon } from "components/icons/icons";
+import '../../styles/main.scss';
 
 export type ToggleDesign = 'toggle' | 'toggle-material' | 'toggle-outline' | 'toggle-neumorphic';
 
@@ -12,7 +13,7 @@ interface ToggleProps extends ButtonProps {
   inputtype?: ToggleDesign;
   pressed?: boolean; // Controlled state
   defaultPressed?: boolean; // Uncontrolled default
-  onPressedChange?: (pressed: boolean) => void;
+  onPressedChange?: (pressed: boolean) => void,
   alias: string, inputLabel?: string, icon?: React.ReactNode, width: number, 
   defaultValue?: string, value: string, newRow?: boolean, placeholder?: string, 
   readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string

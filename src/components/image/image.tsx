@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Box, Flex, Text, AspectRatio } from '@radix-ui/themes';
 import { Icon } from 'components/icons/icons';
 export type ImageDesign = 'outline' | 'material' | 'neumorphic';

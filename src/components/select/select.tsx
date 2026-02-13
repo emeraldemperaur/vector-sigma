@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Select, Flex, Text, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground, InputOption } from "utils/vinci";
 import { Icon } from 'components/icons/icons';
@@ -14,10 +14,10 @@ interface OptionSelectProps {
     alias: string, inputLabel?: string, icon?: React.ReactNode,
     width: number, defaultValue?: string, value: string, newRow?: boolean, 
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-    onValueChange?: (value: string) => void;
-    inputoptions: InputOption[];
-    className?: string;
-    style?: React.CSSProperties;
+    onValueChange?: (value: string) => void, 
+    inputoptions: InputOption[], errorText?: ReactNode | string | null,
+    className?: string,
+    style?: React.CSSProperties
 }
 
 export const OptionSelect = ({
@@ -147,7 +147,7 @@ export const OptionSelect = ({
                 {hasError ?
                         <>
                         <p className='core-input-label-error'>
-                            {meta.error}
+                            {props.errorText || `Required field`}
                         </p>
                         </> : null } 
             

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, ReactNode } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Box, Flex, Text, Card, IconButton, Grid, Tooltip } from '@radix-ui/themes';
 import { Icon } from 'components/icons/icons';
@@ -11,11 +11,11 @@ export type FileMultipleInputDesign = 'filemultiple' | 'filemultiple-material' |
 export interface FileMultipleInputProps {
   inputtype?: FileMultipleInputDesign,
   alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
+  width: number, defaultValue?: any, value?: any, newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  preview?: boolean; 
-  className?: string;
-  style?: React.CSSProperties;
+  preview?: boolean,  errorText?: ReactNode | string | null,
+  className?: string,
+  style?: React.CSSProperties
 }
 
 const getFileIcon = (fileOrUrl: File | string) => {
@@ -257,7 +257,9 @@ export const FileMultiple = ({
             {hasError ?
                   <>
                   <p id={errorId} className='core-input-label-error'>
-                      {typeof meta.error === 'string' ? meta.error : 'Invalid file selection'}
+                      {typeof meta.error === 'string' ? 
+                      <>{props.errorText || "Required field"}</> 
+                      : 'Invalid file selection'}
                   </p>
                   </> : null } 
             {props.isHinted ?

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Popover, Flex, Text, TextField, Separator, Button, Tooltip } from '@radix-ui/themes';
 import { format, setHours, setMinutes } from 'date-fns';
@@ -11,13 +11,13 @@ import '../../styles/main.scss';
 
 export type DateTimePickerDesign = 'datetimepicker' | 'datetimepicker-material' | 'datetimepicker-outline' | 'datetimepicker-neumorphic';
 
-interface DateTimePickerProps {
+export interface DateTimePickerProps {
   inputtype?: DateTimePickerDesign,
   alias: string, inputLabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: string, value: string, newRow?: boolean, 
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  minvalue?: Date | string;
-  maxvalue?: Date | string;
+  minvalue?: Date | string,
+  maxvalue?: Date | string, errorText?: ReactNode | string | null,
   className?: string;
   style?: React.CSSProperties;
 }
@@ -219,7 +219,7 @@ export const DateTimePicker = ({
                 {hasError ?
                     <>
                        <p id={errorId} className='core-input-label-error'>
-                            {meta.error}
+                            {props.errorText || "Required field"}
                         </p>
                     </> : null } 
             

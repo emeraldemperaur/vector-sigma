@@ -2,7 +2,7 @@ import React, { ComponentProps } from "react";
 import * as Flags from "country-flag-icons/react/3x2";
 type CountryCode = keyof typeof Flags;
 
-interface FlagIconProps {
+export interface FlagIconProps {
   country: CountryCode | 'EU'; 
 }
 

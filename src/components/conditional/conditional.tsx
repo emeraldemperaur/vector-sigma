@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { useField, useFormikContext } from 'formik';
 import { Box, Flex, Text, Switch, Checkbox, Select, Card, Tooltip } from '@radix-ui/themes';
 import { InputOption } from "utils/vinci";
@@ -21,7 +21,7 @@ export interface ConditionalProps {
   inputtype?: ToggleTriggerDesign | CheckboxTriggerDesign | SelectTriggerDesign; // Conditional Trigger Element input type (conditionaltoggle, conditionalcheckbox, conditionalselect)
   toggledinputtype?: ToggleTriggerDesign | CheckboxTriggerDesign | SelectTriggerDesign; // Conditional Trigger Element input design (conditionaltoggle, conditionalcheckbox, conditionalselect)
   triggerValue?: any;        // Conditional Trigger Element Input Value that triggers Toggled Input Element reveal (e.g. Boolean, String, Number)
-  inputoptions?: InputOption[]; 
+  inputoptions?: InputOption[], errorText?: ReactNode | string | null,
   children: React.ReactNode; // Conditional Toggled Input Element
   className?: string;
   style?: React.CSSProperties;
@@ -204,7 +204,8 @@ export const ConditionalTrigger = ({
             {hasError ?
                   <>
                   <p id={errorId} className='core-input-label-error'>
-                      {typeof meta.error === 'string' ? meta.error : 'Invalid file selection'}
+                      {typeof meta.error === 'string' ? <>{props.errorText || "Required field"}</> 
+                      : 'Invalid file selection'}
                   </p>
                   </> : null } 
             {props.isHinted ?

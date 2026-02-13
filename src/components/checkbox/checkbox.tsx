@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Flex, Text, Checkbox as RadixCheckbox, Grid, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground, InputOption } from 'utils/vinci';
@@ -8,12 +8,12 @@ import '../../styles/main.scss';
 
 export type CheckBoxDesign = 'checkbox' | 'checkbox-material' | 'checkbox-outline' | 'checkbox-neumorphic';
 
-interface CheckboxGroup {
+export interface CheckboxGroup {
   inputtype?: CheckBoxDesign,
   alias: string, inputLabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  inputoptions: InputOption[];
+  inputoptions: InputOption[], errorText?: ReactNode | string | null,
   direction?: 'row' | 'column'; // CSS Layout direction
   columns?: string; // CSS grid template columns (e.g., "1fr 1fr")
   className?: string;
@@ -147,7 +147,7 @@ export const CheckboxGroup = ({
                       {hasError ?
                               <>
                               <p className='core-input-label-error'>
-                                  {meta.error}
+                                  {props.errorText || "Required field"}
                               </p>
                               </> : null } 
                   

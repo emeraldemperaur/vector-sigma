@@ -19,7 +19,6 @@ export default {
         },
     ],
     onwarn(warning, warn) {
-        // If it's a circular dependency and inside node_modules, ignore it
         if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.message.includes('node_modules')) {
             return;
         }
@@ -37,9 +36,10 @@ export default {
         resolve(),
         commonjs(),
         postcss({
-            extract: 'styles.css',
+            extract: false, 
+            inject: true,  
             minimize: true,
-            use: [['sass', {
+            use: [['sass', { 
                 implementation: sass, 
                 silenceDeprecations: ['legacy-js-api']
             }]],
