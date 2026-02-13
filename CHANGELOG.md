@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.0
+
+### Minor Changes
+
+- f54bf57: Refactored Named Export Input Components
+
 ## 1.3.1
 
 ### Patch Changes
