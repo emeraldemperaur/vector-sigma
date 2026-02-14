@@ -9,7 +9,7 @@ import '../../styles/main.scss';
 export type RadioDesign = 'radio' | 'radio-material' | 'radio-outline' | 'radio-neumorphic';
 
 interface RadioGroupProps {
-    inputtype?: RadioDesign,
+    inputtype?: RadioDesign & {},
     alias: string, inputLabel?: string, icon?: React.ReactNode,
     width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
@@ -20,8 +20,8 @@ interface RadioGroupProps {
     style?: React.CSSProperties;
 }
 
-export const xRadioGroup = ({
-  inputtype = 'radio',
+export const RadioGroupInput = ({
+  inputtype = 'radio-outline',
   alias, readOnly, width,
   placeholder = '',
   style, value, inputoptions,

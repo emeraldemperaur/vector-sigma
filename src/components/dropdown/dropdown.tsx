@@ -9,9 +9,9 @@ import '../../styles/main.scss';
 export type DropDownDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outline' | 'dropdown-neumorphic';
 
 export interface DropDownProps {
-    inputtype?: DropDownDesign,
+    inputtype?: DropDownDesign & {},
     alias: string, inputLabel?: string, icon?: React.ReactNode,
-    width: number, defaultValue?: string, value: string, newRow?: boolean, 
+    width: number, defaultValue?: string, value?: string, newRow?: boolean, 
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
     onValueChange?: (value: string) => void, errorText?: ReactNode | string | null,
   inputoptions: { 
@@ -26,7 +26,7 @@ export interface DropDownProps {
 
 
 export const Dropdown = ({
-  inputtype = 'dropdown-material',
+  inputtype = 'dropdown-outline',
   alias, readOnly, width,
   placeholder, value,
   inputoptions,
@@ -159,20 +159,20 @@ export const Dropdown = ({
         <Select.Content position="popper" sideOffset={5} style={activeContentStyle}>
           {inputoptions.map((inputoption) => (
 
-            <>
+            <React.Fragment key={inputoption.optionid || crypto.randomUUID()}>
             {inputoption.optionurl ? 
-            <>
-            <a href={inputoption.optionurl || ""} target="_blank" rel="noopener noreferrer">
+            
+            
             <Select.Item 
               id={String(inputoption.optionid) || ''}
               key={inputoption.optionid} 
               value={inputoption.optionvalue}
-              className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
-            >
-              {inputoption.text}
+              className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}>
+              <a style={{textDecoration: 'none'}} href={inputoption.optionurl || ""} target="_blank" rel="noopener noreferrer">
+                {inputoption.text}</a>
             </Select.Item>
-            </a>
-            </> 
+            
+            
             : 
             <>
             <Select.Item 
@@ -184,7 +184,7 @@ export const Dropdown = ({
               {inputoption.text}
             </Select.Item>
             </>}
-            </>
+            </React.Fragment>
             
           ))}
         </Select.Content>

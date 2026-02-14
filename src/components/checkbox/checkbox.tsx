@@ -9,9 +9,9 @@ import '../../styles/main.scss';
 export type CheckBoxDesign = 'checkbox' | 'checkbox-material' | 'checkbox-outline' | 'checkbox-neumorphic';
 
 export interface CheckboxGroup {
-  inputtype?: CheckBoxDesign,
+  inputtype?: CheckBoxDesign & {},
   alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
+  width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   inputoptions: InputOption[], errorText?: ReactNode | string | null,
   direction?: 'row' | 'column'; // CSS Layout direction
@@ -20,8 +20,8 @@ export interface CheckboxGroup {
   style?: React.CSSProperties;
 }
 
-export const CheckboxGroup = ({
-  inputtype = 'checkbox',
+export const CheckboxGroupInput = ({
+  inputtype = 'checkbox-outline',
   alias, readOnly, width,
   placeholder = '',
   style, value, inputoptions,
@@ -39,7 +39,7 @@ export const CheckboxGroup = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
 
-  // Add/Remove Checked Values
+
   const handleCheckedChange = (checked: boolean, value: string) => {
     let newValues = [...currentValues];
     if (checked) {
@@ -75,7 +75,6 @@ export const CheckboxGroup = ({
     >
       {inputtype === 'checkbox-neumorphic' && (
         <style dangerouslySetInnerHTML={{__html: `
-          /* Hide default Radix checkbox appearance to replace with our own */
           .neu-checkbox .rt-CheckboxButton { 
             background-color: var(--neu-bg);
             border: none;
@@ -90,7 +89,6 @@ export const CheckboxGroup = ({
             box-shadow: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light);
             background-color: var(--neu-bg); /* Keep bg same, let icon show color */
           }
-          /* The Check Icon Color */
           .neu-checkbox .rt-CheckboxIndicator {
             color: var(--neu-check-color);
           }
@@ -107,7 +105,7 @@ export const CheckboxGroup = ({
           return (
             <Text 
               as="label" 
-              key={inputoption.optionvalue} 
+              key={inputoption.optionvalue || crypto.randomUUID()} 
               size="2" 
               style={{ 
                 display: 'flex', 

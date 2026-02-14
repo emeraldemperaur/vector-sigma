@@ -12,9 +12,9 @@ import '../../styles/main.scss';
 export type DatePickerDesign = 'datepicker' | 'datepicker-material' | 'datepicker-outline' | 'datepicker-neumorphic';
 
 export interface DatePickerProps {
-  inputtype?: DatePickerDesign,
+  inputtype?: DatePickerDesign & {},
   alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value: string, newRow?: boolean, 
+  width: number, defaultValue?: string, value?: string, newRow?: boolean, 
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string,
   minvalue?: Date | string,
   maxvalue?: Date | string, errorText?: ReactNode | string | null,
@@ -23,7 +23,7 @@ export interface DatePickerProps {
 }
 
 export const DatePicker = ({
-  inputtype = 'datepicker',
+  inputtype = 'datepicker-outline',
   alias, readOnly, width,
   placeholder = 'Pick a date',
   value,

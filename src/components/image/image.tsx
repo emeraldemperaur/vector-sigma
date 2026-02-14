@@ -8,8 +8,8 @@ export interface ImageDisplayProps {
   id: string | number;
   src: string;
   alt?: string;
-  design?: ImageDesign;
-  layout?: ImageLayout;
+  design?: ImageDesign  & {};
+  layout?: ImageLayout  & {};
   aspectRatio?: number; // 16/9, 4/3, 1
   height?: string | number; 
   width?: string | number;

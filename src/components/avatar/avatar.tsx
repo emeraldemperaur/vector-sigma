@@ -8,9 +8,9 @@ export type AvatarDesign = 'avatar' | 'avatar-outline' | 'avatar-material' | 'av
 export type AvatarShape = 'circle' | 'square' | 'rounded';
 
 export interface AvatarProps {
-  inputtype?: AvatarDesign,
+  inputtype?: AvatarDesign & {},
   alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
+  width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   shape?: AvatarShape, errorText?: ReactNode | string | null
   size?: number; // Size in px
@@ -60,8 +60,8 @@ const getStyles = (inputtype: AvatarDesign, shape: AvatarShape, hasError: boolea
   return { ...base, borderRadius, ...designStyles };
 };
 
-export const xAvatar = ({
-  inputtype = 'avatar',
+export const AvatarInput = ({
+  inputtype = 'avatar-outline',
   alias, readOnly, width,
   placeholder = '', value,
   shape = 'circle',

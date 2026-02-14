@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { useField } from "formik";
 import { Column } from "layouts/column/column"; 
-import { TextField, Text, Tooltip, TextProps } from '@radix-ui/themes';
+import { TextField, Text, Tooltip } from '@radix-ui/themes';
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 import '../../styles/main.scss';
 
@@ -11,11 +11,12 @@ export type InputType = 'date' | 'datetime-local' | 'email' | 'hidden' | 'month'
 export type InputDesign = "input" | "input-material" | "input-outline" | "input-neumorphic"
 
 export type xInputFieldProps = React.ComponentProps<typeof TextField.Root> & {
-    alias: string, inputtype?: InputType, inputLabel?: string, width: number,
-    newRow?: boolean, placeholder?: string, readOnly?: boolean, isHinted?: boolean;
-    hintText?: string, hintUrl?: string, icon?: React.ReactNode, defaultValue?: string, 
-    value: string, errorText?: ReactNode | string | null, className?: string, style?: React.CSSProperties;
-    inputVariant?: InputDesign, delimiter?: string, format?: number[]
+    alias: string, 
+    inputtype?: InputType  & {}, 
+    inputLabel?: string, width: number, newRow?: boolean, placeholder?: string, 
+    readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string, 
+    icon?: React.ReactNode, defaultValue?: string, value: string, errorText?: ReactNode | string | null, className?: string, style?: React.CSSProperties;
+    inputVariant?: InputDesign  & {}, delimiter?: string, format?: number[]
 };
 
 export const Input = ({

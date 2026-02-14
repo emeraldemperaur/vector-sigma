@@ -11,7 +11,7 @@ type xTitleProps = TextProps & {
   subTitle?: string
 }
 
-export const xTitle = ({
+export const SectionTitle = ({
     title, iconname, textColor = "#FFFFFF", 
     backgroundColor = "#000000", 
     fontFamily, ...props}: xTitleProps) => {

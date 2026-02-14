@@ -9,7 +9,7 @@ import '../../styles/main.scss';
 export type MultipleSelectDesign = 'multiselect' | 'multiselect-material' | 'multiselect-outline' | 'multiselect-neumorphic';
 
 interface MultipleSelectProps {
-    inputtype?: MultipleSelectDesign,
+    inputtype?: MultipleSelectDesign & {},
     alias: string, inputLabel?: string, icon?: React.ReactNode,
     width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
@@ -19,7 +19,7 @@ interface MultipleSelectProps {
 }
 
 export const MultipleSelect = ({
-  inputtype = 'multiselect',
+  inputtype = 'multiselect-outline',
   alias, readOnly, width,
   placeholder = '',
   style, value, inputoptions,

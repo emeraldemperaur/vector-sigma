@@ -10,7 +10,7 @@ import '../../styles/main.scss';
 export type ToggleDesign = 'toggle' | 'toggle-material' | 'toggle-outline' | 'toggle-neumorphic';
 
 interface ToggleProps extends ButtonProps {
-  inputtype?: ToggleDesign;
+  inputtype?: ToggleDesign & {};
   pressed?: boolean; // Controlled state
   defaultPressed?: boolean; // Uncontrolled default
   onPressedChange?: (pressed: boolean) => void,
@@ -21,7 +21,7 @@ interface ToggleProps extends ButtonProps {
 }
 
 export const Toggle = ({
-  inputtype = 'toggle',
+  inputtype = 'toggle-outline',
   alias, readOnly, width,
   pressed,
   defaultPressed,

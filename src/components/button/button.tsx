@@ -1,6 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Button, Text, Tooltip } from '@radix-ui/themes';
-import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 import { adjustColor, getNearestParentBackground } from '../../utils/vinci';
 import type { ButtonProps } from '@radix-ui/themes';
 export type ButtonDesign = 'button' | 'button-material' | 'button-outline' | 'button-neumorphic';
@@ -10,15 +9,15 @@ import { Column } from 'layouts/column/column';
 import '../../styles/main.scss';
 
 export interface DesignButtonProps extends ButtonProps {
-  inputtype?: ButtonDesign,
+  inputtype?: ButtonDesign & {},
   alias: string, inputLabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export const xButton = ({ 
-  inputtype = 'button',
+export const ButtonInput = ({ 
+  inputtype = 'button-outline',
   alias, readOnly, style, width, children, ...props 
 }: DesignButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -45,7 +44,7 @@ export const xButton = ({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '8px', // Space between icon and text
+    gap: '8px', 
   };
   
   const materialStyle: React.CSSProperties = {
@@ -64,13 +63,11 @@ export const xButton = ({
   };
 
   const neumorphicStyle: React.CSSProperties = {
-    // CSS variables injection
     backgroundColor: bgColor, 
-    color: 'var(--gray-12)', // Default text color
+    color: 'var(--gray-12)', 
     border: 'none',
     borderRadius: '12px',
     fontWeight: 600,
-    // The Standard State
     boxShadow: '6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light)',
     transition: 'all 0.2s ease-in-out',
   };
@@ -96,7 +93,6 @@ export const xButton = ({
         return { 
           variant: 'ghost' as const,
           className: 'neumorphic-btn',
-          // Merge custom vars with styles
           style: { ...neumorphicStyle, ...neumorphicVars, ...style } 
         };
       default:

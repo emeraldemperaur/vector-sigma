@@ -9,11 +9,11 @@ import '../../styles/main.scss';
 export type FileInputDesign = 'fileinput' | 'fileinput-material' | 'fileinput-outline' | 'fileinput-neumorphic';
 
 export interface FileInputProps {
-  inputtype?: FileInputDesign,
+  inputtype?: FileInputDesign & {},
   alias: string, inputLabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: any, value?: any, newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  preview?: boolean, // Enable thumbnail
+  preview?: boolean, 
   className?: string, errorText?: ReactNode | string | null,
   style?: React.CSSProperties;
 }
@@ -28,7 +28,7 @@ const getFileIcon = (type: string, name: string) => {
 };
 
 export const File = ({
-  inputtype = 'fileinput',
+  inputtype = 'fileinput-outline',
   alias, readOnly, width,
   placeholder = '', value,
   preview = false,
@@ -39,7 +39,6 @@ export const File = ({
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
   
-  // File object or null
   const selectedFile: File | null = field.value;
   const hasError = Boolean(meta.touched && meta.error);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -63,7 +62,7 @@ export const File = ({
     if (inputRef.current) inputRef.current.value = ''; 
   };
 
-  // Generate Preview URL
+  // Preview URL generator
   useEffect(() => {
     if (!selectedFile || !selectedFile.type.startsWith('image/')) {
       setPreviewUrl(null);
@@ -164,7 +163,7 @@ export const File = ({
               <Icon name='upload' width="18" height="18" />
             </Box>
             <Flex direction="column">
-                <Text size="2" weight="bold" color="gray">Click to Upload</Text>
+                <Text size="2" weight="bold" color="gray">Upload File</Text>
                 <Text size="1" color="gray">Supports PDF, Images, Excel, JSON...</Text>
             </Flex>
           </Flex>
