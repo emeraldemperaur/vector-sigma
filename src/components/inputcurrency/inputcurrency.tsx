@@ -10,12 +10,12 @@ import { InputDesign } from "components/input/input";
 import '../../styles/main.scss';
 
 type CurrencyInputProps = {
-    alias: string, inputtype?: SupportedCurrency | "currency", 
-    inputLabel: string, width: number,
-    newRow?: boolean, defaultValue?: string,
-    placeholder?: string, readOnly?: boolean,
-    isHinted?: boolean, hintText?: string, errorText?: ReactNode | string | null,
-    hintUrl?: string, inputVariant?: InputDesign, className?: string
+    alias: string, 
+    inputtype?: SupportedCurrency & {} | "currency", 
+    inputLabel: string, width: number, newRow?: boolean, defaultValue?: string,
+    placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, 
+    errorText?: ReactNode | string | null, hintUrl?: string, inputVariant?: InputDesign & {}, 
+    className?: string
 };
 
 export const CurrencyInput = ({

@@ -10,7 +10,7 @@ import '../../styles/main.scss';
 export type OptionSelectDesign = 'select' | 'select-material' | 'select-outline' | 'select-neumorphic';
 
 interface OptionSelectProps {
-    inputtype?: OptionSelectDesign,
+    inputtype?: OptionSelectDesign & {},
     alias: string, inputLabel?: string, icon?: React.ReactNode,
     width: number, defaultValue?: string, value: string, newRow?: boolean, 
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
@@ -21,7 +21,7 @@ interface OptionSelectProps {
 }
 
 export const OptionSelect = ({
-  inputtype = 'select',
+  inputtype = 'select-outline',
   alias, readOnly, width,
   placeholder = '',
   style, value, inputoptions,

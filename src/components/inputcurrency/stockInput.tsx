@@ -15,7 +15,7 @@ type StockInputProps = {
     readOnly?: boolean, isHinted?: boolean;
     hintText?: string, hintUrl?: string, 
     errorText?: ReactNode | string | null,
-    inputVariant?: InputDesign, className?: string;
+    inputVariant?: InputDesign & {}, className?: string;
 };
 
 export const StockInput = ({

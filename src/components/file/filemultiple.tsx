@@ -9,7 +9,7 @@ import '../../styles/main.scss';
 export type FileMultipleInputDesign = 'filemultiple' | 'filemultiple-material' | 'filemultiple-outline' | 'filemultiple-neumorphic';
 
 export interface FileMultipleInputProps {
-  inputtype?: FileMultipleInputDesign,
+  inputtype?: FileMultipleInputDesign  & {},
   alias: string, inputLabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: any, value?: any, newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
@@ -61,7 +61,7 @@ const styles: Record<FileMultipleInputDesign, React.CSSProperties> = {
 };
 
 export const FileMultiple = ({ 
-  inputtype = 'filemultiple',
+  inputtype = 'filemultiple-outline',
   alias, readOnly, width,
   placeholder = '', value,
   preview = true, 
@@ -84,7 +84,6 @@ export const FileMultiple = ({
     let changed = false;
 
     currentFiles.forEach((file) => {
-      // Only generate preview if image File object
       if (file instanceof File && file.type.startsWith('image/')) {
         if (!objectUrls[file.name]) {
           newUrls[file.name] = URL.createObjectURL(file);

@@ -9,7 +9,7 @@ import '../../styles/main.scss';
 export type SliderDesign = 'slider' | 'slider-material' | 'slider-outline' | 'slider-neumorphic';
 
 interface SliderProps {
-  inputtype?: SliderDesign,
+  inputtype?: SliderDesign & {},
   alias: string, inputLabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: string, value: string, newRow?: boolean, errorText?: ReactNode | string | null,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
@@ -21,8 +21,8 @@ interface SliderProps {
 }
 
 
-export const xSlider = ({
-  inputtype = 'slider',
+export const SliderInput = ({
+  inputtype = 'slider-outline',
   alias, readOnly, width,
   placeholder = '',
   value,

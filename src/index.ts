@@ -10,6 +10,7 @@ export * from './components/daterangepicker/daterangepicker';
 export * from './components/datetimepicker/datetimepicker';
 export * from './components/dropdown/dropdown';
 export * from './components/file/file';
+export * from './components/file/filemultiple';
 export * from './components/icons/icons';
 export * from './components/icons/flagicon';
 export * from './components/image/image';

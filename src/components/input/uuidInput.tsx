@@ -17,7 +17,7 @@ type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' |
     delimiter?: string, format?: number[],
     isHinted?: boolean, hintText?: string,
     hintUrl?: string, placeholder?: string, errorText?: ReactNode | string | null, className?: string
-    inputVariant?: InputDesign
+    inputVariant?: InputDesign & {}
 };
 
 export const UUIDInput = ({
@@ -32,7 +32,6 @@ export const UUIDInput = ({
         activeFormat = parseUuidFormat(type) || format;
     }
     const maskPattern = activeFormat.map(len => '*'.repeat(len)).join(delimiter);
-
     const { setFieldValue, setFieldTouched } = useFormikContext();
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);

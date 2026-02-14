@@ -29,7 +29,6 @@ export const CreditCardInput = ({
     const { setFieldValue, setFieldTouched } = useFormikContext();
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
-
     const cardInfo = cardValidator.number(field.value || '');
     const cardType = cardInfo.card?.type; 
     const maskPattern = cardType === 'american-express' ? '0000 000000 00000' : '0000 0000 0000 0000';

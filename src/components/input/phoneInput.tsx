@@ -27,9 +27,7 @@ export const PhoneInput = ({
     const { setFieldValue, setFieldTouched } = useFormikContext();
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
-    
     const [country, setCountry] = useState<Country>('US');
-
     const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
 
     return (

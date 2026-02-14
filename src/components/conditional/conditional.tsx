@@ -16,10 +16,10 @@ export interface ConditionalProps {
   alias: string,  // Conditional Trigger Element Field form name
   inputLabel: string, // Conditional Trigger Element Field input label
   icon?: React.ReactNode,
-  width: number, defaultValue?: any[], value: any, newRow?: boolean, isEdit?: boolean,
+  width: number, defaultValue?: any[], value?: any, newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  inputtype?: ToggleTriggerDesign | CheckboxTriggerDesign | SelectTriggerDesign; // Conditional Trigger Element input type (conditionaltoggle, conditionalcheckbox, conditionalselect)
-  toggledinputtype?: ToggleTriggerDesign | CheckboxTriggerDesign | SelectTriggerDesign; // Conditional Trigger Element input design (conditionaltoggle, conditionalcheckbox, conditionalselect)
+  inputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input type (conditionaltoggle, conditionalcheckbox, conditionalselect)
+  toggledinputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input design (conditionaltoggle, conditionalcheckbox, conditionalselect)
   triggerValue?: any;        // Conditional Trigger Element Input Value that triggers Toggled Input Element reveal (e.g. Boolean, String, Number)
   inputoptions?: InputOption[], errorText?: ReactNode | string | null,
   children: React.ReactNode; // Conditional Toggled Input Element
@@ -37,7 +37,7 @@ const animationStyles = {
   }
 };
 
-const getDesignStyles = (inputtype: ToggleTriggerDesign | CheckboxTriggerDesign | SelectTriggerDesign, isOpen: boolean): React.CSSProperties => {
+const getDesignStyles = (inputtype: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign & {}, isOpen: boolean): React.CSSProperties => {
   const base = {
     transition: 'all 0.3s ease',
     padding: '16px',
@@ -77,10 +77,10 @@ const getDesignStyles = (inputtype: ToggleTriggerDesign | CheckboxTriggerDesign 
 export const ConditionalTrigger = ({
   alias, readOnly, width,
   placeholder = '', value,
-  inputtype = 'conditionaltoggle',
+  inputtype = 'conditionaltoggle-outline',
   triggerValue = true,
   inputoptions = [],
-  toggledinputtype = inputtype,
+  toggledinputtype = "conditionaltoggle-outline",
   children,
   style,
   className, ...props
@@ -137,7 +137,7 @@ export const ConditionalTrigger = ({
               />
               <Select.Content>
                 {inputoptions.map((inputoption) => (
-                  <Select.Item key={inputoption.optionvalue} value={inputoption.optionvalue}>
+                  <Select.Item key={inputoption.optionvalue || crypto.randomUUID()} value={inputoption.optionvalue}>
                     {inputoption.text}
                   </Select.Item>
                 ))}

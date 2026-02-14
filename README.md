@@ -69,7 +69,7 @@ alert(s);
 </li>
 
 <li><strong>🛡️Input Validation</strong></br>
-<p align="justify">Declarative schema (JSON) facilitates a validation engine that is comprehensive, accessible and easy to maintain. <code>onChange()</code>, <code>onBlur()</code> input event control state updates, errors and <code>values</code> are handled automatically. <code>onSubmit()</code> handler is automatically blocked if the input is invalid.</p>
+<p align="justify">Declarative schema (JSON) facilitates a validation engine that is comprehensive, accessible and easy to maintain. <code>onChange()</code>, <code>onBlur()</code> input event control state updates, errors and <code>values</code> are handled automatically. <code>onSubmit()</code> handler is automatically blocked if the input vs. validation schema is invalid.</p>
 </li>
 
 <li><strong>🧠Form State Management</strong></br>
@@ -80,18 +80,72 @@ alert(s);
 <p align="justify">Customizable to fit seamlessly into an existing design system and allow developer control of the visual layer through standard CSS patterns.</p>
 
 ```javascript
-var s = "JavaScript/TypeScript Style Snippet";
-alert(s);
+import { Theme, File, Dropdown } from '@emeraldemperaur/vector-sigma';
+
+const App = () => {
+  return (
+    
+    <Theme>
+      <File/>
+      <Dropdown/>
+    </Theme>
+  );
+}
 ```
 </li>
 
 <li><strong>🧩Exported UI Components</strong></br>
 <p align="justify">Explicitly exported reusable form UI components with material, outline and neumorphic design variants from package entry point <code>src/index.ts</code> to enable developer-friendly use as lightweight component library.</p>
-<p><em>Container, Row, Column, xAvatar, xButton, CheckboxGroup, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, UUIDInput, CreditCardInput, CurrencyInput, StockInput, xRadioGroup, OptionSelect, MultipleSelect, RangeSlider, Toggle, xTitle</em></p>
+<p><em>Container, Row, Column, Theme, AvatarInput, ButtonInput, CheckboxGroupInput, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, UUIDInput, CreditCardInput, CurrencyInput, StockInput, RadioGroupInput, OptionSelect, MultipleSelect, RangeSlider, SliderInput, Toggle, SectionTitle</em></p>
 
 ```javascript
-var s = "JavaScript/TypeScript Component Snippet";
-alert(s);
+import { Container, Column, Row, CheckboxGroup, Dropdown, File, RangeSlider } from '@emeraldemperaur/vector-sigma';
+import { Theme } from '@emeraldemperaur/vector-sigma';
+import { Form, Formik } from 'formik'
+import * as Yup from 'yup'
+
+
+const App = () => {
+  return (
+    <Container fluid>
+      <Row>
+        <Column span={9}>
+        <Formik 
+          initialValues={{
+            dropdownInput: 'Zaibatsu',
+          }}
+          
+          validationSchema={Yup.object({
+            dropdownInput: Yup.string().required('Dropdown selection is required'),
+          })}
+
+          onSubmit={(values) => {
+            console.log(values);
+          }}
+    >
+      {({ values }) => (
+        <Form>
+            <Theme>
+            <File alias='inputFile' width={3}/>
+            <Dropdown alias="dropdownInput" width={8} inputLabel="Dropdown Element" inputtype="dropdown-outline" value="Zaibatsu" 
+                inputoptions={
+                    [
+                    {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+                    {optionid: 2, optionvalue: "Meka", optionurl:"https://www.mekaegwim.ca", text: "Meka"},
+                    {optionid: 3, optionvalue: "Godzilla", optionurl:"https://www.me.ca", text: "Godzilla"},
+                    {optionid: 4, optionvalue: "Zaibatsu", optionurl:"https://www.npmjs.com/package/@emeraldemperaur/vector-sigma", text: "Zaibatsu"},
+                    ]}/>
+            </Theme>
+            <button type="submit" style={{ marginTop: 20 }}>Submit</button>
+        </Form>
+      )}
+        </Formik>
+        </Column>
+      </Row>
+    </Container>
+  );
+}
+
 ```
 </li>
 
