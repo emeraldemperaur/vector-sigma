@@ -12,7 +12,7 @@ export type OptionSelectDesign = 'select' | 'select-material' | 'select-outline'
 interface OptionSelectProps {
     inputtype?: OptionSelectDesign & {},
     alias: string, inputLabel?: string, icon?: React.ReactNode,
-    width: number, defaultValue?: string, value: string, newRow?: boolean, 
+    width: number, defaultValue?: string, value?: string, newRow?: boolean, 
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
     onValueChange?: (value: string) => void, 
     inputoptions: InputOption[], errorText?: ReactNode | string | null,
@@ -22,9 +22,9 @@ interface OptionSelectProps {
 
 export const OptionSelect = ({
   inputtype = 'select-outline',
-  alias, readOnly, width,
+  alias, readOnly, width, inputLabel=undefined,
   placeholder = '',
-  style, value, inputoptions,
+  style, inputoptions,
   className, ...props
 }: OptionSelectProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -32,8 +32,8 @@ export const OptionSelect = ({
   
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
-  
   const hasError = Boolean(meta.touched && meta.error);
+  const errorId = `${alias}-error`;
 
   useEffect(() => {
     if (inputtype === 'select-neumorphic' && triggerRef.current) {
@@ -106,8 +106,8 @@ export const OptionSelect = ({
         name={alias}
         disabled={readOnly}
         aria-describedby={`${alias}InputLabel`}
-        defaultValue={props.defaultValue || value}
-        value={field.value || value}
+        defaultValue={props.defaultValue}
+        value={field.value}
         onValueChange={(val) => {
           setFieldValue(alias, val);
           setTimeout(() => setFieldTouched(alias, true), 0);
@@ -142,11 +142,11 @@ export const OptionSelect = ({
       </Select.Root>
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
             
                 {hasError ?
                         <>
-                        <p className='core-input-label-error'>
+                        <p id={errorId} className='core-input-label-error'>
                             {props.errorText || `Required field`}
                         </p>
                         </> : null } 

@@ -10,9 +10,9 @@ export type RangeDesign = 'range' | 'range-material' | 'range-outline' | 'range-
 
 interface RangeProps {
   inputtype?: RangeDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value: string, newRow?: boolean, errorText?: ReactNode | string | null,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  alias: string, inputlabel?: string, icon?: React.ReactNode,
+  width: number, defaultValue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
+  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   minvalue?: number,
   maxvalue?: number,
   stepvalue?: number,
@@ -25,9 +25,8 @@ interface RangeProps {
 
 export const RangeSlider = ({
   inputtype = 'range-outline',
-  alias, readOnly, width,
+  alias, readonly, width, inputlabel=undefined,
   placeholder = '',
-  value,
   minvalue = 0,
   maxvalue = 100,
   stepvalue = 1,
@@ -47,10 +46,10 @@ export const RangeSlider = ({
   // If field.value is undefined, default to [min] or [min, max].
   const isRange = Array.isArray(field.value);
   const fieldValue = isRange ? field.value : [field.value || minvalue];
-  
   const hasError = Boolean(meta.touched && meta.error);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+  const errorId = `${alias}-error`;
 
   useEffect(() => {
     if (inputtype === 'range-neumorphic' && containerRef.current) {
@@ -114,7 +113,7 @@ export const RangeSlider = ({
       <Slider 
         name={alias}
         id={`${alias}FormInput`} 
-        disabled={readOnly}
+        disabled={readonly}
         aria-describedby={`${alias}InputLabel`}
         min={minvalue} 
         max={maxvalue} 
@@ -133,11 +132,11 @@ export const RangeSlider = ({
       />
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
             
                 {hasError ?
                         <>
-                        <p className='core-input-label-error'>
+                        <p id={errorId} className='core-input-label-error'>
                             {props.errorText || `Required field`}
                         </p>
                         </> : null } 

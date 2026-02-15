@@ -11,7 +11,7 @@ export type SliderDesign = 'slider' | 'slider-material' | 'slider-outline' | 'sl
 interface SliderProps {
   inputtype?: SliderDesign & {},
   alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value: string, newRow?: boolean, errorText?: ReactNode | string | null,
+  width: number, defaultValue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   minvalue?: number,
   maxvalue?: number,
@@ -25,7 +25,6 @@ export const SliderInput = ({
   inputtype = 'slider-outline',
   alias, readOnly, width,
   placeholder = '',
-  value,
   minvalue = 0,
   maxvalue = 100,
   stepvalue = 1,
@@ -36,10 +35,10 @@ export const SliderInput = ({
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
   const fieldValue = Array.isArray(field.value) ? field.value : [field.value || minvalue];
-  
   const hasError = Boolean(meta.touched && meta.error);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+  const errorId = `${alias}-error`;
 
   useEffect(() => {
     if (inputtype === 'slider-neumorphic' && containerRef.current) {
@@ -153,7 +152,7 @@ export const SliderInput = ({
             
                 {hasError ?
                         <>
-                        <p className='core-input-label-error'>
+                        <p id={errorId} className='core-input-label-error'>
                             {props.errorText || `Required field`}
                         </p>
                         </> : null } 

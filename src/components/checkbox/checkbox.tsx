@@ -10,9 +10,9 @@ export type CheckBoxDesign = 'checkbox' | 'checkbox-material' | 'checkbox-outlin
 
 export interface CheckboxGroup {
   inputtype?: CheckBoxDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
+  alias: string, inputlabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   inputoptions: InputOption[], errorText?: ReactNode | string | null,
   direction?: 'row' | 'column'; // CSS Layout direction
   columns?: string; // CSS grid template columns (e.g., "1fr 1fr")
@@ -22,8 +22,8 @@ export interface CheckboxGroup {
 
 export const CheckboxGroupInput = ({
   inputtype = 'checkbox-outline',
-  alias, readOnly, width,
-  placeholder = '',
+  alias, readonly, width,
+  placeholder = '', inputlabel = undefined,
   style, value, inputoptions,
   direction = 'column',
   columns, 
@@ -32,13 +32,11 @@ export const CheckboxGroupInput = ({
   
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
-  
   const currentValues = (Array.isArray(field.value) ? field.value : []) as string[];
   const hasError = Boolean(meta.touched && meta.error);
-  
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
-
+  const errorId = `${alias}-error`;
 
   const handleCheckedChange = (checked: boolean, value: string) => {
     let newValues = [...currentValues];
@@ -118,7 +116,7 @@ export const CheckboxGroupInput = ({
                 name={alias}
                 id={`${alias}FormInput${inputoption.optionid}`}
                 aria-describedby={`${alias}InputLabel${inputoption.optionid}`}
-                disabled={readOnly}
+                disabled={readonly}
                 value={inputoption.optionvalue}
                 checked={isChecked}
                 onCheckedChange={(checked) => handleCheckedChange(checked as boolean, inputoption.optionvalue)}
@@ -140,15 +138,8 @@ export const CheckboxGroupInput = ({
       </Grid>
 
       <div>
-                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
-                  
-                      {hasError ?
-                              <>
-                              <p className='core-input-label-error'>
-                                  {props.errorText || "Required field"}
-                              </p>
-                              </> : null } 
-                  
+                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+                      &nbsp;
                       {props.isHinted ?
                               <>
                               <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
@@ -157,6 +148,12 @@ export const CheckboxGroupInput = ({
                                   </a> 
                               </Tooltip>
                               </> : null} 
+                       {hasError ?
+                              <>
+                              <p id={errorId} className='core-input-label-error'>
+                                  {props.errorText || "Required field"}
+                              </p>
+                              </> : null } 
        </div>
     </Flex>
     </Column>

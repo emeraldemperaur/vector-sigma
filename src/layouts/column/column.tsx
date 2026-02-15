@@ -23,15 +23,14 @@ export const Column = ({ newLine, span, xs, sm, md, lg, xl, children, ...props }
     return `span ${value}`;
   };
 
-  const baseSize = span ? `span ${span}` : (getSpan(xs) || "span 12");
+  const spanString = span ? `span ${span}` : (getSpan(xs) || "span 12");
+  const initialGridColumn = newLine ? `1 / ${spanString}` : spanString;
 
   return (
     <Box
       {...props}
-      // NEW: If newLine is true, force start at column 1
-      gridColumnStart={newLine ? "1" : props.gridColumnStart}
       gridColumn={{
-        initial: baseSize,
+        initial: initialGridColumn,
         xs: getSpan(xs),
         sm: getSpan(sm),
         md: getSpan(md),

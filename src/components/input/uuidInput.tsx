@@ -13,7 +13,7 @@ type startsWithUuid = `uuid${string}`;
 
 type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' | 'onChange' | 'value' | 'defaultValue'> & {
     alias: string, type: startsWithUuid,
-    inputLabel: string, width: number, newRow?: boolean,
+    inputLabel?: string, width: number, newRow?: boolean,
     delimiter?: string, format?: number[],
     isHinted?: boolean, hintText?: string,
     hintUrl?: string, placeholder?: string, errorText?: ReactNode | string | null, className?: string
@@ -21,7 +21,7 @@ type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' |
 };
 
 export const UUIDInput = ({
-    alias, type, inputLabel, width, delimiter = "-",
+    alias, type, inputLabel=undefined, width, delimiter = "-",
     format = [4, 4, 4, 4], placeholder = '',
     readOnly = false, inputVariant = 'input-outline',
     size = "2", className, ...props
@@ -36,6 +36,7 @@ export const UUIDInput = ({
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
     const [copied, setCopied] = useState(false);
+    const errorId = `${alias}-error`;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(field.value || '');
@@ -61,7 +62,7 @@ export const UUIDInput = ({
                         aria-describedby={`${alias}InputLabel`}
                         readOnly={readOnly}
                         mask={maskPattern}
-                        value={field.value || ''}
+                        value={field.value}
                         unmask={true} 
                         onAccept={(val: string) => setFieldValue(alias, val)}
                         onBlur={() => setFieldTouched(alias, true)}
@@ -102,19 +103,18 @@ export const UUIDInput = ({
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
                         {inputLabel}
                     </Text>
-
-                    {hasError && (
-                        <p className='core-input-label-error'>
-                            {props.errorText || `Required field`}
-                        </p>
-                    )} 
-
+                    &nbsp;
                     {props.isHinted && (
                         <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                             <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
+                    )} 
+                    {hasError && (
+                        <p id={errorId} className='core-input-label-error'>
+                            {props.errorText || `Required field`}
+                        </p>
                     )} 
                 </div>
             </Flex>

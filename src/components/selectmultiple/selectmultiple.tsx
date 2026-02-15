@@ -11,7 +11,7 @@ export type MultipleSelectDesign = 'multiselect' | 'multiselect-material' | 'mul
 interface MultipleSelectProps {
     inputtype?: MultipleSelectDesign & {},
     alias: string, inputLabel?: string, icon?: React.ReactNode,
-    width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
+    width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
     inputoptions: InputOption[], errorText?: ReactNode | string | null,
     className?: string,
@@ -20,9 +20,9 @@ interface MultipleSelectProps {
 
 export const MultipleSelect = ({
   inputtype = 'multiselect-outline',
-  alias, readOnly, width,
+  alias, readOnly, width, inputLabel=undefined,
   placeholder = '',
-  style, value, inputoptions,
+  style, inputoptions,
   className, ...props
 }: MultipleSelectProps) => {
   
@@ -33,6 +33,7 @@ export const MultipleSelect = ({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   const [isOpen, setIsOpen] = useState(false);
+  const errorId = `${alias}-error`;
 
   const handleToggle = (value: string) => {
     const newValues = selectedValues.includes(value)
@@ -194,11 +195,11 @@ export const MultipleSelect = ({
       </Popover.Root>
 
       <div>
-                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
+                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
                   
                       {hasError ?
                               <>
-                              <p className='core-input-label-error'>
+                              <p id={errorId} className='core-input-label-error'>
                                   {props.errorText || `Required field`}
                               </p>
                               </> : null } 

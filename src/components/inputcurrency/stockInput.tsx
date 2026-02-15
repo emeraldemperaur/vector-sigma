@@ -9,7 +9,7 @@ import { InputDesign } from "components/input/input";
 import '../../styles/main.scss';
 
 type StockInputProps = {
-    alias: string, inputLabel: string;
+    alias: string, inputLabel?: string;
     width: number, defaultValue: string; 
     newRow?: boolean, placeholder?: string;
     readOnly?: boolean, isHinted?: boolean;
@@ -20,7 +20,7 @@ type StockInputProps = {
 
 export const StockInput = ({
     alias,
-    inputLabel,
+    inputLabel=undefined,
     width,
     defaultValue,
     placeholder,
@@ -34,6 +34,7 @@ export const StockInput = ({
     const hasError = Boolean(meta.touched && meta.error);
     const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
     const isOutline = inputVariant === 'input-outline';
+    const errorId = `${alias}-error`;
 
     return (
         <Column span={width} newLine={props.newRow}>
@@ -117,19 +118,18 @@ export const StockInput = ({
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
                         {inputLabel}
                     </Text>
-
-                    {hasError && (
-                        <p className='core-input-label-error'>
-                            {props.errorText || `Required field`}
-                        </p>
-                    )} 
-
+                    &nbsp;
                     {props.isHinted && (
                         <Tooltip content={props.hintText || "No hint available"}>
                             <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
+                    )} 
+                    {hasError && (
+                        <p id={errorId} className='core-input-label-error'>
+                            {props.errorText || `Required field`}
+                        </p>
                     )} 
                 </div>
             </Flex>

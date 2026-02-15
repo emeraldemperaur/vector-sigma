@@ -13,9 +13,9 @@ export type DateTimePickerDesign = 'datetimepicker' | 'datetimepicker-material' 
 
 export interface DateTimePickerProps {
   inputtype?: DateTimePickerDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
+  alias: string, inputlabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: string, value?: string, newRow?: boolean, 
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   minvalue?: Date | string,
   maxvalue?: Date | string, errorText?: ReactNode | string | null,
   className?: string;
@@ -24,7 +24,7 @@ export interface DateTimePickerProps {
 
 export const DateTimePicker = ({
   inputtype = 'datetimepicker-outline',
-  alias, readOnly, width,
+  alias, readonly, width, inputlabel=undefined,
   placeholder = '',
   value,
   minvalue,
@@ -214,15 +214,8 @@ export const DateTimePicker = ({
         </Popover.Content>
       </Popover.Root>
        <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
-            
-                {hasError ?
-                    <>
-                       <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || "Required field"}
-                        </p>
-                    </> : null } 
-            
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+                &nbsp;
                 {props.isHinted ?
                         <>
                     <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
@@ -231,6 +224,12 @@ export const DateTimePicker = ({
                             </a> 
                     </Tooltip>
                         </> : null} 
+                {hasError ?
+                    <>
+                       <p id={errorId} className='core-input-label-error'>
+                            {props.errorText || "Required field"}
+                        </p>
+                    </> : null } 
       </div>
 
     </Flex>

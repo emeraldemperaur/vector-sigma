@@ -18,10 +18,10 @@ import '../../styles/main.scss';
 
 export const CreditCardInput = ({
     alias,
-    inputLabel,
+    inputlabel=undefined,
     width,
     placeholder,
-    readOnly=false,
+    readonly=false,
     inputVariant = 'input-outline',
     className,...props
 }: xInputFieldProps) => {
@@ -29,9 +29,10 @@ export const CreditCardInput = ({
     const { setFieldValue, setFieldTouched } = useFormikContext();
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
-    const cardInfo = cardValidator.number(field.value || '');
+    const cardInfo = cardValidator.number(field.value);
     const cardType = cardInfo.card?.type; 
     const maskPattern = cardType === 'american-express' ? '0000 000000 00000' : '0000 0000 0000 0000';
+    const errorId = `${alias}-error`;
 
     const getCardIcon = () => {
         switch (cardType) {
@@ -67,8 +68,8 @@ export const CreditCardInput = ({
                         name={alias}
                         aria-describedby={`${alias}InputLabel`}
                         mask={maskPattern}
-                        readOnly={readOnly}
-                        value={field.value || ''}
+                        readOnly={readonly}
+                        value={field.value}
                         unmask={true} 
                         onAccept={(val: string) => setFieldValue(alias, val)}
                         onBlur={() => setFieldTouched(alias, true)}
@@ -95,21 +96,20 @@ export const CreditCardInput = ({
 
                 <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputLabel}
+                        {inputlabel}
                     </Text>
-
-                    {hasError && (
-                        <Text size="1" color="red" className='core-input-label-error'>
-                            {props.errorText || `Required field`}
-                        </Text>
-                    )} 
-
+                    &nbsp;
                     {props.isHinted && (
                         <Tooltip content={props.hintText || "No hint available"}>
                             <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
+                    )} 
+                     {hasError && (
+                        <Text id={errorId} size="1" color="red" className='core-input-label-error'>
+                            {props.errorText || `Required field`}
+                        </Text>
                     )} 
                 </div>
             </Flex>
