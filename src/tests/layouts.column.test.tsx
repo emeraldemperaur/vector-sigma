@@ -26,13 +26,12 @@ describe('VΣ Layouts(Column) Test', () => {
 
 
   test('Column :: Rendered column on newLine', () => {
-    render(<Column newLine>VΣ New Line Content</Column>);
+  render(<Column newLine>VΣ New Line Content</Column>);
 
-    const box = screen.getByTestId('radix-box');
-    const props = JSON.parse(box.getAttribute('data-props') || '{}');
-
-    expect(props.gridColumnStart).toBe('1');
-  });
+  const box = screen.getByTestId('radix-box');
+  const props = JSON.parse(box.getAttribute('data-props') || '{}');
+  expect(props.gridColumn.initial).toBe('1 / span 12');
+});
 
   test('Column :: Rendered with dynamic responsive props', () => {
     render(
