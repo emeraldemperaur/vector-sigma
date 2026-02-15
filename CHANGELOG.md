@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.4
+
+### Patch Changes
+
+- a739ab3: Input UI Components Triage Fix 15.02
+
 ## 1.4.3
 
 ### Patch Changes
