@@ -22,7 +22,7 @@ interface OptionSelectProps {
 
 export const OptionSelect = ({
   inputtype = 'select-outline',
-  alias, readOnly, width, inputLabel=undefined,
+  alias, readOnly, width, inputLabel,
   placeholder = '',
   style, inputoptions,
   className, ...props

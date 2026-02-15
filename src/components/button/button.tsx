@@ -17,7 +17,7 @@ export interface DesignButtonProps extends ButtonProps {
 }
 
 export const ButtonInput = ({ 
-  inputtype = 'button-outline', type = 'button', inputlabel = undefined,
+  inputtype = 'button-outline', type = 'button', inputlabel,
   alias, readOnly, style, width, children, ...props 
 }: DesignButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);

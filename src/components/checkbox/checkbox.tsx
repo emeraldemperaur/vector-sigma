@@ -23,7 +23,7 @@ export interface CheckboxGroup {
 export const CheckboxGroupInput = ({
   inputtype = 'checkbox-outline',
   alias, readonly, width,
-  placeholder = '', inputlabel = undefined,
+  placeholder = '', inputlabel,
   style, value, inputoptions,
   direction = 'column',
   columns, 

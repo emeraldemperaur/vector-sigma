@@ -25,7 +25,7 @@ interface RangeProps {
 
 export const RangeSlider = ({
   inputtype = 'range-outline',
-  alias, readonly, width, inputlabel=undefined,
+  alias, readonly, width, inputlabel,
   placeholder = '',
   minvalue = 0,
   maxvalue = 100,

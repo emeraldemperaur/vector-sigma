@@ -29,7 +29,7 @@ const getFileIcon = (type: string, name: string) => {
 
 export const File = ({
   inputtype = 'fileinput-outline',
-  alias, readonly, width, inputlabel=undefined,
+  alias, readonly, width, inputlabel,
   placeholder = '',
   preview = false,
   className,

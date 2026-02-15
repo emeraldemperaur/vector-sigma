@@ -20,7 +20,7 @@ type StockInputProps = {
 
 export const StockInput = ({
     alias,
-    inputLabel=undefined,
+    inputLabel,
     width,
     defaultValue,
     placeholder,

@@ -27,7 +27,7 @@ export interface DropDownProps {
 
 export const Dropdown = ({
   inputtype = 'dropdown-outline',
-  alias, readonly, width, inputlabel=undefined,
+  alias, readonly, width, inputlabel,
   placeholder, value,
   inputoptions,
   style,

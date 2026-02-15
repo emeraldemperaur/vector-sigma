@@ -23,7 +23,7 @@ interface SliderProps {
 
 export const SliderInput = ({
   inputtype = 'slider-outline',
-  alias, readOnly, width,
+  alias, readOnly, width, inputLabel,
   placeholder = '',
   minvalue = 0,
   maxvalue = 100,
@@ -148,7 +148,7 @@ export const SliderInput = ({
       />
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
             
                 {hasError ?
                         <>

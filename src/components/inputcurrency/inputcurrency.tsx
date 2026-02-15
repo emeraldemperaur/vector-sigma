@@ -20,7 +20,7 @@ type CurrencyInputProps = {
 
 export const CurrencyInput = ({
     alias, inputtype = "currency",
-    inputLabel=undefined, width,
+    inputLabel, width,
     defaultValue, placeholder,
     readOnly=false, inputVariant = 'input-outline',
     className, ...props}: CurrencyInputProps) => {

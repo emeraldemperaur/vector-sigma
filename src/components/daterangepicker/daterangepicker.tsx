@@ -24,7 +24,7 @@ export interface DateRangePickerProps {
 
 export const DateRangePicker = ({
   inputtype = 'daterangepicker-outline',
-  alias, readOnly, width, inputlabel=undefined,
+  alias, readOnly, width, inputlabel,
   placeholder = '',
   value,
   minvalue,

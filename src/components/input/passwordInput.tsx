@@ -9,7 +9,7 @@ import '../../styles/main.scss';
 
 export const PasswordInput = ({
     alias,
-    inputlabel=undefined,
+    inputlabel,
     width, readonly = false,
     placeholder = '',
     inputVariant = 'input-outline', size = "2", 

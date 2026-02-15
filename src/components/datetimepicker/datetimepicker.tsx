@@ -24,7 +24,7 @@ export interface DateTimePickerProps {
 
 export const DateTimePicker = ({
   inputtype = 'datetimepicker-outline',
-  alias, readonly, width, inputlabel=undefined,
+  alias, readonly, width, inputlabel,
   placeholder = '',
   value,
   minvalue,
