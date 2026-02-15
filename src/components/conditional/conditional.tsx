@@ -14,9 +14,9 @@ export type TriggerType = 'conditionaltoggle' | 'conditionalcheckbox' | 'conditi
 
 export interface ConditionalProps {
   alias: string,  // Conditional Trigger Element Field form name
-  inputLabel: string, // Conditional Trigger Element Field input label
+  inputlabel?: string, // Conditional Trigger Element Field input label
   icon?: React.ReactNode,
-  width: number, defaultValue?: any[], value?: any, newRow?: boolean, isEdit?: boolean,
+  width: number, defaultValue?: any[] | any, value?: any | any[], newRow?: boolean, isEdit?: boolean,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   inputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input type (conditionaltoggle, conditionalcheckbox, conditionalselect)
   toggledinputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input design (conditionaltoggle, conditionalcheckbox, conditionalselect)
@@ -76,7 +76,7 @@ const getDesignStyles = (inputtype: ToggleTriggerDesign & {} | CheckboxTriggerDe
 
 export const ConditionalTrigger = ({
   alias, readOnly, width,
-  placeholder = '', value,
+  placeholder = '', value, inputlabel = undefined,
   inputtype = 'conditionaltoggle-outline',
   triggerValue = true,
   inputoptions = [],
@@ -113,16 +113,12 @@ export const ConditionalTrigger = ({
               onCheckedChange={(checked) => handleChange(!!checked)} 
               id={inputId}
             />
-            <Text as="label" htmlFor={alias} size="2" weight="bold" style={{ cursor: 'pointer' }}>
-              {props.inputLabel}
-            </Text>
           </Flex>
         );
 
       case inputtype.includes('conditionalselect'):
         return (
           <Flex direction="column" gap="1" style={{ width: '100%' }}>
-            <Text as="label" size="2" weight="bold">{props.inputLabel}</Text>
             <Select.Root
               name={alias}
               disabled={readOnly}
@@ -150,7 +146,6 @@ export const ConditionalTrigger = ({
       default:
         return (
           <Flex justify="between" align="center" style={{ width: '100%' }}>
-            <Text as="label" size="2" weight="bold">{props.inputLabel}</Text>
             <Switch 
               id={inputId}
               name={alias}
@@ -199,15 +194,10 @@ export const ConditionalTrigger = ({
       </div>
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
-      
-            {hasError ?
-                  <>
-                  <p id={errorId} className='core-input-label-error'>
-                      {typeof meta.error === 'string' ? <>{props.errorText || "Required field"}</> 
-                      : 'Invalid file selection'}
-                  </p>
-                  </> : null } 
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias} style={{ cursor: 'pointer' }}>
+                {inputlabel}
+            </Text>
+            &nbsp;
             {props.isHinted ?
                   <>
                   <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
@@ -216,6 +206,13 @@ export const ConditionalTrigger = ({
                       </a> 
                   </Tooltip>
                   </> : null} 
+             {hasError ?
+                  <>
+                  <p id={errorId} className='core-input-label-error'>
+                      {typeof meta.error === 'string' ? <>{props.errorText || "Required field"}</> 
+                      : 'Invalid file selection'}
+                  </p>
+                  </> : null }       
         </div>
 
     </Box>

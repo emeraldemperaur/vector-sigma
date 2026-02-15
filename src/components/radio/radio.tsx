@@ -11,7 +11,7 @@ export type RadioDesign = 'radio' | 'radio-material' | 'radio-outline' | 'radio-
 interface RadioGroupProps {
     inputtype?: RadioDesign & {},
     alias: string, inputLabel?: string, icon?: React.ReactNode,
-    width: number, defaultValue?: any[], value: any[], newRow?: boolean, isEdit?: boolean,
+    width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
     inputoptions: InputOption[];
     direction?: 'row' | 'column'; // CSS Layout direction
@@ -22,9 +22,9 @@ interface RadioGroupProps {
 
 export const RadioGroupInput = ({
   inputtype = 'radio-outline',
-  alias, readOnly, width,
+  alias, readOnly, width, inputLabel=undefined,
   placeholder = '',
-  style, value, inputoptions,
+  style, inputoptions,
   direction = 'column',
   columns, 
   className, ...props
@@ -32,10 +32,10 @@ export const RadioGroupInput = ({
   
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
-  
   const hasError = Boolean(meta.touched && meta.error);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+  const errorId = `${alias}-error`;
 
   useEffect(() => {
     if (inputtype === 'radio-neumorphic' && containerRef.current) {
@@ -139,11 +139,11 @@ export const RadioGroupInput = ({
       </RadioGroup.Root>
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
                   
             {hasError ?
                 <>
-                    <p className='core-input-label-error'>
+                    <p id={errorId} className='core-input-label-error'>
                             {props.errorText || `Required field`}
                     </p>
                 </> : null } 

@@ -53,7 +53,7 @@ const getStyles = (design: ImageDesign, layout: ImageLayout): React.CSSPropertie
   };
 };
 
-export const Image = ({
+export const ImageOutput = ({
   id, src, 
   alt = "Image",
   design = 'outline',

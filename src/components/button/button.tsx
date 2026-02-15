@@ -10,14 +10,14 @@ import '../../styles/main.scss';
 
 export interface DesignButtonProps extends ButtonProps {
   inputtype?: ButtonDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
+  alias: string, inputlabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const ButtonInput = ({ 
-  inputtype = 'button-outline',
+  inputtype = 'button-outline', type = 'button', inputlabel = undefined,
   alias, readOnly, style, width, children, ...props 
 }: DesignButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -122,6 +122,7 @@ export const ButtonInput = ({
         aria-describedby={`${alias}InputLabel`}
         ref={buttonRef} 
         onClick={handler}
+        type={type}
         {...props} 
         {...getVariantProps()}
       >
@@ -132,6 +133,7 @@ export const ButtonInput = ({
         )}
         {children}
       </Button>
+      <br/>
       <div>
             {props.isHinted ?
             <>

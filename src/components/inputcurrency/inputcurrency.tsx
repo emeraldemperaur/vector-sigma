@@ -12,7 +12,7 @@ import '../../styles/main.scss';
 type CurrencyInputProps = {
     alias: string, 
     inputtype?: SupportedCurrency & {} | "currency", 
-    inputLabel: string, width: number, newRow?: boolean, defaultValue?: string,
+    inputLabel?: string, width: number, newRow?: boolean, defaultValue?: string,
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, 
     errorText?: ReactNode | string | null, hintUrl?: string, inputVariant?: InputDesign & {}, 
     className?: string
@@ -20,7 +20,7 @@ type CurrencyInputProps = {
 
 export const CurrencyInput = ({
     alias, inputtype = "currency",
-    inputLabel, width,
+    inputLabel=undefined, width,
     defaultValue, placeholder,
     readOnly=false, inputVariant = 'input-outline',
     className, ...props}: CurrencyInputProps) => {
@@ -29,11 +29,11 @@ export const CurrencyInput = ({
     const [amountField, amountMeta] = useField(alias);
     const currencyFieldName = inputtype === "currency" ? "USD" : inputtype;
     const [currencyField] = useField(currencyFieldName);
-    
     const hasError = Boolean(amountMeta.touched && amountMeta.error);
     const activeCurrency = CURRENCIES[currencyField.value as SupportedCurrency] || CURRENCIES.USD;
     const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
     const isOutline = inputVariant === 'input-outline';
+    const errorId = `${alias}-error`;
 
     return (
         <Column span={width} newLine={props.newRow}>
@@ -130,13 +130,7 @@ export const CurrencyInput = ({
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
                         {inputLabel}
                     </Text>
-
-                    {hasError && (
-                        <Text size="1" color="red" className='core-input-label-error'>
-                            {props.errorText || `Required field`}
-                        </Text>
-                    )} 
-
+                    &nbsp;
                     {props.isHinted && (
                         <Tooltip content={props.hintText || "No hint available"}>
                             <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
@@ -144,6 +138,12 @@ export const CurrencyInput = ({
                             </a> 
                         </Tooltip>
                     )} 
+                     {hasError && (
+                        <Text id={errorId} size="1" color="red" className='core-input-label-error'>
+                            {props.errorText || `Required field`}
+                        </Text>
+                    )} 
+
                 </div>
             </Flex>
         </Column>

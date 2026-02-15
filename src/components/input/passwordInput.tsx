@@ -9,8 +9,8 @@ import '../../styles/main.scss';
 
 export const PasswordInput = ({
     alias,
-    inputLabel,
-    width, readOnly = false,
+    inputlabel=undefined,
+    width, readonly = false,
     placeholder = '',
     inputVariant = 'input-outline', size = "2", 
     className, ...props 
@@ -20,7 +20,8 @@ export const PasswordInput = ({
     const toggleVisibility = () => setShowPassword(!showPassword);
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
+    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';''
+    const errorId = `${alias}-error`;
 
     return (
         <Column span={width} newLine={props.newRow}>
@@ -28,7 +29,7 @@ export const PasswordInput = ({
                 size={size} 
                 type={showPassword ? "text" : "password"} 
                 id={`${alias}FormInput`} 
-                readOnly={readOnly} 
+                readOnly={readonly} 
                 aria-describedby={`${alias}InputLabel`}
                 placeholder={placeholder} 
                 color={hasError ? "red" : undefined}
@@ -63,21 +64,20 @@ export const PasswordInput = ({
 
             <div>
                 <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                    {inputLabel}
+                    {inputlabel}
                 </Text>
-
-                {hasError && (
-                    <p className='core-input-label-error'>
-                        {props.errorText || `Required field`}
-                    </p>
-                )} 
-
+                &nbsp;
                 {props.isHinted && (
                     <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                         <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
                             <QuestionMarkCircledIcon height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                         </a> 
                     </Tooltip>
+                )} 
+                {hasError && (
+                    <p id={errorId} className='core-input-label-error'>
+                        {props.errorText || `Required field`}
+                    </p>
                 )} 
             </div>
         </Column>

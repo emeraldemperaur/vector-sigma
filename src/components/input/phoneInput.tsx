@@ -14,10 +14,10 @@ import '../../styles/main.scss';
 
 export const PhoneInput = ({
     alias,
-    inputLabel,
+    inputlabel=undefined,
     width,
     placeholder = "Phone Number",
-    readOnly,
+    readonly,
     inputVariant = 'input-outline',
     size = "2", 
     className,
@@ -29,6 +29,7 @@ export const PhoneInput = ({
     const hasError = Boolean(meta.touched && meta.error);
     const [country, setCountry] = useState<Country>('US');
     const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
+    const errorId = `${alias}-error`;
 
     return (
         <Column span={width} newLine={props.newRow}>
@@ -88,7 +89,7 @@ export const PhoneInput = ({
                         onChange={(val) => setFieldValue(alias, val)}
                         onBlur={() => setFieldTouched(alias, true)}
                         placeholder={placeholder}
-                        readOnly={readOnly}
+                        readOnly={readonly}
                         style={{
                             flex: 1, 
                             border: 'none',
@@ -105,21 +106,20 @@ export const PhoneInput = ({
 
                 <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputLabel}
+                        {inputlabel}
                     </Text>
-
-                    {hasError && (
-                        <Text size="1" color="red" className='core-input-label-error'>
-                            {props.errorText || `Required field`}
-                        </Text>
-                    )} 
-
+                    &nbsp;
                     {props.isHinted && (
                         <Tooltip content={props.hintText || "No hint available"}>
                             <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <QuestionMarkCircledIcon height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
+                    )} 
+                    {hasError && (
+                        <Text id={errorId} size="1" color="red" className='core-input-label-error'>
+                            {props.errorText || `Required field`}
+                        </Text>
                     )} 
                 </div>
             </Flex>

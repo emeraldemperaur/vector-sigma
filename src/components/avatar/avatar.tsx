@@ -9,9 +9,9 @@ export type AvatarShape = 'circle' | 'square' | 'rounded';
 
 export interface AvatarProps {
   inputtype?: AvatarDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
+  alias: string, inputlabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   shape?: AvatarShape, errorText?: ReactNode | string | null
   size?: number; // Size in px
   className?: string;
@@ -62,7 +62,7 @@ const getStyles = (inputtype: AvatarDesign, shape: AvatarShape, hasError: boolea
 
 export const AvatarInput = ({
   inputtype = 'avatar-outline',
-  alias, readOnly, width,
+  alias, readonly, width, inputlabel = undefined,
   placeholder = '', value,
   shape = 'circle',
   size = 120,
@@ -179,18 +179,18 @@ export const AvatarInput = ({
         ref={inputRef}
         id={inputId || alias}
         name={alias}
-        readOnly={readOnly}
+        readOnly={readonly}
         type="file"
         accept={accept}
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />
         <div>
-                {props.inputLabel && (
+                {inputlabel && (
                       <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" color='gray' highContrast={inputtype !== 'avatar-neumorphic'} htmlFor={alias}>
-                        {props.inputLabel}
+                        {inputlabel}
                       </Text>)}
-               
+                &nbsp;
                 {props.isHinted ?
                   <>
                   <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">

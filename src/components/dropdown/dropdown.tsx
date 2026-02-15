@@ -10,9 +10,9 @@ export type DropDownDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outlin
 
 export interface DropDownProps {
     inputtype?: DropDownDesign & {},
-    alias: string, inputLabel?: string, icon?: React.ReactNode,
+    alias: string, inputlabel?: string, icon?: React.ReactNode,
     width: number, defaultValue?: string, value?: string, newRow?: boolean, 
-    placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+    placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
     onValueChange?: (value: string) => void, errorText?: ReactNode | string | null,
   inputoptions: { 
     optionid: number | string, 
@@ -27,7 +27,7 @@ export interface DropDownProps {
 
 export const Dropdown = ({
   inputtype = 'dropdown-outline',
-  alias, readOnly, width,
+  alias, readonly, width, inputlabel=undefined,
   placeholder, value,
   inputoptions,
   style,
@@ -38,6 +38,7 @@ export const Dropdown = ({
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
   const hasError = Boolean(meta.touched && meta.error);
+  const errorId = `${alias}-error`;
 
   useEffect(() => {
     if (inputtype === 'dropdown-neumorphic' && triggerRef.current) {
@@ -53,6 +54,10 @@ export const Dropdown = ({
       } as React.CSSProperties);
     }
   }, [inputtype]);
+
+  const openLink = (inputUrl: string) => {
+    window.open(inputUrl, '_blank', 'noopener,noreferrer');
+  };
 
   // --- STYLES ---
 
@@ -133,10 +138,10 @@ export const Dropdown = ({
       )}
       <Select.Root
         name={alias}
-        disabled={readOnly}
+        disabled={readonly}
         aria-describedby={`${alias}InputLabel`}
         defaultValue={props.defaultValue || value}
-        value={field.value || value}
+        value={field.value}
         onValueChange={(val) => {
           setFieldValue(alias, val);
           setTimeout(() => setFieldTouched(alias, true), 0);
@@ -168,8 +173,10 @@ export const Dropdown = ({
               key={inputoption.optionid} 
               value={inputoption.optionvalue}
               className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}>
-              <a style={{textDecoration: 'none'}} href={inputoption.optionurl || ""} target="_blank" rel="noopener noreferrer">
-                {inputoption.text}</a>
+
+              <a  onClick={() => openLink(inputoption.optionurl || "#")} style={{textDecoration: 'none'}}>
+                {inputoption.text}
+              </a>
             </Select.Item>
             
             
@@ -191,15 +198,8 @@ export const Dropdown = ({
       </Select.Root>
 
        <div>
-                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
-      
-                {hasError ?
-                  <>
-                  <p className='core-input-label-error'>
-                      {props.errorText || "Required field"}
-                  </p>
-                  </> : null } 
-      
+                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+                &nbsp;    
                 {props.isHinted ?
                   <>
                   <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
@@ -208,6 +208,12 @@ export const Dropdown = ({
                       </a> 
                   </Tooltip>
                   </> : null} 
+                {hasError ?
+                  <>
+                  <p id={errorId} className='core-input-label-error'>
+                      {props.errorText || "Required field"}
+                  </p>
+                  </> : null } 
               </div>
     </Flex>
     </Column>

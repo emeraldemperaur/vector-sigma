@@ -10,9 +10,9 @@ export type FileInputDesign = 'fileinput' | 'fileinput-material' | 'fileinput-ou
 
 export interface FileInputProps {
   inputtype?: FileInputDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
+  alias: string, inputlabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: any, value?: any, newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   preview?: boolean, 
   className?: string, errorText?: ReactNode | string | null,
   style?: React.CSSProperties;
@@ -29,8 +29,8 @@ const getFileIcon = (type: string, name: string) => {
 
 export const File = ({
   inputtype = 'fileinput-outline',
-  alias, readOnly, width,
-  placeholder = '', value,
+  alias, readonly, width, inputlabel=undefined,
+  placeholder = '',
   preview = false,
   className,
   style, ...props
@@ -137,7 +137,7 @@ export const File = ({
         ref={inputRef}
         id={inputId}
         name={alias}
-        readOnly={readOnly}
+        readOnly={readonly}
         type="file"
         accept={ACCEPTED_FORMATS}
         onChange={handleFileChange}
@@ -210,14 +210,8 @@ export const File = ({
       </div>
 
        <div>
-                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{props.inputLabel}</Text>
-      
-                {hasError ?
-                  <>
-                  <p className='core-input-label-error'>
-                      {props.errorText || "Required field"}
-                  </p>
-                  </> : null } 
+                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+                &nbsp;  
                 {props.isHinted ?
                   <>
                   <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
@@ -226,6 +220,12 @@ export const File = ({
                       </a> 
                   </Tooltip>
                   </> : null} 
+                {hasError ?
+                  <>
+                  <p id={errorId} className='core-input-label-error'>
+                      {props.errorText || "Required field"}
+                  </p>
+                  </> : null } 
         </div>
     </Flex>
     </Column>

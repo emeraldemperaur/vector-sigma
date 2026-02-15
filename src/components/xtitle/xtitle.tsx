@@ -2,10 +2,9 @@ import React from "react";
 import { Row } from "layouts/row/row";
 import { Column } from "layouts/column/column";
 import { Icon } from "components/icons/icons";
-import type { TextProps } from '@radix-ui/themes';
 import '../../styles/main.scss'
 
-type xTitleProps = TextProps & {
+type xTitleProps = {
   title: string, iconname?: string, width: number, 
   textColor?: string, backgroundColor: string, newRow?: boolean, fontFamily?: string, 
   subTitle?: string
