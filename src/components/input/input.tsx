@@ -22,7 +22,7 @@ export type xInputFieldProps = React.ComponentProps<typeof TextField.Root> & {
 export const Input = ({
     alias,
     inputtype = "text",
-    width, inputlabel=undefined, readonly = false,
+    width, inputlabel, readonly = false,
     placeholder = '',
     className, size = "2",
     style,

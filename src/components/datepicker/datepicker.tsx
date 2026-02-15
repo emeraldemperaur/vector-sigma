@@ -24,7 +24,7 @@ export interface DatePickerProps {
 
 export const DatePicker = ({
   inputtype = 'datepicker-outline',
-  alias, readonly, width, inputlabel=undefined,
+  alias, readonly, width, inputlabel,
   placeholder = 'Pick a date',
   minvalue,
   maxvalue,

@@ -14,7 +14,7 @@ import '../../styles/main.scss';
 
 export const PhoneInput = ({
     alias,
-    inputlabel=undefined,
+    inputlabel,
     width,
     placeholder = "Phone Number",
     readonly,

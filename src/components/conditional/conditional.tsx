@@ -76,7 +76,7 @@ const getDesignStyles = (inputtype: ToggleTriggerDesign & {} | CheckboxTriggerDe
 
 export const ConditionalTrigger = ({
   alias, readOnly, width,
-  placeholder = '', value, inputlabel = undefined,
+  placeholder = '', value, inputlabel,
   inputtype = 'conditionaltoggle-outline',
   triggerValue = true,
   inputoptions = [],

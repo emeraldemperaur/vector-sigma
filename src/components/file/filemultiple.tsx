@@ -62,7 +62,7 @@ const styles: Record<FileMultipleInputDesign, React.CSSProperties> = {
 
 export const FileMultiple = ({ 
   inputtype = 'filemultiple-outline',
-  alias, readonly, width, inputlabel=undefined,
+  alias, readonly, width, inputlabel,
   placeholder = '',
   preview = true, 
   className,

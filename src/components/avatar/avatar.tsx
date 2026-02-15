@@ -62,7 +62,7 @@ const getStyles = (inputtype: AvatarDesign, shape: AvatarShape, hasError: boolea
 
 export const AvatarInput = ({
   inputtype = 'avatar-outline',
-  alias, readonly, width, inputlabel = undefined,
+  alias, readonly, width, inputlabel,
   placeholder = '', value,
   shape = 'circle',
   size = 120,

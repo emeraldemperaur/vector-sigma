@@ -20,7 +20,7 @@ interface MultipleSelectProps {
 
 export const MultipleSelect = ({
   inputtype = 'multiselect-outline',
-  alias, readOnly, width, inputLabel=undefined,
+  alias, readOnly, width, inputLabel,
   placeholder = '',
   style, inputoptions,
   className, ...props

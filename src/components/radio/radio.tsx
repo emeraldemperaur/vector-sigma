@@ -22,7 +22,7 @@ interface RadioGroupProps {
 
 export const RadioGroupInput = ({
   inputtype = 'radio-outline',
-  alias, readOnly, width, inputLabel=undefined,
+  alias, readOnly, width, inputLabel,
   placeholder = '',
   style, inputoptions,
   direction = 'column',

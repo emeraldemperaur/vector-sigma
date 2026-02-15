@@ -21,7 +21,7 @@ type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' |
 };
 
 export const UUIDInput = ({
-    alias, type, inputLabel=undefined, width, delimiter = "-",
+    alias, type, inputLabel, width, delimiter = "-",
     format = [4, 4, 4, 4], placeholder = '',
     readOnly = false, inputVariant = 'input-outline',
     size = "2", className, ...props

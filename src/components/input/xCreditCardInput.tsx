@@ -18,7 +18,7 @@ import '../../styles/main.scss';
 
 export const CreditCardInput = ({
     alias,
-    inputlabel=undefined,
+    inputlabel,
     width,
     placeholder,
     readonly=false,
