@@ -23,19 +23,23 @@ export const Column = ({ newLine, span, xs, sm, md, lg, xl, children, ...props }
     return `span ${value}`;
   };
 
-  const spanString = span ? `span ${span}` : (getSpan(xs) || "span 12");
-  const initialGridColumn = newLine ? `1 / ${spanString}` : spanString;
+  const formatGridColumn = (spanValue?: string) => {
+    if (!spanValue) return undefined;
+    return newLine ? `1 / ${spanValue}` : spanValue;
+  };
+
+  const baseSpan = span ? `span ${span}` : (getSpan(xs) || "span 12");
 
   return (
     <Box
       {...props}
       gridColumn={{
-        initial: initialGridColumn,
-        xs: getSpan(xs),
-        sm: getSpan(sm),
-        md: getSpan(md),
-        lg: getSpan(lg),
-        xl: getSpan(xl),
+        initial: formatGridColumn(baseSpan),
+        xs: formatGridColumn(getSpan(xs)),
+        sm: formatGridColumn(getSpan(sm)),
+        md: formatGridColumn(getSpan(md)),
+        lg: formatGridColumn(getSpan(lg)),
+        xl: formatGridColumn(getSpan(xl)),
       }}
     >
       {children}
