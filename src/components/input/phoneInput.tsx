@@ -82,7 +82,8 @@ export const PhoneInput = ({
 
                     <Input
                         country={country}
-                        international={false} 
+                        defaultCountry="US"
+                        international
                         withCountryCallingCode={false} 
                         limitMaxLength={true} 
                         value={field.value || ''}

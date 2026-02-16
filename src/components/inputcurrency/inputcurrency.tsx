@@ -121,7 +121,7 @@ export const CurrencyInput = ({
                         {...({
                             mask: Number,
                             scale: activeCurrency.scale,
-                            signed: false,
+                            signed: String(false),
                             thousandsSeparator: ",",
                             padFractionalZeros: true,
                             normalizeZeros: true,
