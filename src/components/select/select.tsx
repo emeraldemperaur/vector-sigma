@@ -6,10 +6,11 @@ import { Column } from 'layouts/column/column';
 import { useField, useFormikContext } from 'formik';
 import '../../styles/main.scss';
 
-export type DropDownDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outline' | 'dropdown-neumorphic';
+export type OptionSelectDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outline' | 'dropdown-neumorphic';
 
-export interface DropDownProps {
-  inputtype?: DropDownDesign & {};
+
+export interface SelectProps {
+  inputtype?: OptionSelectDesign & {};
   alias: string;
   inputlabel?: string;
   icon?: React.ReactNode;
@@ -37,7 +38,7 @@ export interface DropDownProps {
   style?: React.CSSProperties;
 }
 
-export const Dropdown = ({
+export const OptionSelect = ({
   inputtype = 'dropdown-outline',
   alias, 
   readonly, 
@@ -54,7 +55,7 @@ export const Dropdown = ({
   defaultValue,
   errorText,
   ...props
-}: DropDownProps) => {
+}: SelectProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   
