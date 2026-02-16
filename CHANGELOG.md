@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.7
+
+### Patch Changes
+
+- 220bf31: Components Triage Fix 16.02::03:24
+
 ## 1.4.6
 
 ### Patch Changes
