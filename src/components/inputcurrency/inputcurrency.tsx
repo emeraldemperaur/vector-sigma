@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { CURRENCIES, SupportedCurrency, CurrencyOption } from '../../utils/currencyconfig'; 
 import { useField, useFormikContext } from 'formik';
 import { Flex, Text, Select, Tooltip } from '@radix-ui/themes';
@@ -11,26 +11,52 @@ import '../../styles/main.scss';
 
 type CurrencyInputProps = {
     alias: string, 
-    inputtype?: SupportedCurrency & {} | "currency", 
-    inputLabel?: string, width: number, newRow?: boolean, defaultValue?: string,
-    placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, 
-    errorText?: ReactNode | string | null, hintUrl?: string, inputVariant?: InputDesign & {}, 
+    inputtype?: SupportedCurrency | "currency", 
+    inputlabel?: string, 
+    width: number, 
+    newRow?: boolean, 
+    defaultValue?: string, 
+    placeholder?: string, 
+    readOnly?: boolean, 
+    isHinted?: boolean, 
+    hintText?: string, 
+    errorText?: ReactNode | string | null, 
+    hintUrl?: string, 
+    inputVariant?: InputDesign & {}, 
     className?: string
 };
 
 export const CurrencyInput = ({
-    alias, inputtype = "currency",
-    inputLabel, width,
-    defaultValue, placeholder,
-    readOnly=false, inputVariant = 'input-outline',
-    className, ...props}: CurrencyInputProps) => {
+    alias, 
+    inputtype = "currency",
+    inputlabel, 
+    width,
+    defaultValue = "USD", 
+    placeholder,
+    readOnly = false, 
+    inputVariant = 'input-outline',
+    className, 
+    ...props
+}: CurrencyInputProps) => {
 
     const { setFieldValue, setFieldTouched } = useFormikContext(); 
     const [amountField, amountMeta] = useField(alias);
-    const currencyFieldName = inputtype === "currency" ? "USD" : inputtype;
-    const [currencyField] = useField(currencyFieldName);
+    const currencyAlias = `${alias}Currency`; 
+    const [currencyField, , currencyHelpers] = useField(currencyAlias);
+
+    useEffect(() => {
+        if (inputtype !== "currency" && CURRENCIES[inputtype as SupportedCurrency]) {
+             currencyHelpers.setValue(inputtype);
+        } 
+        else if (!currencyField.value) {
+             currencyHelpers.setValue(defaultValue);
+        }
+    }, [inputtype, defaultValue]);
+
     const hasError = Boolean(amountMeta.touched && amountMeta.error);
-    const activeCurrency = CURRENCIES[currencyField.value as SupportedCurrency] || CURRENCIES.USD;
+    const currentCode = (currencyField.value as SupportedCurrency) || "USD";
+    const activeCurrency = CURRENCIES[currentCode] || CURRENCIES.USD;
+
     const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
     const isOutline = inputVariant === 'input-outline';
     const errorId = `${alias}-error`;
@@ -50,7 +76,8 @@ export const CurrencyInput = ({
                 >
                     <Select.Root 
                         value={activeCurrency.code} 
-                        onValueChange={(val) => setFieldValue(currencyFieldName, val)}  
+                        onValueChange={(val) => setFieldValue(currencyAlias, val)}  
+                        disabled={readOnly || inputtype !== "currency"} 
                     >
                         <Select.Trigger 
                             variant="ghost" 
@@ -91,22 +118,21 @@ export const CurrencyInput = ({
                         id={`${alias}FormInput`}
                         name={alias}
                         aria-describedby={`${alias}InputLabel`}
-                        mask={Number}
-                        scale={activeCurrency.scale}
-                        defaultValue={defaultValue}
-                        readOnly={readOnly}
-                        // @ts-expect-error: known library type definition gap
-                        signed={false}            
-                        thousandsSeparator=","
-                        padFractionalZeros={true}
-                        normalizeZeros={true}
-                        radix="."
-                        mapToRadix={['.']}
-                        // Bind to Amount Field
+                        {...({
+                            mask: Number,
+                            scale: activeCurrency.scale,
+                            signed: false,
+                            thousandsSeparator: ",",
+                            padFractionalZeros: true,
+                            normalizeZeros: true,
+                            radix: ".",
+                            mapToRadix: ['.'],
+                        } as any)}
                         value={amountField.value !== undefined && amountField.value !== null ? String(amountField.value) : ''}
                         unmask={true}
                         onAccept={(val: string) => setFieldValue(alias, val)}
                         onBlur={() => setFieldTouched(alias, true)} 
+                        readOnly={readOnly}
                         placeholder={placeholder || '0.00'}
                         style={{
                             flex: 1,
@@ -128,7 +154,7 @@ export const CurrencyInput = ({
 
                 <div>
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputLabel}
+                        {inputlabel}
                     </Text>
                     &nbsp;
                     {props.isHinted && (
@@ -138,12 +164,11 @@ export const CurrencyInput = ({
                             </a> 
                         </Tooltip>
                     )} 
-                     {hasError && (
+                    {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {props.errorText || `Required field`}
+                            {props.errorText || amountMeta.error || `Required field`}
                         </Text>
                     )} 
-
                 </div>
             </Flex>
         </Column>

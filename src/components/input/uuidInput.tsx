@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useState, useMemo } from "react";
 import { TextField, IconButton, Tooltip, Flex, Text } from '@radix-ui/themes';
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons';
 import { IMaskInput } from 'react-imask';
@@ -12,12 +12,20 @@ import '../../styles/main.scss';
 type startsWithUuid = `uuid${string}`;
 
 type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' | 'onChange' | 'value' | 'defaultValue'> & {
-    alias: string, type: startsWithUuid,
-    inputLabel?: string, width: number, newRow?: boolean,
-    delimiter?: string, format?: number[],
-    isHinted?: boolean, hintText?: string,
-    hintUrl?: string, placeholder?: string, errorText?: ReactNode | string | null, className?: string
-    inputVariant?: InputDesign & {}
+    alias: string;
+    type: startsWithUuid;
+    inputLabel?: string;
+    width: number;
+    newRow?: boolean;
+    delimiter?: string;
+    format?: number[];
+    isHinted?: boolean;
+    hintText?: string;
+    hintUrl?: string;
+    placeholder?: string;
+    errorText?: ReactNode | string | null;
+    className?: string;
+    inputVariant?: InputDesign & {};
 };
 
 export const UUIDInput = ({
@@ -27,16 +35,29 @@ export const UUIDInput = ({
     size = "2", className, ...props
 }: UUIDInputProps) => {
 
-    let activeFormat = format;
-    if (type && type.toLowerCase().startsWith("uuid") && type.length > 4) {
-        activeFormat = parseUuidFormat(type) || format;
-    }
-    const maskPattern = activeFormat.map(len => '*'.repeat(len)).join(delimiter);
     const { setFieldValue, setFieldTouched } = useFormikContext();
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
     const [copied, setCopied] = useState(false);
     const errorId = `${alias}-error`;
+
+    const { maskPattern, definitions } = useMemo(() => {
+        let activeFormat = format;
+        
+        if (type && type.toLowerCase().startsWith("uuid") && type.length > 4) {
+             const parsed = parseUuidFormat(type);
+             if (parsed) activeFormat = parsed;
+        }
+        const maskChar = '#'; 
+        const pattern = activeFormat.map(len => maskChar.repeat(len)).join(delimiter);
+        
+        return {
+            maskPattern: pattern,
+            definitions: {
+                '#': /[0-9a-fA-F]/ 
+            }
+        };
+    }, [format, type, delimiter]);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(field.value || '');
@@ -62,7 +83,8 @@ export const UUIDInput = ({
                         aria-describedby={`${alias}InputLabel`}
                         readOnly={readOnly}
                         mask={maskPattern}
-                        value={field.value}
+                        definitions={definitions}
+                        value={field.value || ''}
                         unmask={true} 
                         onAccept={(val: string) => setFieldValue(alias, val)}
                         onBlur={() => setFieldTouched(alias, true)}
@@ -81,6 +103,7 @@ export const UUIDInput = ({
                             width: '100%'
                         }}
                         autoComplete="off"
+                        spellCheck={false}
                     />
 
                     <TextField.Slot>
@@ -113,7 +136,7 @@ export const UUIDInput = ({
                     )} 
                     {hasError && (
                         <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || `Required field`}
+                            {props.errorText || meta.error || `Required field`}
                         </p>
                     )} 
                 </div>

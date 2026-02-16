@@ -10,7 +10,7 @@ export type SliderDesign = 'slider' | 'slider-material' | 'slider-outline' | 'sl
 
 interface SliderProps {
   inputtype?: SliderDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
+  alias: string, inputlabel?: string, icon?: React.ReactNode,
   width: number, defaultValue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
   placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   minvalue?: number,
@@ -23,7 +23,7 @@ interface SliderProps {
 
 export const SliderInput = ({
   inputtype = 'slider-outline',
-  alias, readOnly, width, inputLabel,
+  alias, readOnly, width, inputlabel,
   placeholder = '',
   minvalue = 0,
   maxvalue = 100,
@@ -148,15 +148,8 @@ export const SliderInput = ({
       />
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
-            
-                {hasError ?
-                        <>
-                        <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || `Required field`}
-                        </p>
-                        </> : null } 
-            
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+                &nbsp;
                 {props.isHinted ?
                         <>
                         <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
@@ -165,6 +158,12 @@ export const SliderInput = ({
                             </a> 
                         </Tooltip>
                         </> : null} 
+                 {hasError ?
+                        <>
+                        <p id={errorId} className='core-input-label-error'>
+                            {props.errorText || `Required field`}
+                        </p>
+                        </> : null } 
       </div>
     </Flex>
     </Column>

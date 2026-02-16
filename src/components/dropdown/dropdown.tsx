@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { Select, Flex, Text, Tooltip } from '@radix-ui/themes';
+import { Select, Flex, Text, Tooltip, Separator } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground } from "utils/vinci";
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
@@ -9,16 +9,29 @@ import '../../styles/main.scss';
 export type DropDownDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outline' | 'dropdown-neumorphic';
 
 export interface DropDownProps {
-    inputtype?: DropDownDesign & {},
-    alias: string, inputlabel?: string, icon?: React.ReactNode,
-    width: number, defaultValue?: string, value?: string, newRow?: boolean, 
-    placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-    onValueChange?: (value: string) => void, errorText?: ReactNode | string | null,
+  inputtype?: DropDownDesign & {};
+  alias: string;
+  inputlabel?: string;
+  icon?: React.ReactNode;
+  width: number;
+  defaultValue?: string;
+  value?: string;
+  newRow?: boolean;
+  placeholder?: string;
+  readonly?: boolean;
+  isHinted?: boolean;
+  hintText?: string;
+  hintUrl?: string;
+  onValueChange?: (value: string) => void;
+  errorText?: ReactNode | string | null;
   inputoptions: { 
-    optionid: number | string, 
-    text: string; optionvalue: string, 
-    tag?: string, score?: number | string,
-    note?: string, optionurl?: string
+    optionid: number | string; 
+    text: string; 
+    optionvalue: string; 
+    tag?: string; 
+    score?: number | string;
+    note?: string; 
+    optionurl?: string;
   }[];
   className?: string;
   style?: React.CSSProperties;
@@ -27,8 +40,12 @@ export interface DropDownProps {
 
 export const Dropdown = ({
   inputtype = 'dropdown-outline',
-  alias, readonly, width, inputlabel,
-  placeholder, value,
+  alias, 
+  readonly, 
+  width, 
+  inputlabel,
+  placeholder, 
+  value,
   inputoptions,
   style,
   ...props
@@ -60,8 +77,6 @@ export const Dropdown = ({
   };
 
   // --- STYLES ---
-
-  // MATERIAL
   const materialTrigger: React.CSSProperties = {
     backgroundColor: 'var(--color-surface)',
     border: 'none',
@@ -139,12 +154,12 @@ export const Dropdown = ({
       <Select.Root
         name={alias}
         disabled={readonly}
-        aria-describedby={`${alias}InputLabel`}
         defaultValue={props.defaultValue || value}
-        value={field.value}
+        value={field.value} 
         onValueChange={(val) => {
           setFieldValue(alias, val);
           setTimeout(() => setFieldTouched(alias, true), 0);
+          if (props.onValueChange) props.onValueChange(val);
         }}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
@@ -156,41 +171,42 @@ export const Dropdown = ({
           id={`${alias}FormInput`}
           ref={triggerRef}
           variant="ghost" 
-          placeholder={placeholder}
+          placeholder={placeholder || "Select an option"}
           className={`${inputtype === 'dropdown-neumorphic' ? 'neu-select-trigger' : ''} ${props.className || ''}`}
           style={{ ...activeTriggerStyle, ...style }}
         />
 
         <Select.Content position="popper" sideOffset={5} style={activeContentStyle}>
+          <Select.Item 
+            value="" 
+            className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
+            style={{ color: 'var(--gray-10)', fontStyle: 'italic' }}
+          >
+             {placeholder || "Select an option"}
+          </Select.Item>
+          
+          <Separator size="4" style={{ margin: '4px 0', opacity: 0.5 }} />
           {inputoptions.map((inputoption) => (
-
             <React.Fragment key={inputoption.optionid || crypto.randomUUID()}>
-            {inputoption.optionurl ? 
-            
-            
+            {inputoption.optionurl ?            
             <Select.Item 
               id={String(inputoption.optionid) || ''}
-              key={inputoption.optionid} 
               value={inputoption.optionvalue}
               className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}>
 
-              <a  onClick={() => openLink(inputoption.optionurl || "#")} style={{textDecoration: 'none'}}>
+              <a onClick={(e) => { e.stopPropagation(); openLink(inputoption.optionurl || "#"); }} style={{textDecoration: 'none', color: 'inherit'}}>
                 {inputoption.text}
               </a>
             </Select.Item>
-            
-            
             : 
-            <>
             <Select.Item 
               id={String(inputoption.optionid) || ''}
-              key={inputoption.optionid} 
               value={inputoption.optionvalue}
               className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
             >
               {inputoption.text}
             </Select.Item>
-            </>}
+            }
             </React.Fragment>
             
           ))}
@@ -198,23 +214,23 @@ export const Dropdown = ({
       </Select.Root>
 
        <div>
-                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
-                &nbsp;    
-                {props.isHinted ?
-                  <>
-                  <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                      <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                      </a> 
-                  </Tooltip>
-                  </> : null} 
-                {hasError ?
-                  <>
-                  <p id={errorId} className='core-input-label-error'>
-                      {props.errorText || "Required field"}
-                  </p>
-                  </> : null } 
-              </div>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+            &nbsp;    
+            {props.isHinted ?
+              <>
+              <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                  <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                  <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                  </a> 
+              </Tooltip>
+              </> : null} 
+            {hasError ?
+              <>
+              <p id={errorId} className='core-input-label-error'>
+                  {props.errorText || meta.error || "Required field"}
+              </p>
+              </> : null } 
+      </div>
     </Flex>
     </Column>
     </>

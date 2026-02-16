@@ -9,7 +9,7 @@ import { InputDesign } from "components/input/input";
 import '../../styles/main.scss';
 
 type StockInputProps = {
-    alias: string, inputLabel?: string;
+    alias: string, inputlabel?: string;
     width: number, defaultValue: string; 
     newRow?: boolean, placeholder?: string;
     readOnly?: boolean, isHinted?: boolean;
@@ -20,7 +20,7 @@ type StockInputProps = {
 
 export const StockInput = ({
     alias,
-    inputLabel,
+    inputlabel,
     width,
     defaultValue,
     placeholder,
@@ -116,7 +116,7 @@ export const StockInput = ({
                 
                 <div>
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputLabel}
+                        {inputlabel}
                     </Text>
                     &nbsp;
                     {props.isHinted && (

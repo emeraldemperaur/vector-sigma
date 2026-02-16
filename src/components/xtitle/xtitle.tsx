@@ -1,37 +1,72 @@
 import React from "react";
-import { Row } from "layouts/row/row";
-import { Column } from "layouts/column/column";
-import { Icon } from "components/icons/icons";
-import '../../styles/main.scss'
+import { Heading, Separator, Flex, Text } from '@radix-ui/themes';
+import { Column } from "layouts/column/column"; 
+import '../../styles/main.scss';
 
-type xTitleProps = {
-  title: string, iconname?: string, width: number, 
-  textColor?: string, backgroundColor: string, newRow?: boolean, fontFamily?: string, 
-  subTitle?: string
+interface TitleProps {
+    title: string;
+    width?: number;       
+    newRow?: boolean;     
+    size?: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+    subsize?: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+    subtitle?: string;
+    align?: "left" | "center" | "right";
+    withSeparator?: boolean;
+    className?: string;
 }
 
 export const SectionTitle = ({
-    title, iconname, textColor = "#FFFFFF", 
-    backgroundColor = "#000000", 
-    fontFamily, ...props}: xTitleProps) => {
-    return(
-    <>
-    <Row>
-        <Column span={12} newLine={true}>
-            <div id="" style={{ backgroundColor: backgroundColor}} className='core-input-section-ribbon'>
-                        <p style={{color: textColor, fontFamily: fontFamily ? fontFamily : 'inherit'}} className='core-input-section-text'>
-                            <Icon name={iconname || "input"}/>&nbsp;{title}
-                        </p>
-                        {props.subTitle ? 
-                        <>
-                        <p style={{color: textColor, fontFamily: fontFamily ? fontFamily : 'inherit'}} className='core-input-section-text'>
-                            {props.subTitle}
-                        </p>
-                        </> 
-                        : null}
-            </div>
+    title,
+    width = 12, 
+    newRow = true, 
+    size = "5",
+    subsize = "2",
+    subtitle,
+    align = "left",
+    withSeparator = true,
+    className
+}: TitleProps) => {
+    return (
+        <Column span={width} newLine={newRow}>
+            <Flex 
+                direction="column" 
+                gap="2" 
+                className={className}
+                style={{ 
+                    width: '100%', 
+                    marginBottom: 'var(--space-2)',
+                    textAlign: align 
+                }} 
+            >
+                <Heading
+                    size={size}
+                    weight="bold"
+                    style={{
+                        width: '100%',
+                        color: 'var(--gray-12)',
+                        lineHeight: '1.2'
+                    }}
+                >
+                    {title}
+                </Heading>
+                
+                {subtitle && (
+                    <Text size={subsize} color="gray" style={{ maxWidth: '80%', margin: align === 'center' ? '0 auto' : undefined }}>
+                        {subtitle}
+                    </Text>
+                )}
+
+                {withSeparator && (
+                    <Separator 
+                        size="4" 
+                        style={{ 
+                            width: '100%', 
+                            marginTop: '4px',
+                            backgroundColor: 'var(--gray-6)' 
+                        }} 
+                    />
+                )}
+            </Flex>
         </Column>
-    </Row>
-    </>
-    )
+    );
 };

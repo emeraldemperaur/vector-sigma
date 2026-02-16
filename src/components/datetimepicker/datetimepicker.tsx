@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Popover, Flex, Text, TextField, Separator, Button, Tooltip } from '@radix-ui/themes';
-import { format, setHours, setMinutes } from 'date-fns';
+import { format, setHours, setMinutes, isValid } from 'date-fns';
 import { DayPicker } from 'react-day-picker';
 import { ensureDate } from 'utils/chronos';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
@@ -12,35 +12,51 @@ import '../../styles/main.scss';
 export type DateTimePickerDesign = 'datetimepicker' | 'datetimepicker-material' | 'datetimepicker-outline' | 'datetimepicker-neumorphic';
 
 export interface DateTimePickerProps {
-  inputtype?: DateTimePickerDesign & {},
-  alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value?: string, newRow?: boolean, 
-  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  minvalue?: Date | string,
-  maxvalue?: Date | string, errorText?: ReactNode | string | null,
+  inputtype?: DateTimePickerDesign & {};
+  alias: string;
+  inputlabel?: string;
+  icon?: React.ReactNode;
+  width: number;
+  defaultValue?: string;
+  value?: string;
+  newRow?: boolean;
+  placeholder?: string;
+  readonly?: boolean;
+  isHinted?: boolean;
+  hintText?: string;
+  hintUrl?: string;
+  minvalue?: Date | string;
+  maxvalue?: Date | string;
+  errorText?: ReactNode | string | null;
   className?: string;
   style?: React.CSSProperties;
 }
 
 export const DateTimePicker = ({
   inputtype = 'datetimepicker-outline',
-  alias, readonly, width, inputlabel,
-  placeholder = '',
+  alias,
+  readonly,
+  width,
+  inputlabel,
+  placeholder = 'Pick date & time',
   value,
   minvalue,
   maxvalue,
   className,
-  style, ...props
+  style,
+  ...props
 }: DateTimePickerProps) => {
 
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
   const hasError = Boolean(meta.touched && meta.error);
+  
   const selectedDate = ensureDate(field.value);
   const parsedMin = ensureDate(minvalue);
   const parsedMax = ensureDate(maxvalue);
-  const inputId = `${alias}FormInput` || crypto.randomUUID();
+  const inputId = `${alias}FormInput`;
   const errorId = `${alias}-error`;
+  
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
@@ -75,30 +91,72 @@ export const DateTimePicker = ({
     let newDate = baseDate;
 
     if (type === 'hours') {
-        // 0-23 limiters
         const h = Math.min(23, Math.max(0, numVal));
         newDate = setHours(baseDate, h);
     } else {
-        // 0-59 limiters
         const m = Math.min(59, Math.max(0, numVal));
         newDate = setMinutes(baseDate, m);
     }
     setFieldValue(alias, newDate);
   };
 
-  // Styles
-  const activeInputStyle = inputtype === 'datetimepicker-neumorphic' 
-    ? { 
+  // --- STYLES ---
+  const activeInputStyle = React.useMemo(() => {
+    if (inputtype === 'datetimepicker-neumorphic') {
+      return { 
         backgroundColor: 'var(--neu-bg)', 
         border: 'none', 
         color: hasError ? 'var(--red-9)' : 'var(--neu-text)',
         boxShadow: 'inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light)',
         borderRadius: '8px',
         ...neuVars 
-      }
-    : inputtype === 'datetimepicker-outline' 
-      ? { backgroundColor: 'transparent', boxShadow: 'none', border: hasError ? '2px solid var(--red-9)' : '2px solid var(--gray-7)' }
-      : { backgroundColor: 'var(--color-surface)', boxShadow: hasError ? 'inset 0 0 0 1px var(--red-9)' : '0 2px 5px rgba(0,0,0,0.1)', border: 'none' };
+      };
+    }
+    if (inputtype === 'datetimepicker-outline') {
+      return { 
+        backgroundColor: 'transparent', 
+        boxShadow: 'none', 
+        border: hasError ? '1px solid var(--red-9)' : '1px solid var(--gray-7)',
+        borderRadius: 'var(--radius-2)'
+      };
+    }
+    // Material
+    return { 
+      backgroundColor: 'var(--color-surface)', 
+      boxShadow: hasError ? 'inset 0 0 0 1px var(--red-9)' : '0 1px 2px rgba(0,0,0,0.05)', 
+      border: '1px solid var(--gray-5)',
+      borderRadius: 'var(--radius-2)'
+    };
+  }, [inputtype, hasError, neuVars]);
+
+  const calendarContainerStyle = React.useMemo(() => {
+    const base = { padding: 0, borderRadius: '12px', overflow: 'hidden' }; // Padding 0 to let Time section flush to bottom
+
+    if (inputtype === 'datetimepicker-neumorphic') {
+        return {
+            ...base,
+            backgroundColor: 'var(--neu-bg)',
+            boxShadow: '6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light)',
+            border: 'none',
+            ...neuVars
+        };
+    }
+    if (inputtype === 'datetimepicker-outline') {
+        return {
+            ...base,
+            backgroundColor: 'var(--color-panel-solid)',
+            border: '1px solid var(--gray-6)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        };
+    }
+    // Material
+    return {
+        ...base,
+        backgroundColor: 'var(--color-panel-solid)',
+        border: 'none',
+        boxShadow: '0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2)',
+    };
+  }, [inputtype, neuVars]);
 
   return (
     <Column span={width} newLine={props.newRow}>
@@ -107,35 +165,83 @@ export const DateTimePicker = ({
       <input type="hidden" name={alias} value={selectedDate ? selectedDate.toISOString() : ''} />
 
       <style dangerouslySetInnerHTML={{__html: `
-        .rdp { --rdp-cell-size: 32px; margin: 0; }
+        /* Reset & Layout */
+        .rdp { 
+            --rdp-cell-size: 36px;
+            --rdp-caption-font-size: 16px;
+            margin: 0; 
+            padding: 16px; /* Padding moved to RDP so Time section is flush */
+            font-family: var(--default-font-family, sans-serif);
+        }
         .rdp-months { justify-content: center; }
-        .rdp-month { background: ${inputtype === 'datetimepicker-neumorphic' ? 'var(--neu-bg)' : 'var(--color-panel-solid)'}; padding: 10px; border-radius: 8px; }
-        .rdp-caption { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        .rdp-caption_label { font-weight: bold; color: var(--gray-12); font-size: var(--font-size-3); }
-        .rdp-nav { display: flex; gap: 5px; }
-        .rdp-day { width: var(--rdp-cell-size); height: var(--rdp-cell-size); border-radius: 50%; border: none; background: transparent; cursor: pointer; color: var(--gray-12); display: flex; align-items: center; justify-content: center; }
-        .rdp-day:hover:not(.rdp-day_selected) { background-color: var(--gray-4); }
-        .rdp-day_selected { background-color: var(--accent-9); color: white; font-weight: bold; }
+        .rdp-month { background: transparent; }
         
-        .neu-calendar .rdp-month { box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light); }
-        .neu-calendar .rdp-day:hover:not(.rdp-day_selected) { background-color: transparent; box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light); }
-        .neu-calendar .rdp-day_selected { background-color: var(--neu-bg); color: var(--neu-accent); box-shadow: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light); }
+        /* Header */
+        .rdp-caption { 
+            display: flex; align-items: center; justify-content: space-between; 
+            margin-bottom: 12px; padding: 0 4px;
+        }
+        .rdp-caption_label { 
+            font-weight: 600; color: var(--gray-12); font-size: var(--font-size-3); 
+            text-transform: capitalize;
+        }
+        .rdp-nav { display: flex; gap: 8px; }
+        .rdp-nav_button {
+            color: var(--gray-11); border-radius: 6px; padding: 4px;
+            transition: background 0.2s; background: transparent; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .rdp-nav_button:hover { background-color: var(--gray-4); color: var(--gray-12); }
+
+        /* Weekdays */
+        .rdp-head_cell { 
+            font-size: 0.75rem; font-weight: 600; color: var(--gray-9); 
+            text-transform: uppercase; padding-bottom: 8px; width: var(--rdp-cell-size);
+            text-align: center;
+        }
+        
+        /* Cells */
+        .rdp-cell { text-align: center; }
+        .rdp-day { 
+            width: var(--rdp-cell-size); height: var(--rdp-cell-size); 
+            border-radius: 50%; border: 2px solid transparent; 
+            background: transparent; cursor: pointer; color: var(--gray-12); 
+            font-size: var(--font-size-2); display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s ease; margin: 1px;
+        }
+        
+        .rdp-day:hover:not(.rdp-day_selected):not([disabled]) { background-color: var(--gray-4); }
+        .rdp-day_selected { background-color: var(--accent-9) !important; color: white !important; font-weight: 600; }
+        .rdp-day_today { color: var(--accent-11); font-weight: 700; position: relative; }
+        .rdp-day_today:not(.rdp-day_selected)::after {
+             content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; border-radius: 50%; background-color: var(--accent-9);
+        }
+        .rdp-day_disabled { opacity: 0.3; cursor: not-allowed; }
         
         /* Time Input Styling */
         .time-input {
-            text-align: center;
-            font-variant-numeric: tabular-nums;
-            width: 40px;
-            padding: 4px;
-            border-radius: 4px;
-            border: 1px solid var(--gray-6);
-            background: var(--color-surface);
+            text-align: center; font-variant-numeric: tabular-nums;
+            width: 44px; padding: 4px; border-radius: 6px;
+            border: 1px solid var(--gray-6); background: var(--color-surface);
+            color: var(--gray-12); font-weight: 500;
         }
-        .neu-calendar .time-input {
-            background: var(--neu-bg);
-            border: none;
-            box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
-        }
+        .time-input:focus { outline: 2px solid var(--accent-9); border-color: transparent; }
+        
+        /* Neumorphic Overrides */
+        ${inputtype === 'datetimepicker-neumorphic' ? `
+          .neu-calendar .rdp-day:hover:not(.rdp-day_selected) {
+             box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+             background-color: transparent;
+          }
+          .neu-calendar .rdp-day_selected {
+             box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light);
+             color: var(--neu-accent) !important; background-color: var(--neu-bg) !important;
+          }
+          .neu-calendar .time-input {
+             background: var(--neu-bg); border: none;
+             box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
+          }
+        ` : ''}
       `}} />
 
       <Popover.Root open={isOpen} onOpenChange={(open) => {
@@ -145,31 +251,52 @@ export const DateTimePicker = ({
         <Popover.Trigger>
           <TextField.Root 
              variant="surface" 
-             style={{ cursor: 'pointer', height: inputtype === 'datetimepicker-neumorphic' ? '40px' : '32px', ...activeInputStyle }}
-             onClick={() => setIsOpen(true)}
+             style={{ 
+                cursor: 'pointer', 
+                height: inputtype === 'datetimepicker-neumorphic' ? '40px' : '32px', 
+                ...activeInputStyle 
+             }}
+             onClick={() => !readonly && setIsOpen(true)}
           >
-            <TextField.Slot><Icon name='calendar' height="16" width="16" style={{ color: 'var(--gray-10)' }} /></TextField.Slot>
+            <TextField.Slot>
+                <Icon name='calendar' height="16" width="16" style={{ color: 'var(--gray-10)' }} />
+            </TextField.Slot>
             <input 
               id={inputId}
               aria-describedby={hasError ? errorId : undefined}
               readOnly 
-              value={selectedDate ? format(selectedDate, 'PPP p') : ''}
+              disabled={readonly}
+              value={selectedDate && isValid(selectedDate) ? format(selectedDate, 'PPP p') : ''}
               placeholder={placeholder}
-              style={{ backgroundColor: 'transparent', border: 'none', outline: 'none', width: '100%', cursor: 'pointer', color: 'inherit', fontFamily: 'inherit', fontSize: 'var(--font-size-2)' }} 
+              style={{ 
+                  backgroundColor: 'transparent', border: 'none', outline: 'none', width: '100%', 
+                  cursor: readonly ? 'default' : 'pointer', color: 'inherit', fontFamily: 'inherit', 
+                  fontSize: 'var(--font-size-2)', fontWeight: 500
+              }} 
             />
           </TextField.Root>
         </Popover.Trigger>
 
-        <Popover.Content style={{ padding: 0, backgroundColor: 'transparent', boxShadow: 'none' }} align="start">
+        <Popover.Content style={calendarContainerStyle} align="start" sideOffset={5}>
           <div className={inputtype === 'datetimepicker-neumorphic' ? 'neu-calendar' : ''} style={neuVars}>
             
             <DayPicker
               mode="single"
               selected={selectedDate}
               onSelect={handleDaySelect}
-              disabled={[{ before: parsedMin || new Date(1900, 0, 1) }, { after: parsedMax || new Date(2100, 0, 1) }]}
+              disabled={[
+                ...(readonly ? [{ from: new Date(1900, 0, 1), to: new Date(2100, 0, 1) }] : []),
+                { before: parsedMin || new Date(1900, 0, 1) }, 
+                { after: parsedMax || new Date(2100, 0, 1) }
+              ]}
+              modifiers={{ today: new Date() }}
+              modifiersClassNames={{ today: 'rdp-day_today' }}
               components={{
-                Chevron: (props) => props.orientation === 'left' ? <Icon name='chevronleft' /> : <Icon name='chevronright' />
+                Chevron: (props) => {
+                    const style = { display: 'block', cursor: 'pointer', color: 'var(--gray-11)' };
+                    if (props.orientation === 'left') return <Icon name='chevronleft' height="16" width="16" style={style} />;
+                    return <Icon name='chevronright' height="16" width="16" style={style} />;
+                }
               }}
             />
 
@@ -181,55 +308,57 @@ export const DateTimePicker = ({
                 align="center" 
                 justify="center"
                 style={{ 
-                    backgroundColor: inputtype === 'datetimepicker-neumorphic' ? 'var(--neu-bg)' : 'var(--color-panel-solid)',
-                    borderBottomLeftRadius: '8px',
-                    borderBottomRightRadius: '8px',
-                    boxShadow: inputtype === 'datetimepicker-neumorphic' ? '6px 6px 12px var(--neu-shadow-dark), -6px 6px 12px var(--neu-shadow-light)' : undefined
+                    backgroundColor: inputtype === 'datetimepicker-neumorphic' ? 'rgba(0,0,0,0.02)' : 'var(--gray-2)',
+                    borderTop: inputtype === 'datetimepicker-neumorphic' ? 'none' : '1px solid var(--gray-4)'
                 }}
             >
                 <Icon name="clock" width="16" height="16" style={{ opacity: 0.7 }} />
-                <Text size="2" weight="bold">Time:</Text>
                 
-                <input 
-                    type="number" 
-                    className="time-input"
-                    min="0" max="23"
-                    value={selectedDate ? format(selectedDate, 'HH') : '12'}
-                    onChange={(e) => handleTimeChange('hours', e.target.value)}
-                />
-                <Text>:</Text>
-                <input 
-                    type="number" 
-                    className="time-input"
-                    min="0" max="59"
-                    value={selectedDate ? format(selectedDate, 'mm') : '00'}
-                    onChange={(e) => handleTimeChange('minutes', e.target.value)}
-                />
+                <Flex align="center" gap="1">
+                    <input 
+                        type="number" 
+                        className="time-input"
+                        min="0" max="23"
+                        disabled={readonly}
+                        value={selectedDate ? format(selectedDate, 'HH') : '12'}
+                        onChange={(e) => handleTimeChange('hours', e.target.value)}
+                    />
+                    <Text weight="bold" style={{ paddingBottom: 2 }}>:</Text>
+                    <input 
+                        type="number" 
+                        className="time-input"
+                        min="0" max="59"
+                        disabled={readonly}
+                        value={selectedDate ? format(selectedDate, 'mm') : '00'}
+                        onChange={(e) => handleTimeChange('minutes', e.target.value)}
+                    />
+                </Flex>
 
-                <Button size="1" variant="soft" onClick={() => setIsOpen(false)}>
+                <Button size="1" variant="soft" onClick={() => setIsOpen(false)} style={{ marginLeft: 'auto' }}>
                     Done
                 </Button>
             </Flex>
           </div>
         </Popover.Content>
       </Popover.Root>
-       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
-                &nbsp;
-                {props.isHinted ?
-                        <>
-                    <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                            <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                            <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                            </a> 
-                    </Tooltip>
-                        </> : null} 
-                {hasError ?
-                    <>
-                       <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || "Required field"}
-                        </p>
-                    </> : null } 
+      
+      <div>
+           <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+           &nbsp;
+           {props.isHinted ?
+               <>
+                   <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                       <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                           <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                       </a> 
+                   </Tooltip>
+               </> : null} 
+           {hasError ?
+               <>
+                   <p id={errorId} className='core-input-label-error'>
+                       {props.errorText || (meta.error || "Required field")}
+                   </p>
+               </> : null } 
       </div>
 
     </Flex>
