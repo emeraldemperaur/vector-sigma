@@ -133,14 +133,7 @@ export const RangeSlider = ({
 
       <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
-            
-                {hasError ?
-                        <>
-                        <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || `Required field`}
-                        </p>
-                        </> : null } 
-            
+                &nbsp;
                 {props.isHinted ?
                         <>
                         <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
@@ -149,6 +142,12 @@ export const RangeSlider = ({
                             </a> 
                         </Tooltip>
                         </> : null} 
+                 {hasError ?
+                        <>
+                        <p id={errorId} className='core-input-label-error'>
+                            {props.errorText || `Required field`}
+                        </p>
+                        </> : null } 
       </div>
     </Flex>
     </Column>

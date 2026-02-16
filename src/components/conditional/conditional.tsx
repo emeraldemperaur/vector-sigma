@@ -17,7 +17,7 @@ export interface ConditionalProps {
   inputlabel?: string, // Conditional Trigger Element Field input label
   icon?: React.ReactNode,
   width: number, defaultValue?: any[] | any, value?: any | any[], newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   inputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input type (conditionaltoggle, conditionalcheckbox, conditionalselect)
   toggledinputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input design (conditionaltoggle, conditionalcheckbox, conditionalselect)
   triggerValue?: any;        // Conditional Trigger Element Input Value that triggers Toggled Input Element reveal (e.g. Boolean, String, Number)
@@ -75,7 +75,7 @@ const getDesignStyles = (inputtype: ToggleTriggerDesign & {} | CheckboxTriggerDe
 };
 
 export const ConditionalTrigger = ({
-  alias, readOnly, width,
+  alias, readonly, width,
   placeholder = '', value, inputlabel,
   inputtype = 'conditionaltoggle-outline',
   triggerValue = true,
@@ -108,7 +108,7 @@ export const ConditionalTrigger = ({
           <Flex align="center" gap="2" style={{ cursor: 'pointer' }}>
             <Checkbox 
               name={alias}
-              disabled={readOnly}
+              disabled={readonly}
               checked={field.value === true} 
               onCheckedChange={(checked) => handleChange(!!checked)} 
               id={inputId}
@@ -121,7 +121,7 @@ export const ConditionalTrigger = ({
           <Flex direction="column" gap="1" style={{ width: '100%' }}>
             <Select.Root
               name={alias}
-              disabled={readOnly}
+              disabled={readonly}
               value={field.value} 
               defaultValue={placeholder || String(value) || ""}
               onValueChange={handleChange}
@@ -149,7 +149,7 @@ export const ConditionalTrigger = ({
             <Switch 
               id={inputId}
               name={alias}
-              disabled={readOnly}
+              disabled={readonly}
               checked={field.value === true} 
               onCheckedChange={(checked) => handleChange(!!checked)} 
               variant={isNeumorphic ? 'soft' : 'surface'}

@@ -10,7 +10,7 @@ export type RadioDesign = 'radio' | 'radio-material' | 'radio-outline' | 'radio-
 
 interface RadioGroupProps {
     inputtype?: RadioDesign & {},
-    alias: string, inputLabel?: string, icon?: React.ReactNode,
+    alias: string, inputlabel?: string, icon?: React.ReactNode,
     width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
     placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
     inputoptions: InputOption[];
@@ -22,7 +22,7 @@ interface RadioGroupProps {
 
 export const RadioGroupInput = ({
   inputtype = 'radio-outline',
-  alias, readOnly, width, inputLabel,
+  alias, readOnly, width, inputlabel,
   placeholder = '',
   style, inputoptions,
   direction = 'column',
@@ -139,15 +139,8 @@ export const RadioGroupInput = ({
       </RadioGroup.Root>
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
-                  
-            {hasError ?
-                <>
-                    <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || `Required field`}
-                    </p>
-                </> : null } 
-                  
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+            &nbsp;
             {props.isHinted ?
                 <>
                     <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
@@ -156,6 +149,12 @@ export const RadioGroupInput = ({
                                   </a> 
                               </Tooltip>
                 </> : null} 
+             {hasError ?
+                <>
+                    <p id={errorId} className='core-input-label-error'>
+                            {props.errorText || `Required field`}
+                    </p>
+                </> : null } 
      </div>
     </Flex>
     </Column>

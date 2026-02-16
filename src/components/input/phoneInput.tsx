@@ -3,14 +3,13 @@ import { useField, useFormikContext } from 'formik';
 import { Column } from "layouts/column/column";
 import { TextField, Text, Tooltip, Select, Flex } from '@radix-ui/themes';
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
-import type { Country } from 'react-phone-number-input';
-import PhoneInputInput, { getCountries, getCountryCallingCode } from 'react-phone-number-input/input';
+import type { Country, Value } from 'react-phone-number-input'; 
+import Input, { getCountries, getCountryCallingCode } from 'react-phone-number-input/input';
 import en from 'react-phone-number-input/locale/en.json';
-import { Icon } from "components/icons/icons";
 import { FlagIcon } from "components/icons/flagicon";
+import { Icon } from "components/icons/icons";
 import { xInputFieldProps } from "./input";
 import '../../styles/main.scss';
-
 
 export const PhoneInput = ({
     alias,
@@ -19,9 +18,9 @@ export const PhoneInput = ({
     placeholder = "Phone Number",
     readonly,
     inputVariant = 'input-outline',
-    size = "2", 
+    size = "2",
     className,
-    ...props 
+    ...props
 }: xInputFieldProps) => {
     
     const { setFieldValue, setFieldTouched } = useFormikContext();
@@ -37,12 +36,9 @@ export const PhoneInput = ({
                 <TextField.Root 
                     size={size} 
                     variant="surface" 
-                    id={`${alias}FormInput`} 
-                    aria-describedby={`${alias}InputLabel`}
                     color={hasError ? "red" : undefined}
                     className={`${variantClass} ${className || ''}`}
                     {...props}
-                    name={alias}
                 >
                     <TextField.Slot style={{ padding: 0 }}>
                         <Select.Root 
@@ -56,7 +52,9 @@ export const PhoneInput = ({
                                     padding: '0 8px 0 12px', 
                                     gap: '6px',
                                     borderTopRightRadius: 0, 
-                                    borderBottomRightRadius: 0
+                                    borderBottomRightRadius: 0,
+                                    backgroundColor: 'var(--gray-3)', 
+                                    borderRight: '1px solid var(--gray-alpha-5)'
                                 }} 
                             >
                                 <Flex align="center" gap="2">
@@ -65,6 +63,7 @@ export const PhoneInput = ({
                                     <Icon name="caret-down" style={{ width: "12px", opacity: 0.5 }}/>
                                 </Flex>
                             </Select.Trigger>
+                            
                             <Select.Content position="popper" style={{ minWidth: '240px', maxHeight: '300px' }}>
                                 {getCountries().map((c) => (
                                     <Select.Item key={c} value={c}>
@@ -79,19 +78,22 @@ export const PhoneInput = ({
                                 ))}
                             </Select.Content>
                         </Select.Root>
-                        <div style={{ width: '1px', height: '20px', backgroundColor: 'var(--gray-a4)', alignSelf: 'center' }} />
                     </TextField.Slot>
 
-               
-                    <PhoneInputInput
+                    <Input
                         country={country}
-                        value={field.value} 
-                        onChange={(val) => setFieldValue(alias, val)}
+                        international={false} 
+                        withCountryCallingCode={false} 
+                        limitMaxLength={true} 
+                        value={field.value || ''}
+                        onChange={(val?: Value) => setFieldValue(alias, val || '')} 
                         onBlur={() => setFieldTouched(alias, true)}
-                        placeholder={placeholder}
                         readOnly={readonly}
+                        placeholder={placeholder}
+                        id={`${alias}FormInput`}
+                        aria-describedby={`${alias}InputLabel`}
                         style={{
-                            flex: 1, 
+                            flex: 1,
                             border: 'none',
                             outline: 'none',
                             backgroundColor: 'transparent',
@@ -99,7 +101,8 @@ export const PhoneInput = ({
                             paddingLeft: '12px',
                             color: 'var(--gray-12)',
                             fontFamily: 'var(--default-font-family)',
-                            fontSize: 'var(--font-size-2)'
+                            fontSize: 'var(--font-size-2)',
+                            width: '100%'
                         }}
                     />
                 </TextField.Root>
@@ -108,7 +111,7 @@ export const PhoneInput = ({
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
                         {inputlabel}
                     </Text>
-                    &nbsp;
+                    
                     {props.isHinted && (
                         <Tooltip content={props.hintText || "No hint available"}>
                             <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
@@ -118,7 +121,7 @@ export const PhoneInput = ({
                     )} 
                     {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {props.errorText || `Required field`}
+                            {props.errorText || meta.error || `Required field`}
                         </Text>
                     )} 
                 </div>
