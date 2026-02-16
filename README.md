@@ -99,7 +99,8 @@ const App = () => {
 <p><em>Container, Row, Column, Theme, AvatarInput, ButtonInput, CheckboxGroupInput, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, UUIDInput, CreditCardInput, CurrencyInput, StockInput, RadioGroupInput, OptionSelect, MultipleSelect, RangeSlider, SliderInput, Toggle, SectionTitle</em></p>
 
 ```javascript
-import { Container, Column, Row, CheckboxGroup, Dropdown, File, RangeSlider } from '@emeraldemperaur/vector-sigma';
+import { Container, Column, Row, CheckboxGroup, Dropdown, File, RangeSlider } 
+from '@emeraldemperaur/vector-sigma';
 import { Theme } from '@emeraldemperaur/vector-sigma';
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
@@ -130,10 +131,22 @@ const App = () => {
             <Dropdown alias="dropdownInput" width={8} inputLabel="Dropdown Element" inputtype="dropdown-outline" value="Zaibatsu" 
                 inputoptions={
                     [
-                    {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
-                    {optionid: 2, optionvalue: "Meka", optionurl:"https://www.mekaegwim.ca", text: "Meka"},
-                    {optionid: 3, optionvalue: "Godzilla", optionurl:"https://www.me.ca", text: "Godzilla"},
-                    {optionid: 4, optionvalue: "Zaibatsu", optionurl:"https://www.npmjs.com/package/@emeraldemperaur/vector-sigma", text: "Zaibatsu"},
+                    {optionid: 1, 
+                    optionvalue: "Kaiju", 
+                    optionurl:"https://github.com/emeraldemperaur", 
+                    text: "Kaiju"},
+                    {optionid: 2, 
+                    optionvalue: "Meka", 
+                    optionurl:"https://www.mekaegwim.ca", 
+                    text: "Meka"},
+                    {optionid: 3, 
+                    optionvalue: "Godzilla", 
+                    optionurl:"https://www.me.ca", 
+                    text: "Godzilla"},
+                    {optionid: 4, 
+                    optionvalue: "Zaibatsu", 
+                    optionurl:"https://www.npmjs.com/package/@emeraldemperaur/vector-sigma", 
+                    text: "Zaibatsu"},
                     ]}/>
             </Theme>
             <button type="submit" style={{ marginTop: 20 }}>Submit</button>

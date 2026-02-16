@@ -9,7 +9,7 @@ import '../../styles/main.scss';
 export type DropDownDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outline' | 'dropdown-neumorphic';
 
 export interface DropDownProps {
-  inputtype?: DropDownDesign & {};
+  inputtype?: DropDownDesign;
   alias: string;
   inputlabel?: string;
   icon?: React.ReactNode;
@@ -37,7 +37,6 @@ export interface DropDownProps {
   style?: React.CSSProperties;
 }
 
-
 export const Dropdown = ({
   inputtype = 'dropdown-outline',
   alias, 
@@ -48,6 +47,12 @@ export const Dropdown = ({
   value,
   inputoptions,
   style,
+  newRow,
+  isHinted,
+  hintText,
+  hintUrl,
+  defaultValue,
+  errorText,
   ...props
 }: DropDownProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -137,7 +142,7 @@ export const Dropdown = ({
 
   return (
     <>
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={newRow}>
     <Flex direction="column" gap="2" style={{ width: '100%' }}>
       {inputtype === 'dropdown-neumorphic' && (
         <style dangerouslySetInnerHTML={{__html: `
@@ -154,12 +159,12 @@ export const Dropdown = ({
       <Select.Root
         name={alias}
         disabled={readonly}
-        defaultValue={props.defaultValue || value}
-        value={field.value} 
+        value={field.value || ""} 
         onValueChange={(val) => {
-          setFieldValue(alias, val);
+          const finalVal = val === "__RESET__" ? "" : val;
+          setFieldValue(alias, finalVal);
           setTimeout(() => setFieldTouched(alias, true), 0);
-          if (props.onValueChange) props.onValueChange(val);
+          if (props.onValueChange) props.onValueChange(finalVal);
         }}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
@@ -174,11 +179,12 @@ export const Dropdown = ({
           placeholder={placeholder || "Select an option"}
           className={`${inputtype === 'dropdown-neumorphic' ? 'neu-select-trigger' : ''} ${props.className || ''}`}
           style={{ ...activeTriggerStyle, ...style }}
+          {...props} 
         />
 
         <Select.Content position="popper" sideOffset={5} style={activeContentStyle}>
           <Select.Item 
-            value="" 
+            value="__RESET__" 
             className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
             style={{ color: 'var(--gray-10)', fontStyle: 'italic' }}
           >
@@ -186,6 +192,7 @@ export const Dropdown = ({
           </Select.Item>
           
           <Separator size="4" style={{ margin: '4px 0', opacity: 0.5 }} />
+
           {inputoptions.map((inputoption) => (
             <React.Fragment key={inputoption.optionid || crypto.randomUUID()}>
             {inputoption.optionurl ?            
@@ -193,7 +200,6 @@ export const Dropdown = ({
               id={String(inputoption.optionid) || ''}
               value={inputoption.optionvalue}
               className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}>
-
               <a onClick={(e) => { e.stopPropagation(); openLink(inputoption.optionurl || "#"); }} style={{textDecoration: 'none', color: 'inherit'}}>
                 {inputoption.text}
               </a>
@@ -216,10 +222,10 @@ export const Dropdown = ({
        <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
             &nbsp;    
-            {props.isHinted ?
+            {isHinted ?
               <>
-              <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                  <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                  <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                   <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                   </a> 
               </Tooltip>
@@ -227,7 +233,7 @@ export const Dropdown = ({
             {hasError ?
               <>
               <p id={errorId} className='core-input-label-error'>
-                  {props.errorText || meta.error || "Required field"}
+                  {errorText || meta.error || "Required field"}
               </p>
               </> : null } 
       </div>
