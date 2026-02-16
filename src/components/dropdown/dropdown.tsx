@@ -14,16 +14,16 @@ export interface xDropDownProps {
   inputlabel?: string;
   icon?: React.ReactNode;
   width: number;
-  defaultValue?: string;
+  defaultvalue?: string;
   value?: string;
-  newRow?: boolean;
+  newrow?: boolean;
   placeholder?: string;
   readonly?: boolean;
-  isHinted?: boolean;
-  hintText?: string;
-  hintUrl?: string;
+  ishinted?: boolean;
+  hinttext?: string;
+  hinturl?: string;
   onValueChange?: (value: string) => void;
-  errorText?: ReactNode | string | null;
+  errortext?: ReactNode | string | null;
   inputoptions: { 
     optionid: number | string; 
     text: string; 
@@ -33,7 +33,7 @@ export interface xDropDownProps {
     note?: string; 
     optionurl?: string;
   }[];
-  className?: string;
+  classname?: string;
   style?: React.CSSProperties;
 }
 
@@ -47,12 +47,12 @@ export const Dropdown = ({
   value,
   inputoptions,
   style,
-  newRow,
-  isHinted,
-  hintText,
-  hintUrl,
-  defaultValue,
-  errorText,
+  newrow,
+  ishinted,
+  hinttext,
+  hinturl,
+  defaultvalue,
+  errortext,
   ...props
 }: xDropDownProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -142,7 +142,7 @@ export const Dropdown = ({
 
   return (
     <>
-    <Column span={width} newLine={newRow}>
+    <Column span={width} newLine={newrow}>
     <Flex direction="column" gap="2" style={{ width: '100%' }}>
       {inputtype === 'dropdown-neumorphic' && (
         <style dangerouslySetInnerHTML={{__html: `
@@ -177,7 +177,7 @@ export const Dropdown = ({
           ref={triggerRef}
           variant="ghost" 
           placeholder={placeholder || "Select an option"}
-          className={`${inputtype === 'dropdown-neumorphic' ? 'neu-select-trigger' : ''} ${props.className || ''}`}
+          className={`${inputtype === 'dropdown-neumorphic' ? 'neu-select-trigger' : ''} ${props.classname || ''}`}
           style={{ ...activeTriggerStyle, ...style }}
           {...props} 
         />
@@ -222,10 +222,10 @@ export const Dropdown = ({
        <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
             &nbsp;    
-            {isHinted ?
+            {ishinted ?
               <>
-              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                  <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
+              <Tooltip content={hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                  <a href={hinturl || ""} target="_blank" rel="noopener noreferrer">
                   <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                   </a> 
               </Tooltip>
@@ -233,7 +233,7 @@ export const Dropdown = ({
             {hasError ?
               <>
               <p id={errorId} className='core-input-label-error'>
-                  {errorText || meta.error || "Required field"}
+                  {errortext || meta.error || "Required field"}
               </p>
               </> : null } 
       </div>

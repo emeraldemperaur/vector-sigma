@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { Button, Text, Tooltip } from '@radix-ui/themes';
+import { Button, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground } from '../../utils/vinci';
 import type { ButtonProps } from '@radix-ui/themes';
 export type ButtonDesign = 'button' | 'button-material' | 'button-outline' | 'button-neumorphic';
@@ -11,14 +11,14 @@ import '../../styles/main.scss';
 export interface DesignButtonProps extends ButtonProps {
   inputtype?: ButtonDesign & {},
   alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  width: number, defaultvalue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
+  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const ButtonInput = ({ 
   inputtype = 'button-outline', type = 'button', inputlabel,
-  alias, readOnly, style, width, children, ...props 
+  alias, readonly, style, width, children, ...props 
 }: DesignButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [neumorphicVars, setNeumorphicVars] = useState<React.CSSProperties>({});
@@ -117,7 +117,7 @@ export const ButtonInput = ({
 
       <Button 
         name={alias}
-        disabled={readOnly}
+        disabled={readonly}
         id={`${alias}FormInput`}
         aria-describedby={`${alias}InputLabel`}
         ref={buttonRef} 
@@ -135,10 +135,10 @@ export const ButtonInput = ({
       </Button>
       <br/>
       <div>
-            {props.isHinted ?
+            {props.ishinted ?
             <>
-            <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+            <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                 <Icon name='questionmarkcircled' height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                 </a> 
             </Tooltip>

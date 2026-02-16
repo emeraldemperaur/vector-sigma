@@ -3,7 +3,7 @@ import * as TogglePrimitive from '@radix-ui/react-toggle';
 import { useField, useFormikContext } from 'formik';
 import { Button, Text, Tooltip } from '@radix-ui/themes'; 
 import type { ButtonProps } from '@radix-ui/themes';
-import { adjustColor, getNearestParentBackground } from "utils/vinci"; // Assuming these exist per your previous code
+import { adjustColor, getNearestParentBackground } from "utils/vinci";
 import { Column } from "layouts/column/column";
 import { Icon } from "components/icons/icons";
 import '../../styles/main.scss';
@@ -13,29 +13,29 @@ export type ToggleDesign = 'toggle' | 'toggle-material' | 'toggle-outline' | 'to
 interface ToggleProps extends ButtonProps {
   inputtype?: ToggleDesign;
   alias: string;
-  inputLabel?: string;
+  inputlabel?: string;
   width: number;
-  newRow?: boolean;
-  readOnly?: boolean;
-  isHinted?: boolean;
-  hintText?: string;
-  hintUrl?: string;
+  newrow?: boolean;
+  readonly?: boolean;
+  ishinted?: boolean;
+  hinttext?: string;
+  hinturl?: string;
   icon?: string;
-  errorText?: ReactNode | string | null;
+  errortext?: ReactNode | string | null;
 }
 
 export const Toggle = ({
   inputtype = 'toggle-neumorphic',
   alias, 
-  readOnly, 
+  readonly, 
   width, 
-  inputLabel,
+  inputlabel,
   style,
   children,
-  newRow,
-  isHinted,
-  hintText,
-  hintUrl,
+  newrow,
+  ishinted,
+  hinttext,
+  hinturl,
   icon = 'stack',
   ...props
 }: ToggleProps) => {
@@ -78,20 +78,20 @@ export const Toggle = ({
   };
 
   const handleToggle = (val: boolean) => {
-    if (!readOnly) {
+    if (!readonly) {
         setFieldValue(alias, val);
         setFieldTouched(alias, true);
     }
   };
 
   return (
-    <Column span={width} newLine={newRow}>
+    <Column span={width} newLine={newrow}>
       <div ref={containerRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         
         {inputtype === 'toggle-neumorphic' ? (
             <div 
                 className="neu-toggle-wrapper"
-                style={{ ...neuVars, opacity: readOnly ? 0.6 : 1, pointerEvents: readOnly ? 'none' : 'auto' }}
+                style={{ ...neuVars, opacity: readonly ? 0.6 : 1, pointerEvents: readonly ? 'none' : 'auto' }}
                 onClick={() => handleToggle(!field.value)}
             >
                 <style dangerouslySetInnerHTML={{__html: `
@@ -148,13 +148,13 @@ export const Toggle = ({
                 pressed={field.value}
                 onPressedChange={handleToggle}
                 name={alias}
-                disabled={readOnly}
+                disabled={readonly}
                 id={`${alias}FormInput`}
                 aria-describedby={`${alias}InputLabel`}
                 asChild
             >
                 <Button
-                    disabled={readOnly}
+                    disabled={readonly}
                     {...props}
                     className={`design-toggle ${inputtype} ${props.className || ''}`}
                     style={{
@@ -193,15 +193,15 @@ export const Toggle = ({
         )}
 
         <div>
-            {inputLabel && (
+            {inputlabel && (
                 <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                    {inputLabel}
+                    {inputlabel}
                 </Text>
             )}
             &nbsp;
-            {isHinted && (
-                <Tooltip content={hintText || "No hint available"}>
-                    <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 6 }}>
+            {ishinted && (
+                <Tooltip content={hinttext || "No hint available"}>
+                    <a href={hinturl || ""} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 6 }}>
                         <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                     </a> 
                 </Tooltip>
@@ -209,7 +209,7 @@ export const Toggle = ({
 
             {hasError && (
                 <Text size="1" color="red" style={{ display: 'block', marginTop: 2 }}>
-                    {props.errorText || `Required field`}
+                    {props.errortext || `Required field`}
                 </Text>
             )}
         </div>

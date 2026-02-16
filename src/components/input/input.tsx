@@ -13,10 +13,10 @@ export type InputDesign = "input" | "input-material" | "input-outline" | "input-
 export type xInputFieldProps = React.ComponentProps<typeof TextField.Root> & {
     alias: string, 
     inputtype?: InputType  & {}, 
-    inputlabel?: string, width: number, newRow?: boolean, placeholder?: string, 
-    readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string, 
-    icon?: React.ReactNode, defaultValue?: string, value?: string, errorText?: ReactNode | string | null, className?: string, style?: React.CSSProperties;
-    inputVariant?: InputDesign  & {}, delimiter?: string, format?: number[]
+    inputlabel?: string, width: number, newrow?: boolean, placeholder?: string, 
+    readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string, 
+    icon?: React.ReactNode, defaultvalue?: string, value?: string, errortext?: ReactNode | string | null, classname?: string, style?: React.CSSProperties;
+    inputvariant?: InputDesign  & {}, delimiter?: string, format?: number[]
 };
 
 export const Input = ({
@@ -26,17 +26,17 @@ export const Input = ({
     placeholder = '',
     className, size = "2",
     style,
-    inputVariant = 'input-outline',
+    inputvariant = 'input-outline',
     ...props 
 }: xInputFieldProps) => {
     
     const [inputField, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
+    const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
     const errorId = `${alias}-error`;
 
     return (
-        <Column span={width} newLine={props.newRow}>
+        <Column span={width} newLine={props.newrow}>
             <TextField.Root 
                 size={size}
                 type={inputtype} 
@@ -57,16 +57,16 @@ export const Input = ({
                     {inputlabel}
                 </Text>
                 &nbsp;
-                {props.isHinted && (
-                    <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                        <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                {props.ishinted && (
+                    <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                        <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                             <QuestionMarkCircledIcon height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                         </a> 
                     </Tooltip>
                 )} 
                  {hasError && (
                     <p id={errorId} className='core-input-label-error'>
-                        {props.errorText || `Required field`}
+                        {props.errortext || `Required field`}
                     </p>
                 )} 
             </div>

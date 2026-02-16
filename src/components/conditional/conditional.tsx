@@ -16,12 +16,12 @@ export interface ConditionalProps {
   alias: string,  // Conditional Trigger Element Field form name
   inputlabel?: string, // Conditional Trigger Element Field input label
   icon?: React.ReactNode,
-  width: number, defaultValue?: any[] | any, value?: any | any[], newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  width: number, defaultvalue?: any[] | any, value?: any | any[], newRow?: boolean, isEdit?: boolean,
+  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
   inputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input type (conditionaltoggle, conditionalcheckbox, conditionalselect)
   toggledinputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input design (conditionaltoggle, conditionalcheckbox, conditionalselect)
   triggerValue?: any;        // Conditional Trigger Element Input Value that triggers Toggled Input Element reveal (e.g. Boolean, String, Number)
-  inputoptions?: InputOption[], errorText?: ReactNode | string | null,
+  inputoptions?: InputOption[], errortext?: ReactNode | string | null,
   children: React.ReactNode; // Conditional Toggled Input Element
   className?: string;
   style?: React.CSSProperties;
@@ -198,10 +198,10 @@ export const ConditionalTrigger = ({
                 {inputlabel}
             </Text>
             &nbsp;
-            {props.isHinted ?
+            {props.ishinted ?
                   <>
-                  <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                  <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                      <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                       </a> 
                   </Tooltip>
@@ -209,7 +209,7 @@ export const ConditionalTrigger = ({
              {hasError ?
                   <>
                   <p id={errorId} className='core-input-label-error'>
-                      {typeof meta.error === 'string' ? <>{props.errorText || "Required field"}</> 
+                      {typeof meta.error === 'string' ? <>{props.errortext || "Required field"}</> 
                       : 'Invalid file selection'}
                   </p>
                   </> : null }       

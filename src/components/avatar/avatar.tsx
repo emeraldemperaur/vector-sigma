@@ -10,9 +10,9 @@ export type AvatarShape = 'circle' | 'square' | 'rounded';
 export interface AvatarProps {
   inputtype?: AvatarDesign & {},
   alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  shape?: AvatarShape, errorText?: ReactNode | string | null
+  width: number, defaultvalue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
+  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
+  shape?: AvatarShape, errortext?: ReactNode | string | null
   size?: number; // Size in px
   className?: string;
   style?: React.CSSProperties;
@@ -191,10 +191,10 @@ export const AvatarInput = ({
                         {inputlabel}
                       </Text>)}
                 &nbsp;
-                {props.isHinted ?
+                {props.ishinted ?
                   <>
-                  <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                  <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                      <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                       </a> 
                   </Tooltip>
@@ -202,7 +202,7 @@ export const AvatarInput = ({
                  {hasError ?
                   <>
                   <p id={errorId} className='core-input-label-error'>
-                      {props.errorText || `Required field`}
+                      {props.errortext || `Required field`}
                   </p>
                   </> : null } 
         </div>

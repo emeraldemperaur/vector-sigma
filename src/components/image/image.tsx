@@ -10,10 +10,10 @@ export interface ImageDisplayProps {
   alt?: string;
   design?: ImageDesign  & {};
   layout?: ImageLayout  & {};
-  aspectRatio?: number; // 16/9, 4/3, 1
+  aspectratio?: number; // 16/9, 4/3, 1
   height?: string | number; 
   width?: string | number;
-  className?: string;
+  classname?: string;
   style?: React.CSSProperties;
   onClick?: () => void;
 }
@@ -58,10 +58,10 @@ export const ImageOutput = ({
   alt = "Image",
   design = 'outline',
   layout = 'normal',
-  aspectRatio = 16 / 9,
+  aspectratio = 16 / 9,
   height,
   width = '100%',
-  className,
+  classname,
   style,
   onClick,
 }: ImageDisplayProps) => {
@@ -70,7 +70,7 @@ export const ImageOutput = ({
 
   const content = (
     <Box
-      className={className}
+      className={classname}
       style={{
         ...containerStyles,
         width,
@@ -117,7 +117,7 @@ export const ImageOutput = ({
 
   return (
     <Box style={{ width }}>
-      <AspectRatio ratio={aspectRatio}>
+      <AspectRatio ratio={aspectratio}>
         {content}
       </AspectRatio>
     </Box>
