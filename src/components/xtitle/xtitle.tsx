@@ -15,6 +15,8 @@ interface TitleProps {
     className?: string;
     backgroundcolor?: string;
     icon?: React.ReactNode;
+    titleColor?: string;
+    subtitleColor?: string;
 }
 
 export const SectionTitle = ({
@@ -28,8 +30,11 @@ export const SectionTitle = ({
     withSeparator = true,
     className,
     backgroundcolor,
-    icon
+    icon,
+    titleColor,
+    subtitleColor
 }: TitleProps) => {
+
     const justifyMap = {
         left: 'start',
         center: 'center',
@@ -44,6 +49,7 @@ export const SectionTitle = ({
                 className={className}
                 style={{ 
                     width: '100%', 
+                    boxSizing: 'border-box',
                     marginBottom: 'var(--space-2)',
                     textAlign: align,
                     backgroundColor: backgroundcolor || 'transparent',
@@ -58,7 +64,7 @@ export const SectionTitle = ({
                     style={{ width: '100%' }}
                 >
                     {icon && (
-                        <Flex align="center" justify="center" style={{ color: 'var(--gray-12)' }}>
+                        <Flex align="center" justify="center" style={{ color: titleColor || 'var(--gray-12)' }}>
                             {icon}
                         </Flex>
                     )}
@@ -67,7 +73,7 @@ export const SectionTitle = ({
                         size={size}
                         weight="bold"
                         style={{
-                            color: 'var(--gray-12)',
+                            color: titleColor || 'var(--gray-12)',
                             lineHeight: '1.2'
                         }}
                     >
@@ -76,7 +82,14 @@ export const SectionTitle = ({
                 </Flex>
                 
                 {subtitle && (
-                    <Text size={subsize} color="gray" style={{ maxWidth: '80%', margin: align === 'center' ? '0 auto' : undefined }}>
+                    <Text 
+                        size={subsize} 
+                        style={{ 
+                            color: subtitleColor || 'var(--gray-11)',
+                            maxWidth: '80%', 
+                            margin: align === 'center' ? '0 auto' : undefined 
+                        }}
+                    >
                         {subtitle}
                     </Text>
                 )}
