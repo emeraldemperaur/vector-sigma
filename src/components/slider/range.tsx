@@ -11,8 +11,8 @@ export type RangeDesign = 'range' | 'range-material' | 'range-outline' | 'range-
 interface RangeProps {
   inputtype?: RangeDesign & {},
   alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
-  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  width: number, defaultvalue?: string, value?: string, newrow?: boolean, errortext?: ReactNode | string | null,
+  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
   minvalue?: number,
   maxvalue?: number,
   stepvalue?: number,
@@ -64,7 +64,7 @@ export const RangeSlider = ({
   }, [inputtype]);
 
   return (
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={props.newrow}>
     <Flex 
       direction="column" 
       gap="3" 
@@ -134,10 +134,10 @@ export const RangeSlider = ({
       <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
                 &nbsp;
-                {props.isHinted ?
+                {props.ishinted ?
                         <>
-                        <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                            <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                        <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                             <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
@@ -145,7 +145,7 @@ export const RangeSlider = ({
                  {hasError ?
                         <>
                         <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || `Required field`}
+                            {props.errortext || `Required field`}
                         </p>
                         </> : null } 
       </div>

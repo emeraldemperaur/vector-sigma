@@ -15,15 +15,15 @@ type CurrencyInputProps = {
     inputlabel?: string, 
     width: number, 
     newRow?: boolean, 
-    defaultValue?: string, 
+    defaultvalue?: string, 
     placeholder?: string, 
-    readOnly?: boolean, 
-    isHinted?: boolean, 
-    hintText?: string, 
-    errorText?: ReactNode | string | null, 
-    hintUrl?: string, 
-    inputVariant?: InputDesign & {}, 
-    className?: string
+    readonly?: boolean, 
+    ishinted?: boolean, 
+    hinttext?: string, 
+    errortext?: ReactNode | string | null, 
+    hinturl?: string, 
+    inputvariant?: InputDesign & {}, 
+    classname?: string
 };
 
 export const CurrencyInput = ({
@@ -31,11 +31,11 @@ export const CurrencyInput = ({
     inputtype = "currency",
     inputlabel, 
     width,
-    defaultValue = "USD", 
+    defaultvalue = "USD", 
     placeholder,
-    readOnly = false, 
-    inputVariant = 'input-outline',
-    className, 
+    readonly = false, 
+    inputvariant = 'input-outline',
+    classname, 
     ...props
 }: CurrencyInputProps) => {
 
@@ -49,16 +49,16 @@ export const CurrencyInput = ({
              currencyHelpers.setValue(inputtype);
         } 
         else if (!currencyField.value) {
-             currencyHelpers.setValue(defaultValue);
+             currencyHelpers.setValue(defaultvalue);
         }
-    }, [inputtype, defaultValue]);
+    }, [inputtype, defaultvalue]);
 
     const hasError = Boolean(amountMeta.touched && amountMeta.error);
     const currentCode = (currencyField.value as SupportedCurrency) || "USD";
     const activeCurrency = CURRENCIES[currentCode] || CURRENCIES.USD;
 
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
-    const isOutline = inputVariant === 'input-outline';
+    const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
+    const isOutline = inputvariant === 'input-outline';
     const errorId = `${alias}-error`;
 
     return (
@@ -66,7 +66,7 @@ export const CurrencyInput = ({
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <Flex 
                     align="center"
-                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${className || ''}`}
+                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${classname || ''}`}
                     style={{
                         width: '100%',
                         boxShadow: (isOutline && hasError) ? 'inset 0 0 0 1px var(--red-9)' : undefined,
@@ -77,7 +77,7 @@ export const CurrencyInput = ({
                     <Select.Root 
                         value={activeCurrency.code} 
                         onValueChange={(val) => setFieldValue(currencyAlias, val)}  
-                        disabled={readOnly || inputtype !== "currency"} 
+                        disabled={readonly || inputtype !== "currency"} 
                     >
                         <Select.Trigger 
                             variant="ghost" 
@@ -132,7 +132,7 @@ export const CurrencyInput = ({
                         unmask={true}
                         onAccept={(val: string) => setFieldValue(alias, val)}
                         onBlur={() => setFieldTouched(alias, true)} 
-                        readOnly={readOnly}
+                        readOnly={readonly}
                         placeholder={placeholder || '0.00'}
                         style={{
                             flex: 1,
@@ -157,16 +157,16 @@ export const CurrencyInput = ({
                         {inputlabel}
                     </Text>
                     &nbsp;
-                    {props.isHinted && (
-                        <Tooltip content={props.hintText || "No hint available"}>
-                            <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    {props.ishinted && (
+                        <Tooltip content={props.hinttext || "No hint available"}>
+                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {props.errorText || amountMeta.error || `Required field`}
+                            {props.errortext || amountMeta.error || `Required field`}
                         </Text>
                     )} 
                 </div>

@@ -11,19 +11,19 @@ export type MultipleSelectDesign = 'multiselect' | 'multiselect-material' | 'mul
 interface MultipleSelectProps {
     inputtype?: MultipleSelectDesign & {},
     alias: string, inputlabel?: string, icon?: React.ReactNode,
-    width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
-    placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-    inputoptions: InputOption[], errorText?: ReactNode | string | null,
-    className?: string,
+    width: number, defaultvalue?: any[], value?: any[], newrow?: boolean, isedit?: boolean,
+    placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
+    inputoptions: InputOption[], errortext?: ReactNode | string | null,
+    classname?: string,
     style?: React.CSSProperties
 }
 
 export const MultipleSelect = ({
   inputtype = 'multiselect-outline',
-  alias, readOnly, width, inputlabel,
+  alias, readonly, width, inputlabel,
   placeholder = '',
   style, inputoptions,
-  className, ...props
+  classname, ...props
 }: MultipleSelectProps) => {
   
   const { setFieldValue, setFieldTouched } = useFormikContext();
@@ -120,7 +120,7 @@ export const MultipleSelect = ({
     { ...neumorphicTrigger, ...neuVars };
 
   return (
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={props.newrow}>
     <Flex direction="column" gap="2" style={{ width: '100%' }}>
       <input type="hidden" name={alias} value={JSON.stringify(selectedValues)}/>
       <Popover.Root onOpenChange={setIsOpen}>
@@ -129,7 +129,7 @@ export const MultipleSelect = ({
             id={`${alias}FormInput`}
             type="button" 
             ref={triggerRef}
-            className={className}
+            className={classname}
             style={{ ...activeTrigger, ...style }}
             aria-describedby={`${alias}InputLabel`}
           >
@@ -179,7 +179,7 @@ export const MultipleSelect = ({
                       className="multiselect-item"
                     >
                       <Checkbox 
-                        disabled={readOnly}
+                        disabled={readonly}
                         checked={isSelected} 
                         style={{ pointerEvents: 'none' }} 
                       />
@@ -197,10 +197,10 @@ export const MultipleSelect = ({
       <div>
                   <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
                   &nbsp;
-                      {props.isHinted ?
+                      {props.ishinted ?
                               <>
-                              <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                                  <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                              <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                                  <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                                   <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                                   </a> 
                               </Tooltip>
@@ -208,7 +208,7 @@ export const MultipleSelect = ({
                        {hasError ?
                               <>
                               <p id={errorId} className='core-input-label-error'>
-                                  {props.errorText || `Required field`}
+                                  {props.errortext || `Required field`}
                               </p>
                               </> : null } 
        </div>

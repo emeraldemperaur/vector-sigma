@@ -22,8 +22,8 @@ export const CreditCardInput = ({
     width,
     placeholder,
     readonly=false,
-    inputVariant = 'input-outline',
-    className,...props
+    inputvariant = 'input-outline',
+    classname,...props
 }: xInputFieldProps) => {
 
     const { setFieldValue, setFieldTouched } = useFormikContext();
@@ -46,15 +46,15 @@ export const CreditCardInput = ({
         }
     };
 
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
-    const isOutline = inputVariant === 'input-outline';
+    const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
+    const isOutline = inputvariant === 'input-outline';
 
     return (
-        <Column span={width} newLine={props.newRow}>
+        <Column span={width} newLine={props.newrow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <Flex 
                     align="center"
-                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${className || ''}`}
+                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${classname || ''}`}
                     style={{
                         width: '100%',
                         boxShadow: (isOutline && hasError) ? 'inset 0 0 0 1px var(--red-9)' : undefined,
@@ -99,16 +99,16 @@ export const CreditCardInput = ({
                         {inputlabel}
                     </Text>
                     &nbsp;
-                    {props.isHinted && (
-                        <Tooltip content={props.hintText || "No hint available"}>
-                            <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    {props.ishinted && (
+                        <Tooltip content={props.hinttext || "No hint available"}>
+                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                      {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {props.errorText || `Required field`}
+                            {props.errortext || `Required field`}
                         </Text>
                     )} 
                 </div>

@@ -12,7 +12,7 @@ export const PasswordInput = ({
     inputlabel,
     width, readonly = false,
     placeholder = '',
-    inputVariant = 'input-outline', size = "2", 
+    inputvariant = 'input-outline', size = "2", 
     className, ...props 
 }: xInputFieldProps) => {
     
@@ -20,11 +20,11 @@ export const PasswordInput = ({
     const toggleVisibility = () => setShowPassword(!showPassword);
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';''
+    const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';''
     const errorId = `${alias}-error`;
 
     return (
-        <Column span={width} newLine={props.newRow}>
+        <Column span={width} newLine={props.newrow}>
             <TextField.Root
                 size={size} 
                 type={showPassword ? "text" : "password"} 
@@ -68,16 +68,16 @@ export const PasswordInput = ({
                     {inputlabel}
                 </Text>
                 &nbsp;
-                {props.isHinted && (
-                    <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                        <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                {props.ishinted && (
+                    <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                        <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                             <QuestionMarkCircledIcon height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                         </a> 
                     </Tooltip>
                 )} 
                 {hasError && (
                     <p id={errorId} className='core-input-label-error'>
-                        {props.errorText || `Required field`}
+                        {props.errortext || `Required field`}
                     </p>
                 )} 
             </div>

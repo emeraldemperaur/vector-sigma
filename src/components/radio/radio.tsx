@@ -11,23 +11,23 @@ export type RadioDesign = 'radio' | 'radio-material' | 'radio-outline' | 'radio-
 interface RadioGroupProps {
     inputtype?: RadioDesign & {},
     alias: string, inputlabel?: string, icon?: React.ReactNode,
-    width: number, defaultValue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
-    placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+    width: number, defaultvalue?: any[], value?: any[], newrow?: boolean, isedit?: boolean,
+    placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
     inputoptions: InputOption[];
     direction?: 'row' | 'column'; // CSS Layout direction
     columns?: string; // CSS grid template columns (e.g., "1fr 1fr")
-    className?: string,  errorText?: ReactNode | string | null,
+    classname?: string,  errorText?: ReactNode | string | null,
     style?: React.CSSProperties;
 }
 
 export const RadioGroupInput = ({
   inputtype = 'radio-outline',
-  alias, readOnly, width, inputlabel,
+  alias, readonly, width, inputlabel,
   placeholder = '',
   style, inputoptions,
   direction = 'column',
   columns, 
-  className, ...props
+  classname, ...props
 }: RadioGroupProps) => {
   
   const { setFieldValue, setFieldTouched } = useFormikContext();
@@ -50,14 +50,14 @@ export const RadioGroupInput = ({
   }, [inputtype]);
 
   return (
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={props.newrow}>
     <Flex 
       direction="column" 
       gap="2" 
       width="100%" 
       ref={containerRef} 
       style={style} 
-      className={className}
+      className={classname}
     >
 
       {inputtype === 'radio-neumorphic' && (
@@ -101,7 +101,7 @@ export const RadioGroupInput = ({
         name={alias}
         id={`${alias}FormInput`}
         aria-describedby={`${alias}InputLabel`}
-        disabled={readOnly}
+        disabled={readonly}
         value={field.value}
         onValueChange={(val) => {
           setFieldValue(alias, val);
@@ -141,10 +141,10 @@ export const RadioGroupInput = ({
       <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
             &nbsp;
-            {props.isHinted ?
+            {props.ishinted ?
                 <>
-                    <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                                  <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                    <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                                  <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                                   <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                                   </a> 
                               </Tooltip>

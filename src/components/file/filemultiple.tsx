@@ -11,10 +11,10 @@ export type FileMultipleInputDesign = 'filemultiple' | 'filemultiple-material' |
 export interface FileMultipleInputProps {
   inputtype?: FileMultipleInputDesign  & {},
   alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: any, value?: any, newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readonly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  preview?: boolean,  errorText?: ReactNode | string | null,
-  className?: string,
+  width: number, defaultvalue?: any, value?: any, newrow?: boolean, isedit?: boolean,
+  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
+  preview?: boolean,  errortext?: ReactNode | string | null,
+  classname?: string,
   style?: React.CSSProperties
 }
 
@@ -65,7 +65,7 @@ export const FileMultiple = ({
   alias, readonly, width, inputlabel,
   placeholder = '',
   preview = true, 
-  className,
+  classname,
   style, ...props
 }: FileMultipleInputProps) => {
   const [field, meta] = useField(alias);
@@ -125,8 +125,8 @@ export const FileMultiple = ({
   const hasError = meta.touched && meta.error;
 
   return (
-    <Column span={width} newLine={props.newRow}>
-    <Box className={className} style={style}>
+    <Column span={width} newLine={props.newrow}>
+    <Box className={classname} style={style}>
       <Box
         onClick={() => inputRef.current?.click()}
         p="4"
@@ -253,10 +253,10 @@ export const FileMultiple = ({
       <div><br/>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
             &nbsp;
-            {props.isHinted ?
+            {props.ishinted ?
                   <>
-                  <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                  <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                      <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                       </a> 
                   </Tooltip>
@@ -265,7 +265,7 @@ export const FileMultiple = ({
                   <>
                   <p id={errorId} className='core-input-label-error'>
                       {typeof meta.error === 'string' ? 
-                      <>{props.errorText || "Required field"}</> 
+                      <>{props.errortext || "Required field"}</> 
                       : 'Invalid file selection'}
                   </p>
                   </> : null } 

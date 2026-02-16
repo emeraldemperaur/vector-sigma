@@ -17,7 +17,7 @@ export const PhoneInput = ({
     width,
     placeholder = "Phone Number",
     readonly,
-    inputVariant = 'input-outline',
+    inputvariant = 'input-outline',
     size = "2",
     className,
     ...props
@@ -27,11 +27,11 @@ export const PhoneInput = ({
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
     const [country, setCountry] = useState<Country>('US');
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
+    const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
     const errorId = `${alias}-error`;
 
     return (
-        <Column span={width} newLine={props.newRow}>
+        <Column span={width} newLine={props.newrow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <TextField.Root 
                     size={size} 
@@ -82,7 +82,6 @@ export const PhoneInput = ({
 
                     <Input
                         country={country}
-                        defaultCountry="US"
                         international
                         withCountryCallingCode={false} 
                         limitMaxLength={true} 
@@ -113,16 +112,16 @@ export const PhoneInput = ({
                         {inputlabel}
                     </Text>
                     
-                    {props.isHinted && (
-                        <Tooltip content={props.hintText || "No hint available"}>
-                            <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    {props.ishinted && (
+                        <Tooltip content={props.hinttext || "No hint available"}>
+                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <QuestionMarkCircledIcon height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {props.errorText || meta.error || `Required field`}
+                            {props.errortext || meta.error || `Required field`}
                         </Text>
                     )} 
                 </div>

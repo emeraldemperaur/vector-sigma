@@ -11,8 +11,8 @@ export type SliderDesign = 'slider' | 'slider-material' | 'slider-outline' | 'sl
 interface SliderProps {
   inputtype?: SliderDesign & {},
   alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultValue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  width: number, defaultvalue?: string, value?: string, newrow?: boolean, errortext?: ReactNode | string | null,
+  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
   minvalue?: number,
   maxvalue?: number,
   stepvalue?: number,
@@ -23,7 +23,7 @@ interface SliderProps {
 
 export const SliderInput = ({
   inputtype = 'slider-outline',
-  alias, readOnly, width, inputlabel,
+  alias, readonly, width, inputlabel,
   placeholder = '',
   minvalue = 0,
   maxvalue = 100,
@@ -53,7 +53,7 @@ export const SliderInput = ({
   }, [inputtype]);
 
   return (
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={props.newrow}>
     <Flex 
       direction="column" 
       gap="3" 
@@ -129,7 +129,7 @@ export const SliderInput = ({
       <Slider 
         name={alias}
         id={`${alias}FormInput`} 
-        disabled={readOnly}
+        disabled={readonly}
         aria-describedby={`${alias}InputLabel`}
         min={minvalue} 
         max={maxvalue} 
@@ -150,10 +150,10 @@ export const SliderInput = ({
       <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
                 &nbsp;
-                {props.isHinted ?
+                {props.ishinted ?
                         <>
-                        <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                            <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                        <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                             <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
@@ -161,7 +161,7 @@ export const SliderInput = ({
                  {hasError ?
                         <>
                         <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || `Required field`}
+                            {props.errortext || `Required field`}
                         </p>
                         </> : null } 
       </div>

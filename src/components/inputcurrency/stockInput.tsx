@@ -10,39 +10,39 @@ import '../../styles/main.scss';
 
 type StockInputProps = {
     alias: string, inputlabel?: string;
-    width: number, defaultValue: string; 
-    newRow?: boolean, placeholder?: string;
-    readOnly?: boolean, isHinted?: boolean;
-    hintText?: string, hintUrl?: string, 
-    errorText?: ReactNode | string | null,
-    inputVariant?: InputDesign & {}, className?: string;
+    width: number, defaultvalue: string; 
+    newrow?: boolean, placeholder?: string;
+    readonly?: boolean, ishinted?: boolean;
+    hinttext?: string, hinturl?: string, 
+    errortext?: ReactNode | string | null,
+    inputvariant?: InputDesign & {}, classname?: string;
 };
 
 export const StockInput = ({
     alias,
     inputlabel,
     width,
-    defaultValue,
+    defaultvalue,
     placeholder,
-    readOnly=false,
-    inputVariant = 'input-outline',
-    className,...props
+    readonly=false,
+    inputvariant = 'input-outline',
+    classname,...props
 }: StockInputProps) => {
 
     const { setFieldValue, setFieldTouched } = useFormikContext();
     const [priceField, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
-    const isOutline = inputVariant === 'input-outline';
+    const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
+    const isOutline = inputvariant === 'input-outline';
     const errorId = `${alias}-error`;
 
     return (
-        <Column span={width} newLine={props.newRow}>
+        <Column span={width} newLine={props.newrow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <Flex 
                     align="center"
                     justify="between" 
-                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${className || ''}`}
+                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${classname || ''}`}
                     style={{
                         width: '100%',
                         height: 'var(--space-6)', 
@@ -73,7 +73,7 @@ export const StockInput = ({
                             userSelect: 'none' 
                         }}
                     >
-                        { defaultValue || <FaChartLine /> }
+                        { defaultvalue || <FaChartLine /> }
                     </Badge>
 
                     <Flex align="center" style={{ flex: 1, height: '100%', justifyContent: 'flex-end' }}>
@@ -83,9 +83,9 @@ export const StockInput = ({
                             aria-describedby={`${alias}InputLabel`}
                             mask={Number}
                             scale={2}
-                            readOnly={readOnly}
+                            readOnly={readonly}
                             // @ts-expect-error: known library type definition gap
-                            signed={false}
+                            signed={String(false)}
                             thousandsSeparator=","
                             padFractionalZeros={true}
                             normalizeZeros={true}
@@ -119,16 +119,16 @@ export const StockInput = ({
                         {inputlabel}
                     </Text>
                     &nbsp;
-                    {props.isHinted && (
-                        <Tooltip content={props.hintText || "No hint available"}>
-                            <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    {props.ishinted && (
+                        <Tooltip content={props.hinttext || "No hint available"}>
+                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
                         <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || `Required field`}
+                            {props.errortext || `Required field`}
                         </p>
                     )} 
                 </div>

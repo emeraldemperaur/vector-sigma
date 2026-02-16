@@ -13,6 +13,8 @@ interface TitleProps {
     align?: "left" | "center" | "right";
     withSeparator?: boolean;
     className?: string;
+    backgroundcolor?: string;
+    icon?: React.ReactNode;
 }
 
 export const SectionTitle = ({
@@ -24,8 +26,16 @@ export const SectionTitle = ({
     subtitle,
     align = "left",
     withSeparator = true,
-    className
+    className,
+    backgroundcolor,
+    icon
 }: TitleProps) => {
+    const justifyMap = {
+        left: 'start',
+        center: 'center',
+        right: 'end'
+    };
+
     return (
         <Column span={width} newLine={newRow}>
             <Flex 
@@ -35,20 +45,35 @@ export const SectionTitle = ({
                 style={{ 
                     width: '100%', 
                     marginBottom: 'var(--space-2)',
-                    textAlign: align 
+                    textAlign: align,
+                    backgroundColor: backgroundcolor || 'transparent',
+                    padding: backgroundcolor ? 'var(--space-3) var(--space-4)' : '0',
+                    borderRadius: backgroundcolor ? 'var(--radius-3)' : '0',
                 }} 
             >
-                <Heading
-                    size={size}
-                    weight="bold"
-                    style={{
-                        width: '100%',
-                        color: 'var(--gray-12)',
-                        lineHeight: '1.2'
-                    }}
+                <Flex 
+                    align="center" 
+                    justify={justifyMap[align] as "start" | "center" | "end"} 
+                    gap="3"
+                    style={{ width: '100%' }}
                 >
-                    {title}
-                </Heading>
+                    {icon && (
+                        <Flex align="center" justify="center" style={{ color: 'var(--gray-12)' }}>
+                            {icon}
+                        </Flex>
+                    )}
+                    
+                    <Heading
+                        size={size}
+                        weight="bold"
+                        style={{
+                            color: 'var(--gray-12)',
+                            lineHeight: '1.2'
+                        }}
+                    >
+                        {title}
+                    </Heading>
+                </Flex>
                 
                 {subtitle && (
                     <Text size={subsize} color="gray" style={{ maxWidth: '80%', margin: align === 'center' ? '0 auto' : undefined }}>

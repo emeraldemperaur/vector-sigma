@@ -17,17 +17,17 @@ export interface DatePickerProps {
   inputlabel?: string;
   icon?: React.ReactNode;
   width: number;
-  defaultValue?: string;
+  defaultvalue?: string;
   value?: string;
   newRow?: boolean;
   placeholder?: string;
   readonly?: boolean;
-  isHinted?: boolean;
-  hintText?: string;
-  hintUrl?: string;
+  ishinted?: boolean;
+  hinttext?: string;
+  hinturl?: string;
   minvalue?: Date | string;
   maxvalue?: Date | string;
-  errorText?: ReactNode | string | null;
+  errortext?: ReactNode | string | null;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -320,10 +320,10 @@ export const DatePicker = ({
         <div>
            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
            &nbsp;
-           {props.isHinted ?
+           {props.ishinted ?
                <>
-                   <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                       <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                   <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                       <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                            <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                        </a> 
                    </Tooltip>
@@ -332,7 +332,7 @@ export const DatePicker = ({
            {hasError ?
                <>
                    <p id={errorId} className='core-input-label-error'>
-                       {props.errorText || (meta.error || "Required field")}
+                       {props.errortext || (meta.error || "Required field")}
                    </p>
                </> : null } 
         </div>

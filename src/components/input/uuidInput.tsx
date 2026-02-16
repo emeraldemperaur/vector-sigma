@@ -14,24 +14,24 @@ type startsWithUuid = `uuid${string}`;
 type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' | 'onChange' | 'value' | 'defaultValue'> & {
     alias: string;
     type: startsWithUuid;
-    inputLabel?: string;
+    inputlabel?: string;
     width: number;
-    newRow?: boolean;
+    newrow?: boolean;
     delimiter?: string;
     format?: number[];
-    isHinted?: boolean;
-    hintText?: string;
-    hintUrl?: string;
+    ishinted?: boolean;
+    hinttext?: string;
+    hinturl?: string;
     placeholder?: string;
-    errorText?: ReactNode | string | null;
-    className?: string;
-    inputVariant?: InputDesign & {};
+    errortext?: ReactNode | string | null;
+    classname?: string;
+    inputvariant?: InputDesign & {};
 };
 
 export const UUIDInput = ({
-    alias, type, inputLabel, width, delimiter = "-",
+    alias, type, inputlabel, width, delimiter = "-",
     format = [4, 4, 4, 4], placeholder = '',
-    readOnly = false, inputVariant = 'input-outline',
+    readOnly = false, inputvariant = 'input-outline',
     size = "2", className, ...props
 }: UUIDInputProps) => {
 
@@ -65,10 +65,10 @@ export const UUIDInput = ({
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
+    const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
 
     return (
-        <Column span={width} newLine={props.newRow}>
+        <Column span={width} newLine={props.newrow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <TextField.Root 
                     size={size} 
@@ -124,19 +124,19 @@ export const UUIDInput = ({
 
                 <div>
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputLabel}
+                        {inputlabel}
                     </Text>
                     &nbsp;
-                    {props.isHinted && (
-                        <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                            <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                    {props.ishinted && (
+                        <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
                         <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || meta.error || `Required field`}
+                            {props.errortext || meta.error || `Required field`}
                         </p>
                     )} 
                 </div>

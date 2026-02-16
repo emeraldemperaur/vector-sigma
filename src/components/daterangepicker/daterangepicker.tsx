@@ -17,32 +17,32 @@ export interface DateRangePickerProps {
   inputlabel?: string;
   icon?: React.ReactNode;
   width: number;
-  defaultValue?: string;
+  defaultvalue?: string;
   value?: string;
-  newRow?: boolean;
+  newrow?: boolean;
   placeholder?: string;
-  readOnly?: boolean;
-  isHinted?: boolean;
-  hintText?: string;
-  hintUrl?: string;
+  readonly?: boolean;
+  ishinted?: boolean;
+  hinttext?: string;
+  hinturl?: string;
   minvalue?: Date | string;
   maxvalue?: Date | string;
-  errorText?: ReactNode | string | null;
-  className?: string;
+  errortext?: ReactNode | string | null;
+  classname?: string;
   style?: React.CSSProperties;
 }
 
 export const DateRangePicker = ({
   inputtype = 'daterangepicker-outline',
   alias,
-  readOnly,
+  readonly,
   width,
   inputlabel,
   placeholder = 'Pick a date range',
   value,
   minvalue,
   maxvalue,
-  className,
+  classname,
   style,
   ...props
 }: DateRangePickerProps) => {
@@ -148,8 +148,8 @@ export const DateRangePicker = ({
   }, [inputtype, neuVars]);
 
   return (
-    <Column span={width} newLine={props.newRow}>
-    <Flex direction="column" gap="2" width="100%" ref={containerRef} style={style} className={className}>
+    <Column span={width} newLine={props.newrow}>
+    <Flex direction="column" gap="2" width="100%" ref={containerRef} style={style} className={classname}>
       <input 
         type="hidden" 
         name={alias} 
@@ -267,7 +267,7 @@ export const DateRangePicker = ({
                  height: inputtype === 'daterangepicker-neumorphic' ? '40px' : '32px', 
                  ...activeInputStyle 
              }}
-             onClick={() => !readOnly && setIsOpen(true)}
+             onClick={() => !readonly && setIsOpen(true)}
           >
             <TextField.Slot>
                 <Icon name='calendar' height="16" width="16" style={{ color: 'var(--gray-10)' }} />
@@ -276,7 +276,7 @@ export const DateRangePicker = ({
               id={inputId}  
               aria-describedby={hasError ? errorId : `${alias}InputLabel`}
               readOnly 
-              disabled={readOnly}
+              disabled={readonly}
               value={displayText} 
               placeholder={placeholder}
               style={{ 
@@ -284,7 +284,7 @@ export const DateRangePicker = ({
                   border: 'none', 
                   outline: 'none', 
                   width: '100%', 
-                  cursor: readOnly ? 'default' : 'pointer', 
+                  cursor: readonly ? 'default' : 'pointer', 
                   color: 'inherit', 
                   fontFamily: 'inherit', 
                   fontSize: 'var(--font-size-2)',
@@ -311,7 +311,7 @@ export const DateRangePicker = ({
                 }
               }}
               disabled={[
-                ...(readOnly ? [{ from: new Date(1900, 0, 1), to: new Date(2100, 0, 1) }] : []),
+                ...(readonly ? [{ from: new Date(1900, 0, 1), to: new Date(2100, 0, 1) }] : []),
                 { before: parsedMin || new Date(1900, 0, 1) }, 
                 { after: parsedMax || new Date(2100, 0, 1) }
               ]}
@@ -330,10 +330,10 @@ export const DateRangePicker = ({
       <div>
            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
            &nbsp;
-           {props.isHinted ?
+           {props.ishinted ?
                <>
-                   <Tooltip content={props.hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                       <a href={props.hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                   <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                       <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
                            <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                        </a> 
                    </Tooltip>
@@ -341,7 +341,7 @@ export const DateRangePicker = ({
            {hasError ?
                <>
                    <p id={errorId} className='core-input-label-error'>
-                       {props.errorText || (meta.error || "Required field")}
+                       {props.errortext || (meta.error || "Required field")}
                    </p>
                </> : null } 
       </div>
