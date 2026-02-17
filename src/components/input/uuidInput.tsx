@@ -32,7 +32,7 @@ interface UUIDInputProps {
     placeholder?: string;
     errorText?: ReactNode | string | null;
     className?: string;
-    inputVariant?: 'input' | 'input-outline' | 'input-material' | 'input-neumorphic';
+    inputVariant?: 'uuid' | 'uuid-outline' | 'uuid' | 'uuid-neumorphic';
     readOnly?: boolean;
     size?: "1" | "2" | "3";
 }
@@ -51,7 +51,7 @@ export const UUIDInput = ({
     hintUrl, 
     errorText,
     readOnly = false, 
-    inputVariant = 'input-outline',
+    inputVariant = 'uuid-outline',
     size = "2", 
     className, 
     ...props
@@ -62,33 +62,33 @@ export const UUIDInput = ({
     const hasError = Boolean(meta.touched && meta.error);
     const [copied, setCopied] = useState(false);
     const errorId = `${alias}-error`;
+
     const activeFormat = useMemo(() => {
         const parsed = safeParseUuidFormat(type);
         return parsed || format;
     }, [type, format]);
+
     const maxHexChars = activeFormat.reduce((a, b) => a + b, 0);
     const maxTotalLength = maxHexChars + (activeFormat.length - 1); 
+
     const formatUUID = (value: string) => {
         if (!value) return "";
+        
         const clean = value.replace(/[^0-9a-fA-F]/g, "").toUpperCase().slice(0, maxHexChars);
-        let result = "";
+        
+        const parts = [];
         let currentIdx = 0;
-        for (let i = 0; i < activeFormat.length; i++) {
-            const chunkLen = activeFormat[i];
 
-            if (currentIdx < clean.length) {
-                const chunk = clean.substring(currentIdx, chunkLen);
-                result += chunk;
-                
-                if (chunk.length === chunkLen && i < activeFormat.length - 1 && (currentIdx + chunkLen) < clean.length) {
-                    result += delimiter;
-                }
-                currentIdx += chunkLen;
-            } else {
-                break;
-            }
+        for (const len of activeFormat) {
+            if (currentIdx >= clean.length) break;
+
+            const chunk = clean.slice(currentIdx, currentIdx + len);
+            parts.push(chunk);
+            
+            currentIdx += len;
         }
-        return result;
+
+        return parts.join(delimiter);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +105,7 @@ export const UUIDInput = ({
         }
     };
 
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
+    const variantClass = inputVariant !== 'uuid-outline' ? `input-${inputVariant}` : '';
 
     return (
         <Column span={width} newLine={newRow}>
@@ -113,6 +113,7 @@ export const UUIDInput = ({
                 
                 <TextField.Root
                     size={size} 
+                    name={`${alias}UUIDFormInput`}
                     variant="surface" 
                     color={hasError ? 'red' : undefined}
                     className={`${variantClass} ${className || ''}`}
@@ -122,11 +123,9 @@ export const UUIDInput = ({
                         id={`${alias}FormInput`}
                         name={alias}
                         aria-describedby={`${alias}InputLabel`}
-                        
                         value={field.value || ''}
                         onChange={handleChange}
                         onBlur={() => setFieldTouched(alias, true)}
-                        
                         maxLength={maxTotalLength}
                         readOnly={readOnly}
                         placeholder={placeholder}
@@ -143,7 +142,7 @@ export const UUIDInput = ({
                             color: 'var(--gray-12)',
                             fontFamily: 'var(--code-font-family, monospace)', 
                             fontSize: 'var(--font-size-2)',
-                            textTransform: 'uppercase',
+                            textTransform: 'uppercase', 
                             width: '100%'
                         }}
                     />
