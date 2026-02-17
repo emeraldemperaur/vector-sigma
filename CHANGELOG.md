@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.18
+
+### Patch Changes
+
+- fa94ec9: UUID Component Triage
+
 ## 1.4.17
 
 ### Patch Changes
