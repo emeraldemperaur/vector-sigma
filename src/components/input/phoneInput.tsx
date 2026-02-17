@@ -84,7 +84,6 @@ export const PhoneInput = ({
                         country={country}
                         international
                         withCountryCallingCode={false} 
-                        limitMaxLength={true} 
                         value={field.value || ''}
                         onChange={(val?: Value) => setFieldValue(alias, val || '')} 
                         onBlur={() => setFieldTouched(alias, true)}
