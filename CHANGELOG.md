@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.11
+
+### Patch Changes
+
+- 6f258b9: Input Component Triage Fix Update 16.02::05:58
+
 ## 1.4.10
 
 ### Patch Changes
