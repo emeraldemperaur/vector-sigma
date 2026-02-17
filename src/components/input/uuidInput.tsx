@@ -5,12 +5,12 @@ import { Icon } from "components/icons/icons";
 import { useField, useFormikContext } from "formik"; 
 import { Column } from "layouts/column/column";
 import { InputDesign } from "./input"; 
+import { IMaskInput } from 'react-imask'; 
 import '../../styles/main.scss';
 
 const safeParseUuidFormat = (typeString: string): number[] | null => {
     try {
         if (!typeString.startsWith('uuid')) return null;
-        // "uuid-8-4-4-4-12" -> [8,4,4,4,12]
         const parts = typeString.split('-').slice(1).map(Number);
         return parts.length > 0 && !parts.some(isNaN) ? parts : null;
     } catch {
@@ -20,7 +20,7 @@ const safeParseUuidFormat = (typeString: string): number[] | null => {
 
 type startsWithUuid = `uuid${string}`;
 
-type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' | 'onChange' | 'value' | 'defaultValue'> & {
+type UUIDInputProps = {
     alias: string;
     type?: startsWithUuid | string; 
     inputLabel?: string;
@@ -34,7 +34,9 @@ type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' |
     placeholder?: string;
     errorText?: ReactNode | string | null;
     className?: string;
-    inputVariant?: InputDesign & {};
+    inputVariant?: InputDesign;
+    readOnly?: boolean;
+    size?: "1" | "2" | "3";
 };
 
 export const UUIDInput = ({
@@ -62,44 +64,14 @@ export const UUIDInput = ({
     const hasError = Boolean(meta.touched && meta.error);
     const [copied, setCopied] = useState(false);
     const errorId = `${alias}-error`;
-
     const activeFormat = useMemo(() => {
         const parsed = safeParseUuidFormat(type);
         return parsed || format;
     }, [type, format]);
 
-    const maxHexChars = activeFormat.reduce((a, b) => a + b, 0);
-    const maxTotalLength = maxHexChars + (activeFormat.length - 1); 
-
-    const formatValue = (rawValue: string) => {
-        if (!rawValue) return "";
-
-        const clean = rawValue.replace(/[^0-9a-fA-F]/g, "").toUpperCase().slice(0, maxHexChars);
-
-        const parts: string[] = [];
-        let currentIndex = 0;
-
-        for (let i = 0; i < activeFormat.length; i++) {
-            const chunkLength = activeFormat[i];
-            const remaining = clean.length - currentIndex;
-
-            if (remaining > 0) {
-                const chunk = clean.substr(currentIndex, chunkLength);
-                parts.push(chunk);
-                currentIndex += chunkLength;
-            } else {
-                break;
-            }
-        }
-
-        return parts.join(delimiter);
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
-        const formatted = formatValue(val);
-        setFieldValue(alias, formatted);
-    };
+    const maskPattern = useMemo(() => {
+        return activeFormat.map(len => '*'.repeat(len)).join(delimiter);
+    }, [activeFormat, delimiter]);
 
     const handleCopy = () => {
         if (field.value) {
@@ -119,22 +91,23 @@ export const UUIDInput = ({
                     variant="surface" 
                     color={hasError ? 'red' : undefined}
                     className={`${variantClass} ${className || ''}`}
-                    {...props}
+                    {...(props as any)} 
                 >
-                    <input
-                        id={`${alias}FormInput`}
-                        name={alias}
-                        aria-describedby={`${alias}InputLabel`}
-                        readOnly={readOnly}
-                        
+                   
+                    <IMaskInput
+                        mask={maskPattern}
+                        definitions={{
+                            '*': /[0-9a-fA-F]/
+                        }}
+                        prepare={(str) => str.toUpperCase()}
                         value={field.value || ''}
-                        onChange={handleChange}
+                        onAccept={(val: string) => {
+                             setFieldValue(alias, val);
+                        }}
                         onBlur={() => setFieldTouched(alias, true)}
-                        
-                        maxLength={maxTotalLength}
+                        id={`${alias}FormInput`}
                         placeholder={placeholder}
-                        type="text"
-                        
+                        readOnly={readOnly}
                         style={{
                             flex: 1,
                             border: 'none',
@@ -148,8 +121,6 @@ export const UUIDInput = ({
                             textTransform: 'uppercase',
                             width: '100%'
                         }}
-                        autoComplete="off"
-                        spellCheck={false}
                     />
 
                     <TextField.Slot>
@@ -167,7 +138,6 @@ export const UUIDInput = ({
                         </Tooltip>
                     </TextField.Slot>
                 </TextField.Root>
-
                 <div>
                     {inputLabel && (
                         <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
