@@ -76,6 +76,7 @@ export const CurrencyInput = ({
                 >
                     <Select.Root 
                         value={activeCurrency.code} 
+                        name={currencyAlias}
                         onValueChange={(val) => setFieldValue(currencyAlias, val)}  
                         disabled={readOnly || inputtype !== "currency"} 
                     >
