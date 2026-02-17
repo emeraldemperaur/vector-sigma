@@ -3,16 +3,26 @@ import { TextField, IconButton, Tooltip, Flex, Text } from '@radix-ui/themes';
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons';
 import { Icon } from "components/icons/icons";
 import { useField, useFormikContext } from "formik"; 
-import { parseUuidFormat } from "utils/uuidparser";
 import { Column } from "layouts/column/column";
-import { InputDesign } from "./input";
+import { InputDesign } from "./input"; 
 import '../../styles/main.scss';
+
+const safeParseUuidFormat = (typeString: string): number[] | null => {
+    try {
+        if (!typeString.startsWith('uuid')) return null;
+        // "uuid-8-4-4-4-12" -> [8,4,4,4,12]
+        const parts = typeString.split('-').slice(1).map(Number);
+        return parts.length > 0 && !parts.some(isNaN) ? parts : null;
+    } catch {
+        return null;
+    }
+};
 
 type startsWithUuid = `uuid${string}`;
 
 type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' | 'onChange' | 'value' | 'defaultValue'> & {
     alias: string;
-    type: startsWithUuid;
+    type?: startsWithUuid | string; 
     inputLabel?: string;
     width: number;
     newRow?: boolean;
@@ -28,11 +38,23 @@ type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' |
 };
 
 export const UUIDInput = ({
-    alias, type, inputLabel, width, delimiter = "-",
-    format = [8, 4, 4, 4, 12], 
-    placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
-    readOnly = false, inputVariant = 'input-outline',
-    size = "2", className, ...props
+    alias, 
+    type = "uuid", 
+    inputLabel, 
+    width, 
+    delimiter = "-",
+    format = [8, 4, 4, 4, 12],
+    placeholder = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX', 
+    newRow, 
+    isHinted, 
+    hintText, 
+    hintUrl, 
+    errorText,
+    readOnly = false, 
+    inputVariant = 'input-outline',
+    size = "2", 
+    className, 
+    ...props
 }: UUIDInputProps) => {
 
     const { setFieldValue, setFieldTouched } = useFormikContext();
@@ -42,49 +64,49 @@ export const UUIDInput = ({
     const errorId = `${alias}-error`;
 
     const activeFormat = useMemo(() => {
-        if (type && type.toLowerCase().startsWith("uuid") && type.length > 4) {
-             const parsed = parseUuidFormat(type);
-             if (parsed) return parsed;
-        }
-        return format;
-    }, [format, type]);
+        const parsed = safeParseUuidFormat(type);
+        return parsed || format;
+    }, [type, format]);
 
-    const maxRawLength = activeFormat.reduce((a, b) => a + b, 0);
+    const maxHexChars = activeFormat.reduce((a, b) => a + b, 0);
+    const maxTotalLength = maxHexChars + (activeFormat.length - 1); 
 
-    const formatUUID = (rawValue: string) => {
-        const clean = rawValue.replace(/[^0-9a-fA-F]/g, '').toUpperCase().slice(0, maxRawLength);
-        let formatted = '';
-        let currentIdx = 0;
-        
+    const formatValue = (rawValue: string) => {
+        if (!rawValue) return "";
+
+        const clean = rawValue.replace(/[^0-9a-fA-F]/g, "").toUpperCase().slice(0, maxHexChars);
+
+        const parts: string[] = [];
+        let currentIndex = 0;
+
         for (let i = 0; i < activeFormat.length; i++) {
-            const chunkLen = activeFormat[i];
-            if (currentIdx + chunkLen <= clean.length) {
-                formatted += clean.substring(currentIdx, chunkLen);
-                if (i < activeFormat.length - 1) {
-                    formatted += delimiter;
-                }
-            } 
-            else {
-                formatted += clean.substring(currentIdx);
-                break; 
+            const chunkLength = activeFormat[i];
+            const remaining = clean.length - currentIndex;
+
+            if (remaining > 0) {
+                const chunk = clean.substr(currentIndex, chunkLength);
+                parts.push(chunk);
+                currentIndex += chunkLength;
+            } else {
+                break;
             }
-            
-            currentIdx += chunkLen;
         }
-        
-        return formatted;
+
+        return parts.join(delimiter);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newVal = e.target.value;
-        const formatted = formatUUID(newVal);
+        const val = e.target.value;
+        const formatted = formatValue(val);
         setFieldValue(alias, formatted);
     };
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(field.value || '');
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        if (field.value) {
+            navigator.clipboard.writeText(field.value);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
     };
 
     const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
@@ -109,8 +131,8 @@ export const UUIDInput = ({
                         onChange={handleChange}
                         onBlur={() => setFieldTouched(alias, true)}
                         
-                        placeholder={placeholder || 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'}
-                        maxLength={maxRawLength + (activeFormat.length - 1)}
+                        maxLength={maxTotalLength}
+                        placeholder={placeholder}
                         type="text"
                         
                         style={{
@@ -121,7 +143,7 @@ export const UUIDInput = ({
                             height: '100%',
                             paddingLeft: '8px',
                             color: 'var(--gray-12)',
-                            fontFamily: 'var(--code-font-family)',
+                            fontFamily: 'var(--code-font-family)', 
                             fontSize: 'var(--font-size-2)',
                             textTransform: 'uppercase',
                             width: '100%'
@@ -147,21 +169,23 @@ export const UUIDInput = ({
                 </TextField.Root>
 
                 <div>
-                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputLabel}
-                    </Text>
+                    {inputLabel && (
+                        <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
+                            {inputLabel}
+                        </Text>
+                    )}
                     &nbsp;
                     {isHinted && (
-                        <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                        <Tooltip content={hintText || "No hint available"}>
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                                <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                                <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray', marginLeft: 4 }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
-                        <p id={errorId} className='core-input-label-error'>
+                        <Text id={errorId} size="1" color="red" style={{ display: 'block', marginTop: 2 }}>
                             {errorText || meta.error || `Required field`}
-                        </p>
+                        </Text>
                     )} 
                 </div>
             </Flex>
