@@ -9,24 +9,24 @@ import { InputDesign } from "components/input/input";
 import '../../styles/main.scss';
 
 type StockInputProps = {
-    alias: string, inputlabel?: string;
+    alias: string, inputLabel?: string;
     width: number, defaultvalue: string; 
-    newrow?: boolean, placeholder?: string;
-    readonly?: boolean, ishinted?: boolean;
-    hinttext?: string, hinturl?: string, 
-    errortext?: ReactNode | string | null,
-    inputvariant?: InputDesign & {}, classname?: string;
+    newRow?: boolean, placeholder?: string;
+    readOnly?: boolean, isHinted?: boolean;
+    hintText?: string, hintUrl?: string, 
+    errorText?: ReactNode | string | null,
+    inputvariant?: InputDesign & {}, className?: string;
 };
 
 export const StockInput = ({
     alias,
-    inputlabel,
+    inputLabel,
     width,
     defaultvalue,
-    placeholder,
-    readonly=false,
+    placeholder, newRow, isHinted, hintText, hintUrl, errorText,
+    readOnly=false,
     inputvariant = 'input-outline',
-    classname,...props
+    className,...props
 }: StockInputProps) => {
 
     const { setFieldValue, setFieldTouched } = useFormikContext();
@@ -37,12 +37,12 @@ export const StockInput = ({
     const errorId = `${alias}-error`;
 
     return (
-        <Column span={width} newLine={props.newrow}>
+        <Column span={width} newLine={newRow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <Flex 
                     align="center"
                     justify="between" 
-                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${classname || ''}`}
+                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${className || ''}`}
                     style={{
                         width: '100%',
                         height: 'var(--space-6)', 
@@ -83,7 +83,7 @@ export const StockInput = ({
                             aria-describedby={`${alias}InputLabel`}
                             mask={Number}
                             scale={2}
-                            readOnly={readonly}
+                            readOnly={readOnly}
                             // @ts-expect-error: known library type definition gap
                             signed={String(false)}
                             thousandsSeparator=","
@@ -116,19 +116,19 @@ export const StockInput = ({
                 
                 <div>
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputlabel}
+                        {inputLabel}
                     </Text>
                     &nbsp;
-                    {props.ishinted && (
-                        <Tooltip content={props.hinttext || "No hint available"}>
-                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    {isHinted && (
+                        <Tooltip content={hintText || "No hint available"}>
+                            <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
                         <p id={errorId} className='core-input-label-error'>
-                            {props.errortext || `Required field`}
+                            {errorText || `Required field`}
                         </p>
                     )} 
                 </div>

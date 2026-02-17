@@ -14,24 +14,24 @@ type startsWithUuid = `uuid${string}`;
 type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' | 'onChange' | 'value' | 'defaultValue'> & {
     alias: string;
     type: startsWithUuid;
-    inputlabel?: string;
+    inputLabel?: string;
     width: number;
-    newrow?: boolean;
+    newRow?: boolean;
     delimiter?: string;
     format?: number[];
-    ishinted?: boolean;
-    hinttext?: string;
-    hinturl?: string;
+    isHinted?: boolean;
+    hintText?: string;
+    hintUrl?: string;
     placeholder?: string;
-    errortext?: ReactNode | string | null;
-    classname?: string;
-    inputvariant?: InputDesign & {};
+    errorText?: ReactNode | string | null;
+    className?: string;
+    inputVariant?: InputDesign & {};
 };
 
 export const UUIDInput = ({
-    alias, type, inputlabel, width, delimiter = "-",
-    format = [4, 4, 4, 4], placeholder = '',
-    readOnly = false, inputvariant = 'input-outline',
+    alias, type, inputLabel, width, delimiter = "-",
+    format = [4, 4, 4, 4], placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
+    readOnly = false, inputVariant = 'input-outline',
     size = "2", className, ...props
 }: UUIDInputProps) => {
 
@@ -48,6 +48,7 @@ export const UUIDInput = ({
              const parsed = parseUuidFormat(type);
              if (parsed) activeFormat = parsed;
         }
+
         const maskChar = '#'; 
         const pattern = activeFormat.map(len => maskChar.repeat(len)).join(delimiter);
         
@@ -57,7 +58,7 @@ export const UUIDInput = ({
                 '#': /[0-9a-fA-F]/ 
             }
         };
-    }, [format, type, delimiter]);
+    }, [JSON.stringify(format), type, delimiter]);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(field.value || '');
@@ -65,10 +66,10 @@ export const UUIDInput = ({
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
+    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
 
     return (
-        <Column span={width} newLine={props.newrow}>
+        <Column span={width} newLine={newRow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <TextField.Root 
                     size={size} 
@@ -89,6 +90,7 @@ export const UUIDInput = ({
                         onAccept={(val: string) => setFieldValue(alias, val)}
                         onBlur={() => setFieldTouched(alias, true)}
                         placeholder={placeholder}
+                        type="text" 
                         style={{
                             flex: 1,
                             border: 'none',
@@ -124,19 +126,19 @@ export const UUIDInput = ({
 
                 <div>
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputlabel}
+                        {inputLabel}
                     </Text>
                     &nbsp;
-                    {props.ishinted && (
-                        <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                    {isHinted && (
+                        <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                            <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
                         <p id={errorId} className='core-input-label-error'>
-                            {props.errortext || meta.error || `Required field`}
+                            {errorText || meta.error || `Required field`}
                         </p>
                     )} 
                 </div>

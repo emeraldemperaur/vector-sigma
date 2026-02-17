@@ -13,7 +13,7 @@ export interface ImageDisplayProps {
   aspectratio?: number; // 16/9, 4/3, 1
   height?: string | number; 
   width?: string | number;
-  classname?: string;
+  className?: string;
   style?: React.CSSProperties;
   onClick?: () => void;
 }
@@ -61,7 +61,7 @@ export const ImageOutput = ({
   aspectratio = 16 / 9,
   height,
   width = '100%',
-  classname,
+  className,
   style,
   onClick,
 }: ImageDisplayProps) => {
@@ -70,7 +70,7 @@ export const ImageOutput = ({
 
   const content = (
     <Box
-      className={classname}
+      className={className}
       style={{
         ...containerStyles,
         width,

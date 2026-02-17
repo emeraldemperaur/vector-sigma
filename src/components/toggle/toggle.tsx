@@ -11,31 +11,31 @@ import '../../styles/main.scss';
 export type ToggleDesign = 'toggle' | 'toggle-material' | 'toggle-outline' | 'toggle-neumorphic';
 
 interface ToggleProps extends ButtonProps {
-  inputtype?: ToggleDesign;
+  inputtype?: ToggleDesign & {};
   alias: string;
-  inputlabel?: string;
+  inputLabel?: string;
   width: number;
-  newrow?: boolean;
-  readonly?: boolean;
-  ishinted?: boolean;
-  hinttext?: string;
-  hinturl?: string;
+  newRow?: boolean;
+  readOnly?: boolean;
+  isHinted?: boolean;
+  hintText?: string;
+  hintUrl?: string;
   icon?: string;
-  errortext?: ReactNode | string | null;
+  errorText?: ReactNode | string | null;
 }
 
 export const Toggle = ({
   inputtype = 'toggle-neumorphic',
   alias, 
-  readonly, 
+  readOnly, 
   width, 
-  inputlabel,
+  inputLabel,
   style,
   children,
-  newrow,
-  ishinted,
-  hinttext,
-  hinturl,
+  newRow,
+  isHinted,
+  hintText,
+  hintUrl, errorText,
   icon = 'stack',
   ...props
 }: ToggleProps) => {
@@ -78,83 +78,95 @@ export const Toggle = ({
   };
 
   const handleToggle = (val: boolean) => {
-    if (!readonly) {
+    if (!readOnly) {
         setFieldValue(alias, val);
         setFieldTouched(alias, true);
     }
   };
 
+  // Determine Icon Color: Deep accent if Checked & Active, Grey otherwise
+  const iconColor = field.value && !readOnly ? 'var(--accent-9)' : 'var(--gray-8)';
+
   return (
-    <Column span={width} newLine={newrow}>
+    <Column span={width} newLine={newRow}>
       <div ref={containerRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         
         {inputtype === 'toggle-neumorphic' ? (
-            <div 
-                className="neu-toggle-wrapper"
-                style={{ ...neuVars, opacity: readonly ? 0.6 : 1, pointerEvents: readonly ? 'none' : 'auto' }}
-                onClick={() => handleToggle(!field.value)}
-            >
-                <style dangerouslySetInnerHTML={{__html: `
-                    .neu-toggle-wrapper {
-                        isolation: isolate;
-                        position: relative;
-                        height: 30px;
-                        width: 60px;
-                        border-radius: 15px;
-                        overflow: hidden;
-                        cursor: pointer;
-                        background: var(--neu-bg);
-                        box-shadow:
-                            -8px -4px 8px 0px var(--neu-shadow-light),
-                            8px 4px 12px 0px var(--neu-shadow-dark),
-                            4px 4px 4px 0px var(--neu-shadow-dark) inset,
-                            -4px -4px 4px 0px var(--neu-shadow-light) inset;
-                    }
-                    
-                    /* The Input is hidden visually but keeps state for CSS selector */
-                    .neu-toggle-state {
-                        display: none;
-                    }
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div 
+                    className="neu-toggle-wrapper"
+                    style={{ ...neuVars, opacity: readOnly ? 0.6 : 1, pointerEvents: readOnly ? 'none' : 'auto' }}
+                    onClick={() => handleToggle(!field.value)}
+                >
+                    <style dangerouslySetInnerHTML={{__html: `
+                        .neu-toggle-wrapper {
+                            isolation: isolate;
+                            position: relative;
+                            height: 30px;
+                            width: 60px;
+                            border-radius: 15px;
+                            overflow: hidden;
+                            cursor: pointer;
+                            background: var(--neu-bg);
+                            box-shadow:
+                                -8px -4px 8px 0px var(--neu-shadow-light),
+                                8px 4px 12px 0px var(--neu-shadow-dark),
+                                4px 4px 4px 0px var(--neu-shadow-dark) inset,
+                                -4px -4px 4px 0px var(--neu-shadow-light) inset;
+                        }
+                        
+                        .neu-toggle-state {
+                            display: none;
+                        }
 
-                    .neu-indicator {
-                        height: 100%;
-                        width: 200%;
-                        background: var(--neu-bg);
-                        border-radius: 15px;
-                        transform: translate3d(-75%, 0, 0);
-                        transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
-                        box-shadow:
-                            -8px -4px 8px 0px var(--neu-shadow-light),
-                            8px 4px 12px 0px var(--neu-shadow-dark);
-                    }
+                        .neu-indicator {
+                            height: 100%;
+                            width: 200%;
+                            background: var(--neu-bg);
+                            border-radius: 15px;
+                            transform: translate3d(-75%, 0, 0);
+                            transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
+                            box-shadow:
+                                -8px -4px 8px 0px var(--neu-shadow-light),
+                                8px 4px 12px 0px var(--neu-shadow-dark);
+                        }
 
-                    /* Sibling selector triggers animation when checked */
-                    .neu-toggle-state:checked ~ .neu-indicator {
-                        transform: translate3d(25%, 0, 0);
-                    }
-                `}} />
+                        .neu-toggle-state:checked ~ .neu-indicator {
+                            transform: translate3d(25%, 0, 0);
+                        }
+                    `}} />
 
-                <input 
-                    className="neu-toggle-state" 
-                    type="checkbox" 
-                    checked={!!field.value} 
-                    readOnly 
+                    <input 
+                        className="neu-toggle-state" 
+                        type="checkbox" 
+                        checked={!!field.value} 
+                        readOnly 
+                    />
+                    <div className="neu-indicator"></div>
+                </div>
+                <Icon 
+                    name={icon} 
+                    height="20" 
+                    width="20" 
+                    color={iconColor}
+                    style={{ 
+                        transition: 'color 0.3s ease',
+                        opacity: readOnly ? 0.5 : 1 
+                    }}
                 />
-                <div className="neu-indicator"></div>
-                <Icon name={icon}/>
             </div>
         ) : (
             <TogglePrimitive.Root
                 pressed={field.value}
                 onPressedChange={handleToggle}
                 name={alias}
-                disabled={readonly}
+                disabled={readOnly}
                 id={`${alias}FormInput`}
                 aria-describedby={`${alias}InputLabel`}
                 asChild
             >
                 <Button
-                    disabled={readonly}
+                    disabled={readOnly}
                     {...props}
                     className={`design-toggle ${inputtype} ${props.className || ''}`}
                     style={{
@@ -166,7 +178,6 @@ export const Toggle = ({
                     type="button" 
                 >
                     <style dangerouslySetInnerHTML={{__html: `
-                        /* Material States */
                         .design-toggle.toggle-material[data-state='on'] {
                             background-color: var(--accent-9);
                             color: white;
@@ -176,7 +187,6 @@ export const Toggle = ({
                             background-color: var(--gray-3);
                             color: var(--gray-11);
                         }
-                        /* Outline States */
                         .design-toggle.toggle-outline[data-state='on'] {
                             border: 2px solid var(--accent-9);
                             color: var(--accent-9);
@@ -193,15 +203,15 @@ export const Toggle = ({
         )}
 
         <div>
-            {inputlabel && (
+            {inputLabel && (
                 <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                    {inputlabel}
+                    {inputLabel}
                 </Text>
             )}
             &nbsp;
-            {ishinted && (
-                <Tooltip content={hinttext || "No hint available"}>
-                    <a href={hinturl || ""} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 6 }}>
+            {isHinted && (
+                <Tooltip content={hintText || "No hint available"}>
+                    <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 6 }}>
                         <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                     </a> 
                 </Tooltip>
@@ -209,7 +219,7 @@ export const Toggle = ({
 
             {hasError && (
                 <Text size="1" color="red" style={{ display: 'block', marginTop: 2 }}>
-                    {props.errortext || `Required field`}
+                    {errorText || `Required field`}
                 </Text>
             )}
         </div>

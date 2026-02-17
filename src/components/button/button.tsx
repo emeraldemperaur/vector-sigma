@@ -9,16 +9,77 @@ import { Column } from 'layouts/column/column';
 import '../../styles/main.scss';
 
 export interface DesignButtonProps extends ButtonProps {
-  inputtype?: ButtonDesign & {},
-  alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultvalue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
-  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
+    /**
+   * * The design variation of the Button input. 
+   * Default: 'button-outline' 
+   * Variants: 'button', 'button-outline', 'button-material', 'button-neumorphic'.
+   * * @example
+   * inputtype="button-neumorphic"
+   */
+  inputtype?: ButtonDesign & {};
+  /**
+   * * The required unique identifier for the input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="dontPushMe"
+   */
+  alias: string;
+  /**
+   * * Option to render Button input with icon passed as a ReactNode {}.
+   * * @example
+   * icon={<Icon name="stack"/>}
+   */
+  icon?: React.ReactNode;
+   /**
+   * * The required viewport column width for the Button input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
+  width: number;
+    /**
+   * * Option to render Button input field on new row.
+   * * @example
+   * newRow
+   */
+  newRow?: boolean;
+   /**
+   * * Option to disable edits for Button input field.
+   * * @example
+   * readOnly
+   */
+  readOnly?: boolean;
+  /**
+   * * Option to enable a hint for Button input field.
+   * * @example
+   * isHinted
+   */
+  isHinted?: boolean;
+    /**
+   * * Option to specify hint text for Button input field.
+   * * @example
+   * hintText="This is a hint for a VΣ AvatarInput"
+   */
+  hintText?: string;
+  /**
+   * * Option to specify a hint url reference or resource for Button input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */
+  hintUrl?: string;
+   /**
+   * * Option to inject onClick event handler function for Button input field.
+   * * @example
+   * onClick={() => { lesEnfantsTerribles() }}
+   */
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const ButtonInput = ({ 
-  inputtype = 'button-outline', type = 'button', inputlabel,
-  alias, readonly, style, width, children, ...props 
+  inputtype = 'button-outline', type = 'button',
+  alias, readOnly, style, width, children,
+  newRow, isHinted, hintText, hintUrl,
+  ...props 
 }: DesignButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [neumorphicVars, setNeumorphicVars] = useState<React.CSSProperties>({});
@@ -102,7 +163,7 @@ export const ButtonInput = ({
 
   return (
     <>
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={newRow}>
       {inputtype === 'button-neumorphic' && (
         <style dangerouslySetInnerHTML={{__html: `
           .neumorphic-btn:active {
@@ -117,7 +178,7 @@ export const ButtonInput = ({
 
       <Button 
         name={alias}
-        disabled={readonly}
+        disabled={readOnly}
         id={`${alias}FormInput`}
         aria-describedby={`${alias}InputLabel`}
         ref={buttonRef} 
@@ -135,10 +196,10 @@ export const ButtonInput = ({
       </Button>
       <br/>
       <div>
-            {props.ishinted ?
+            {isHinted ?
             <>
-            <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+            <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                 <Icon name='questionmarkcircled' height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                 </a> 
             </Tooltip>

@@ -13,17 +13,113 @@ export type SelectTriggerDesign = 'conditionalselect' | 'conditionalselect-outli
 export type TriggerType = 'conditionaltoggle' | 'conditionalcheckbox' | 'conditionalselect';
 
 export interface ConditionalProps {
-  alias: string,  // Conditional Trigger Element Field form name
-  inputlabel?: string, // Conditional Trigger Element Field input label
-  icon?: React.ReactNode,
-  width: number, defaultvalue?: any[] | any, value?: any | any[], newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
+  /**
+   * * The design variation of the Conditional Trigger input. 
+   * Default: 'conditionaltoggle-outline' 
+   * Variants: 'conditionaltoggle-outline', 'conditionalcheckbox-outline', 'conditionalselect-outline',
+   * 'conditionaltoggle-material', 'conditionalcheckbox-material', 'conditionalselect-material', 
+   * 'conditionaltoggle-neumorphic', 'conditionalcheckbox-neumorphic', 'conditionalselect-neumorphic'.
+   * * @example
+   * inputtype="conditionalcheckbox-outline"
+   */
   inputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input type (conditionaltoggle, conditionalcheckbox, conditionalselect)
-  toggledinputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input design (conditionaltoggle, conditionalcheckbox, conditionalselect)
-  triggerValue?: any;        // Conditional Trigger Element Input Value that triggers Toggled Input Element reveal (e.g. Boolean, String, Number)
-  inputoptions?: InputOption[], errortext?: ReactNode | string | null,
-  children: React.ReactNode; // Conditional Toggled Input Element
+  /**
+   * * The required unique identifier for the Conditional Trigger input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="isAIEnabled"
+   */
+  alias: string;
+   /**
+   * * The required conditional toggled (child) xForm input field.
+   * * @example
+   * children={<Avatar name="Upload Display Profile/>}
+   */
+  children: React.ReactNode;
+   /**
+   * * Option to specify a value for Conditional Trigger element to reveal render the toggled child input field if trigger value is inputted.
+   * (e.g. Boolean, String, Number)
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
+  triggerValue: any;
+  /**
+   * * The optional input label or description for the Conditional Trigger input field. 
+   * * @example
+   * inputLabel="Enable VΣ AI Models"
+   */
+  inputLabel?: string;
+  /**
+   * * The required viewport column width for the Conditional Trigger input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={6}
+   */
+  width: number;
+  /**
+   * * Option to render Conditional Trigger input field on new row.
+   * * @example
+   * newRow
+   */
+  newRow?: boolean,
+   /**
+   * * Option to force set the default value for a Conditional Trigger (Select) input field.
+   * * @example
+   * placeholder="Activate Plan"
+   */
+  placeholder?: string;
+  /**
+   * * Option to disable edits for Conditional Trigger input field.
+   * * @example
+   * readOnly
+   */ 
+  readOnly?: boolean;
+  /**
+     * * Option to enable a hint for Conditional Trigger input field.
+     * * @example
+     * isHinted
+     */ 
+  isHinted?: boolean;
+  /**
+   * * Option to specify hint text for Conditional Trigger input field.
+   * * @example
+   * hintText="This is a hint for a VΣ Conditional Trigger"
+   */ 
+  hintText?: string;
+  /**
+   * * Option to specify a hint url reference or resource for Conditional Trigger input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
+  hintUrl?: string;
+   /**
+   * * Required  inputOptions{} for the Conditional Trigger input field.
+   * * @example
+   * inputOptions={
+            [
+              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+              ]}
+  */   
+  inputOptions?: InputOption[]; 
+   /**
+   * * Option to specify the isRequired error text for the Conditional Trigger input field.
+   * * @example
+   * errorText="A VΣ category selection is required"
+   */
+  errorText?: ReactNode | string | null;
+  /**
+   * * Option to specify the .scss class selector for the Conditional Trigger input field.
+   * * @example
+   * className="teletraan-1-checkbox"
+   */
   className?: string;
+  /**
+   * * Option to inject custom CSS the Conditional Trigger input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
   style?: React.CSSProperties;
 }
 
@@ -75,13 +171,12 @@ const getDesignStyles = (inputtype: ToggleTriggerDesign & {} | CheckboxTriggerDe
 };
 
 export const ConditionalTrigger = ({
-  alias, readonly, width,
-  placeholder = '', value, inputlabel,
+  alias, readOnly, width,
+  placeholder = '', inputLabel,
   inputtype = 'conditionaltoggle-outline',
   triggerValue = true,
-  inputoptions = [],
-  toggledinputtype = "conditionaltoggle-outline",
-  children,
+  inputOptions = [],
+  children, newRow, isHinted, hintText, hintUrl, errorText,
   style,
   className, ...props
 }: ConditionalProps) => {
@@ -108,7 +203,7 @@ export const ConditionalTrigger = ({
           <Flex align="center" gap="2" style={{ cursor: 'pointer' }}>
             <Checkbox 
               name={alias}
-              disabled={readonly}
+              disabled={readOnly}
               checked={field.value === true} 
               onCheckedChange={(checked) => handleChange(!!checked)} 
               id={inputId}
@@ -121,9 +216,9 @@ export const ConditionalTrigger = ({
           <Flex direction="column" gap="1" style={{ width: '100%' }}>
             <Select.Root
               name={alias}
-              disabled={readonly}
+              disabled={readOnly}
               value={field.value} 
-              defaultValue={placeholder || String(value) || ""}
+              defaultValue={placeholder || ""}
               onValueChange={handleChange}
             >
               <Select.Trigger 
@@ -132,7 +227,7 @@ export const ConditionalTrigger = ({
                 style={{ width: '100%' }}
               />
               <Select.Content>
-                {inputoptions.map((inputoption) => (
+                {inputOptions.map((inputoption) => (
                   <Select.Item key={inputoption.optionvalue || crypto.randomUUID()} value={inputoption.optionvalue}>
                     {inputoption.text}
                   </Select.Item>
@@ -149,7 +244,7 @@ export const ConditionalTrigger = ({
             <Switch 
               id={inputId}
               name={alias}
-              disabled={readonly}
+              disabled={readOnly}
               checked={field.value === true} 
               onCheckedChange={(checked) => handleChange(!!checked)} 
               variant={isNeumorphic ? 'soft' : 'surface'}
@@ -162,7 +257,7 @@ export const ConditionalTrigger = ({
   const containerStyle = getDesignStyles(inputtype, isOpen);
 
   return (
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={newRow}>
     <Box 
       className={className}
       style={{
@@ -195,13 +290,13 @@ export const ConditionalTrigger = ({
 
       <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias} style={{ cursor: 'pointer' }}>
-                {inputlabel}
+                {inputLabel}
             </Text>
             &nbsp;
-            {props.ishinted ?
+            {isHinted ?
                   <>
-                  <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                  <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                      <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                       </a> 
                   </Tooltip>
@@ -209,7 +304,7 @@ export const ConditionalTrigger = ({
              {hasError ?
                   <>
                   <p id={errorId} className='core-input-label-error'>
-                      {typeof meta.error === 'string' ? <>{props.errortext || "Required field"}</> 
+                      {typeof meta.error === 'string' ? <>{errorText || "Required field"}</> 
                       : 'Invalid file selection'}
                   </p>
                   </> : null }       

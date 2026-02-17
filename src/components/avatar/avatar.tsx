@@ -8,14 +8,102 @@ export type AvatarDesign = 'avatar' | 'avatar-outline' | 'avatar-material' | 'av
 export type AvatarShape = 'circle' | 'square' | 'rounded';
 
 export interface AvatarProps {
-  inputtype?: AvatarDesign & {},
-  alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultvalue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
-  shape?: AvatarShape, errortext?: ReactNode | string | null
-  size?: number; // Size in px
+  /**
+   * * The design variation of the Avatar input. 
+   * Default: 'avatar-outline' 
+   * Variants: 'avatar', 'avatar-outline', 'avatar-material', 'avatar-neumorphic'.
+   * * @example
+   * inputtype="avatar-neumorphic"
+   */
+  inputtype?: AvatarDesign & {};
+  /**
+   * * The required unique identifier for the input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="torukMakto"
+   */
+  alias: string;
+  /**
+   * * The optional input label or description for the Avatar input field. 
+   * * @example
+   * inputLabel="Upload VΣ Profile"
+   */
+  inputLabel?: string;
+ /**
+   * * The required viewport column width for the Avatar input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
+  width: number; 
+  /**
+   * * Option to render Avatar input field on new row.
+   * * @example
+   * newRow
+   */
+  newRow?: boolean;
+   /**
+   * * Option to disable edits for Avatar input field.
+   * * @example
+   * readOnly
+   */
+  readOnly?: boolean; 
+/**
+   * * Option to enable a hint for Avatar input field.
+   * * @example
+   * isHinted
+   */
+  isHinted?: boolean;
+  /**
+   * * Option to specify hint text for Avatar input field.
+   * * @example
+   * hintText="This is a hint for a VΣ AvatarInput"
+   */
+  hintText?: string;
+  /**
+   * * Option to specify a hint url reference or resource for Avatar input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */
+  hintUrl?: string;
+   /**
+   * * Option to specify the layout shape of the Avatar input field.
+   * Variants: 'circle', 'square', 'rounded'
+   * * @example
+   * shape="rounded"
+   */
+  shape?: AvatarShape;
+   /**
+   * * Option to specify the isRequired error text for the Avatar input field.
+   * * @example
+   * errorText="A profile is required for VΣ Plus user subscription"
+   */
+  errorText?: ReactNode | string | null;
+    /**
+   * * Option to specify the size for the Avatar input field.
+   * Default: 120 (i.e. 120px x 120px)
+   * * @example
+   * size={200}
+   */
+  size?: number;
+   /**
+   * * Option to specify the SCSS class selector for the Avatar input field.
+   * * @example
+   * className="teletraan-1-profile"
+   */
   className?: string;
+  /**
+   * * Option to inject custom CSS the Avatar input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
   style?: React.CSSProperties;
+    /**
+   * * Option to specify the accepted file formats for the Avatar input field.
+   * Default: image/*
+   * * @example
+   * accept="image/*"
+   */
   accept?: string;
 }
 
@@ -62,11 +150,10 @@ const getStyles = (inputtype: AvatarDesign, shape: AvatarShape, hasError: boolea
 
 export const AvatarInput = ({
   inputtype = 'avatar-outline',
-  alias, readonly, width, inputlabel,
-  placeholder = '', value,
+  alias, readOnly, width, inputLabel,
   shape = 'circle',
-  size = 120,
-  style,
+  size = 120, newRow, isHinted, hintText, hintUrl, errorText,
+  style, className,
   accept = 'image/*', ...props
 }: AvatarProps) => {
   const [field, meta, helpers] = useField(alias);
@@ -115,7 +202,7 @@ export const AvatarInput = ({
   const iconColor = inputtype === 'avatar-neumorphic' ? '#555' : 'var(--gray-10)';
 
   return (
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={newRow}>
     <Flex direction="column" align="center" gap="3" style={style}>
       <Box
         onClick={() => inputRef.current?.click()}
@@ -179,22 +266,22 @@ export const AvatarInput = ({
         ref={inputRef}
         id={inputId || alias}
         name={alias}
-        readOnly={readonly}
+        readOnly={readOnly}
         type="file"
         accept={accept}
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />
         <div>
-                {inputlabel && (
+                {inputLabel && (
                       <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" color='gray' highContrast={inputtype !== 'avatar-neumorphic'} htmlFor={alias}>
-                        {inputlabel}
+                        {inputLabel}
                       </Text>)}
                 &nbsp;
-                {props.ishinted ?
+                {isHinted ?
                   <>
-                  <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                  <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                      <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                       </a> 
                   </Tooltip>
@@ -202,7 +289,7 @@ export const AvatarInput = ({
                  {hasError ?
                   <>
                   <p id={errorId} className='core-input-label-error'>
-                      {props.errortext || `Required field`}
+                      {errorText || `Required field`}
                   </p>
                   </> : null } 
         </div>

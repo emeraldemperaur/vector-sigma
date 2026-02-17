@@ -9,14 +9,15 @@ interface TitleProps {
     newRow?: boolean;     
     size?: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
     subsize?: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
-    subtitle?: string;
+    subTitle?: string;
     align?: "left" | "center" | "right";
     withSeparator?: boolean;
     className?: string;
-    backgroundcolor?: string;
+    backgroundColor?: string;
     icon?: React.ReactNode;
     titleColor?: string;
     subtitleColor?: string;
+    letterSpacing?:string;
 }
 
 export const SectionTitle = ({
@@ -25,11 +26,12 @@ export const SectionTitle = ({
     newRow = true, 
     size = "5",
     subsize = "2",
-    subtitle,
+    subTitle,
     align = "left",
+    letterSpacing = "0.13em",
     withSeparator = true,
     className,
-    backgroundcolor,
+    backgroundColor,
     icon,
     titleColor,
     subtitleColor
@@ -52,9 +54,9 @@ export const SectionTitle = ({
                     boxSizing: 'border-box',
                     marginBottom: 'var(--space-2)',
                     textAlign: align,
-                    backgroundColor: backgroundcolor || 'transparent',
-                    padding: backgroundcolor ? 'var(--space-3) var(--space-4)' : '0',
-                    borderRadius: backgroundcolor ? 'var(--radius-3)' : '0',
+                    backgroundColor: backgroundColor || 'transparent',
+                    padding: backgroundColor ? 'var(--space-3) var(--space-4)' : '0',
+                    borderRadius: backgroundColor ? 'var(--radius-3)' : '0',
                 }} 
             >
                 <Flex 
@@ -74,14 +76,15 @@ export const SectionTitle = ({
                         weight="bold"
                         style={{
                             color: titleColor || 'var(--gray-12)',
-                            lineHeight: '1.2'
+                            lineHeight: '1.2',
+                            letterSpacing: `${letterSpacing}`
                         }}
                     >
                         {title}
                     </Heading>
                 </Flex>
                 
-                {subtitle && (
+                {subTitle && (
                     <Text 
                         size={subsize} 
                         style={{ 
@@ -90,7 +93,7 @@ export const SectionTitle = ({
                             margin: align === 'center' ? '0 auto' : undefined 
                         }}
                     >
-                        {subtitle}
+                        {subTitle}
                     </Text>
                 )}
 

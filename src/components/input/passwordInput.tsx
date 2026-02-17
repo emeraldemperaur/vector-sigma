@@ -9,9 +9,9 @@ import '../../styles/main.scss';
 
 export const PasswordInput = ({
     alias,
-    inputlabel,
-    width, readonly = false,
-    placeholder = '',
+    inputLabel,
+    width, readOnly = false,
+    placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
     inputvariant = 'input-outline', size = "2", 
     className, ...props 
 }: xInputFieldProps) => {
@@ -24,12 +24,12 @@ export const PasswordInput = ({
     const errorId = `${alias}-error`;
 
     return (
-        <Column span={width} newLine={props.newrow}>
+        <Column span={width} newLine={newRow}>
             <TextField.Root
                 size={size} 
                 type={showPassword ? "text" : "password"} 
                 id={`${alias}FormInput`} 
-                readOnly={readonly} 
+                readOnly={readOnly} 
                 aria-describedby={`${alias}InputLabel`}
                 placeholder={placeholder} 
                 color={hasError ? "red" : undefined}
@@ -65,19 +65,19 @@ export const PasswordInput = ({
             <div>
                 <br/>
                 <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                    {inputlabel}
+                    {inputLabel}
                 </Text>
                 &nbsp;
-                {props.ishinted && (
-                    <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                        <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                {isHinted && (
+                    <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                        <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                             <QuestionMarkCircledIcon height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                         </a> 
                     </Tooltip>
                 )} 
                 {hasError && (
                     <p id={errorId} className='core-input-label-error'>
-                        {props.errortext || `Required field`}
+                        {errorText || `Required field`}
                     </p>
                 )} 
             </div>

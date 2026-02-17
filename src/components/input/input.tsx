@@ -13,17 +13,17 @@ export type InputDesign = "input" | "input-material" | "input-outline" | "input-
 export type xInputFieldProps = React.ComponentProps<typeof TextField.Root> & {
     alias: string, 
     inputtype?: InputType  & {}, 
-    inputlabel?: string, width: number, newrow?: boolean, placeholder?: string, 
-    readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string, 
-    icon?: React.ReactNode, defaultvalue?: string, value?: string, errortext?: ReactNode | string | null, classname?: string, style?: React.CSSProperties;
+    inputLabel?: string, width: number, newRow?: boolean, placeholder?: string, 
+    readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string, 
+    icon?: React.ReactNode, defaultvalue?: string, value?: string, errorText?: ReactNode | string | null, className?: string, style?: React.CSSProperties;
     inputvariant?: InputDesign  & {}, delimiter?: string, format?: number[]
 };
 
 export const Input = ({
     alias,
     inputtype = "text",
-    width, inputlabel, readonly = false,
-    placeholder = '',
+    width, inputLabel, readOnly = false,
+    placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
     className, size = "2",
     style,
     inputvariant = 'input-outline',
@@ -36,13 +36,13 @@ export const Input = ({
     const errorId = `${alias}-error`;
 
     return (
-        <Column span={width} newLine={props.newrow}>
+        <Column span={width} newLine={newRow}>
             <TextField.Root 
                 size={size}
                 type={inputtype} 
                 id={`${alias}FormInput`} 
                 aria-describedby={`${alias}InputLabel`}
-                readOnly={readonly} 
+                readOnly={readOnly} 
                 placeholder={placeholder} 
                 color={hasError ? "red" : undefined}
                 className={`${variantClass} ${className || ''}`}
@@ -54,19 +54,19 @@ export const Input = ({
             
             <div><br/>
                 <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                    {inputlabel}
+                    {inputLabel}
                 </Text>
                 &nbsp;
-                {props.ishinted && (
-                    <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                        <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                {isHinted && (
+                    <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                        <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                             <QuestionMarkCircledIcon height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                         </a> 
                     </Tooltip>
                 )} 
                  {hasError && (
                     <p id={errorId} className='core-input-label-error'>
-                        {props.errortext || `Required field`}
+                        {errorText || `Required field`}
                     </p>
                 )} 
             </div>

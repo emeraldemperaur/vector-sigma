@@ -95,11 +95,46 @@ export const formatBytes = (bytes: number, decimals = 2) => {
 export const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ');
 
 export interface InputOption {
+   /**
+   * * The required unique option id for the Input Option item. 
+   * * @example
+   * optionid="versin-gtr-x-1000"
+   */
    optionid: number | string;
+   /**
+   * * The required text for the Input Option item. 
+   * * @example
+   * text="Versin' GTR-X"
+   */
    text: string; 
+   /**
+   * * The required option value for the Input Option item. 
+   * * @example
+   * optionvalue="VGTRX-1000"
+   */
    optionvalue: string;
+   /**
+   * * The optional tag for the Input Option item. 
+   * * @example
+   * tag="HINT"
+   */
    tag?: string;
-   score?: number | string;
+   /**
+   * * The optional meta numerical score for the Input Option item. 
+   * * @example
+   * score={10}
+   */
+   score?: number;
+  /**
+   * * The optional meta note for the Input Option item. 
+   * * @example
+   * note="This is an example hint note for the Input Option item."
+   */
    note?: string; 
+   /**
+   * * The optional meta optionurl for the Input Option item. 
+   * * @example
+   * optionurl="https://github.com/emeraldemperaur/vector-sigma"
+   */
    optionurl?: string;
 }

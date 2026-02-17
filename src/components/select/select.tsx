@@ -12,20 +12,20 @@ export type OptionSelectDesign = 'dropdown' | 'dropdown-material' | 'dropdown-ou
 export interface SelectProps {
   inputtype?: OptionSelectDesign & {};
   alias: string;
-  inputlabel?: string;
+  inputLabel?: string;
   icon?: React.ReactNode;
   width: number;
   defaultvalue?: string;
   value?: string;
   newRow?: boolean;
   placeholder?: string;
-  readonly?: boolean;
-  ishinted?: boolean;
-  hinttext?: string;
-  hinturl?: string;
+  readOnly?: boolean;
+  isHinted?: boolean;
+  hintText?: string;
+  hintUrl?: string;
   onValueChange?: (value: string) => void;
-  errortext?: ReactNode | string | null;
-  inputoptions: { 
+  errorText?: ReactNode | string | null;
+  inputOptions: { 
     optionid: number | string; 
     text: string; 
     optionvalue: string; 
@@ -41,19 +41,19 @@ export interface SelectProps {
 export const OptionSelect = ({
   inputtype = 'dropdown-outline',
   alias, 
-  readonly, 
+  readOnly, 
   width, 
-  inputlabel,
+  inputLabel,
   placeholder, 
   value,
-  inputoptions,
+  inputOptions,
   style,
   newRow,
-  ishinted,
-  hinttext,
-  hinturl,
+  isHinted,
+  hintText,
+  hintUrl,
   defaultvalue,
-  errortext,
+  errorText,
   ...props
 }: SelectProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -159,7 +159,7 @@ export const OptionSelect = ({
 
         <Select.Root
           name={alias}
-          disabled={readonly}
+          disabled={readOnly}
           value={field.value || ""} 
           onValueChange={(val) => {
             const finalVal = val === "__RESET__" ? "" : val;
@@ -195,7 +195,7 @@ export const OptionSelect = ({
             </Select.Item>
             
             <Separator size="4" style={{ margin: '4px 0', opacity: 0.5 }} />
-            {inputoptions.map((inputoption) => (
+            {inputOptions.map((inputoption) => (
               <React.Fragment key={inputoption.optionid || crypto.randomUUID()}>
                 {inputoption.optionurl ? (
                   <Select.Item 
@@ -225,12 +225,12 @@ export const OptionSelect = ({
         </Select.Root>
 
          <div>
-              <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+              <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
               &nbsp;    
-              {ishinted ?
+              {isHinted ?
                 <>
-                <Tooltip content={hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                    <a href={hinturl || ""} target="_blank" rel="noopener noreferrer">
+                <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                    <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                     <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                     </a> 
                 </Tooltip>
@@ -238,7 +238,7 @@ export const OptionSelect = ({
               {hasError ?
                 <>
                 <p id={errorId} className='core-input-label-error'>
-                    {errortext || meta.error || "Required field"}
+                    {errorText || meta.error || "Required field"}
                 </p>
                 </> : null } 
         </div>
