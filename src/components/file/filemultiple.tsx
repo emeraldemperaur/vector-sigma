@@ -248,7 +248,7 @@ export const FileMultiple = ({
         </Grid>
       )}
 
-      <div><br/>
+      <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
             &nbsp;
             {isHinted ?
