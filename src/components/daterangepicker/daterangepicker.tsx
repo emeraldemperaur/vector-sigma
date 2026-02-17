@@ -12,7 +12,7 @@ export type DateRangePickerDesign = 'daterangepicker' | 'daterangepicker-outline
 
 interface DateRangePickerProps {
     alias: string;
-    inputlabel?: string;
+    inputLabel?: string;
     inputtype?: DateRangePickerDesign;
     width?: number;
     newRow?: boolean;
@@ -27,7 +27,7 @@ interface DateRangePickerProps {
 
 export const DateRangePicker = ({
     alias,
-    inputlabel,
+    inputLabel,
     inputtype = 'daterangepicker-outline',
     width = 12,
     newRow,
@@ -191,7 +191,7 @@ export const DateRangePicker = ({
                 />
 
                 <div>
-                    {inputlabel && <Text size="2" weight="bold" as="label" htmlFor={inputId}>{inputlabel}</Text>}
+                    {inputLabel && <Text size="2" weight="bold" as="label" htmlFor={inputId}>{inputLabel}</Text>}
                     
                     {isHinted && (
                         <Tooltip content={hintText || "No hint"} align="start">

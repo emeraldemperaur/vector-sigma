@@ -12,7 +12,7 @@ export type DateTimePickerDesign = 'datetimepicker' | 'datetimepicker-outline' |
 
 interface DateTimePickerProps {
     alias: string;
-    inputlabel?: string;
+    inputLabel?: string;
     inputtype?: DateTimePickerDesign;
     width?: number;
     newRow?: boolean;
@@ -27,7 +27,7 @@ interface DateTimePickerProps {
 
 export const DateTimePicker = ({
     alias,
-    inputlabel,
+    inputLabel,
     inputtype = 'datetimepicker-outline',
     width = 12,
     newRow,
@@ -189,7 +189,7 @@ export const DateTimePicker = ({
                     }
                 />
                 <div>
-                    {inputlabel && <Text size="2" weight="bold" as="label" htmlFor={inputId}>{inputlabel}</Text>}
+                    {inputLabel && <Text size="2" weight="bold" as="label" htmlFor={inputId}>{inputLabel}</Text>}
                     
                     {isHinted && (
                         <Tooltip content={hintText || "No hint"} align="start">
