@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.14
+
+### Patch Changes
+
+- 4eb0473: UUID & Date xForm Input Components Traige Fix
+
 ## 1.4.13
 
 ### Patch Changes
