@@ -1,7 +1,6 @@
 import React, { ReactNode, useState, useMemo } from "react";
 import { TextField, IconButton, Tooltip, Flex, Text } from '@radix-ui/themes';
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons';
-import { IMaskInput } from 'react-imask';
 import { Icon } from "components/icons/icons";
 import { useField, useFormikContext } from "formik"; 
 import { parseUuidFormat } from "utils/uuidparser";
@@ -30,7 +29,8 @@ type UUIDInputProps = Omit<React.ComponentProps<typeof TextField.Root>, 'type' |
 
 export const UUIDInput = ({
     alias, type, inputLabel, width, delimiter = "-",
-    format = [4, 4, 4, 4], placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
+    format = [8, 4, 4, 4, 12], 
+    placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
     readOnly = false, inputVariant = 'input-outline',
     size = "2", className, ...props
 }: UUIDInputProps) => {
@@ -41,24 +41,45 @@ export const UUIDInput = ({
     const [copied, setCopied] = useState(false);
     const errorId = `${alias}-error`;
 
-    const { maskPattern, definitions } = useMemo(() => {
-        let activeFormat = format;
-        
+    const activeFormat = useMemo(() => {
         if (type && type.toLowerCase().startsWith("uuid") && type.length > 4) {
              const parsed = parseUuidFormat(type);
-             if (parsed) activeFormat = parsed;
+             if (parsed) return parsed;
         }
+        return format;
+    }, [format, type]);
 
-        const maskChar = '#'; 
-        const pattern = activeFormat.map(len => maskChar.repeat(len)).join(delimiter);
+    const maxRawLength = activeFormat.reduce((a, b) => a + b, 0);
+
+    const formatUUID = (rawValue: string) => {
+        const clean = rawValue.replace(/[^0-9a-fA-F]/g, '').toUpperCase().slice(0, maxRawLength);
+        let formatted = '';
+        let currentIdx = 0;
         
-        return {
-            maskPattern: pattern,
-            definitions: {
-                '#': /[0-9a-fA-F]/ 
+        for (let i = 0; i < activeFormat.length; i++) {
+            const chunkLen = activeFormat[i];
+            if (currentIdx + chunkLen <= clean.length) {
+                formatted += clean.substring(currentIdx, chunkLen);
+                if (i < activeFormat.length - 1) {
+                    formatted += delimiter;
+                }
+            } 
+            else {
+                formatted += clean.substring(currentIdx);
+                break; 
             }
-        };
-    }, [JSON.stringify(format), type, delimiter]);
+            
+            currentIdx += chunkLen;
+        }
+        
+        return formatted;
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newVal = e.target.value;
+        const formatted = formatUUID(newVal);
+        setFieldValue(alias, formatted);
+    };
 
     const handleCopy = () => {
         navigator.clipboard.writeText(field.value || '');
@@ -78,19 +99,20 @@ export const UUIDInput = ({
                     className={`${variantClass} ${className || ''}`}
                     {...props}
                 >
-                    <IMaskInput
+                    <input
                         id={`${alias}FormInput`}
                         name={alias}
                         aria-describedby={`${alias}InputLabel`}
                         readOnly={readOnly}
-                        mask={maskPattern}
-                        definitions={definitions}
+                        
                         value={field.value || ''}
-                        unmask={true} 
-                        onAccept={(val: string) => setFieldValue(alias, val)}
+                        onChange={handleChange}
                         onBlur={() => setFieldTouched(alias, true)}
-                        placeholder={placeholder}
-                        type="text" 
+                        
+                        placeholder={placeholder || 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'}
+                        maxLength={maxRawLength + (activeFormat.length - 1)}
+                        type="text"
+                        
                         style={{
                             flex: 1,
                             border: 'none',
