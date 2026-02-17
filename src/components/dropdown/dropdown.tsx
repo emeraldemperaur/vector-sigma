@@ -50,6 +50,7 @@ export const Dropdown = ({
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
   const hasError = Boolean(meta.touched && meta.error);
+  const inputId = `${alias}FormInput` || crypto.randomUUID();
   const errorId = `${alias}-error`;
 
   useEffect(() => {
@@ -210,7 +211,7 @@ export const Dropdown = ({
       </Select.Root>
 
        <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>{inputLabel}</Text>
             &nbsp;    
             {isHinted ?
               <>

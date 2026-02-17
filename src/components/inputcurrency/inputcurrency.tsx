@@ -80,6 +80,7 @@ export const CurrencyInput = ({
                         disabled={readOnly || inputtype !== "currency"} 
                     >
                         <Select.Trigger 
+                            id={`${alias}CurrencySelect`}
                             variant="ghost" 
                             style={{ 
                                 height: '100%', 
@@ -153,7 +154,7 @@ export const CurrencyInput = ({
                 </Flex>
 
                 <div>
-                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
+                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
                         {inputLabel}
                     </Text>
                     &nbsp;

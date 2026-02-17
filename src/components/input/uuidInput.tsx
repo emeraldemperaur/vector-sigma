@@ -1,11 +1,20 @@
-import React, { useMemo, useState } from "react";
+import React, { ReactNode, useState, useMemo } from "react";
 import { TextField, IconButton, Tooltip, Flex, Text } from '@radix-ui/themes';
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons';
 import { Icon } from "components/icons/icons";
 import { useField, useFormikContext } from "formik"; 
 import { Column } from "layouts/column/column";
-import { IMaskInput } from 'react-imask';
 import '../../styles/main.scss';
+
+const safeParseUuidFormat = (typeString: string): number[] | null => {
+    try {
+        if (!typeString?.startsWith('uuid')) return null;
+        const parts = typeString.split('-').slice(1).map(Number);
+        return parts.length > 0 && !parts.some(isNaN) ? parts : null;
+    } catch {
+        return null;
+    }
+};
 
 type startsWithUuid = `uuid${string}`;
 
@@ -21,22 +30,12 @@ interface UUIDInputProps {
     hintText?: string;
     hintUrl?: string;
     placeholder?: string;
-    errorText?: React.ReactNode | string | null;
+    errorText?: ReactNode | string | null;
     className?: string;
-    inputVariant?: 'uuid' | 'uuid-outline' | 'uuid-material' | 'uuid-neumorphic';
+    inputVariant?: 'input' | 'input-outline' | 'input-material' | 'input-neumorphic';
     readOnly?: boolean;
     size?: "1" | "2" | "3";
 }
-
-const safeParseUuidFormat = (typeString: string): number[] | null => {
-    try {
-        if (!typeString.startsWith('uuid')) return null;
-        const parts = typeString.split('-').slice(1).map(Number);
-        return parts.length > 0 && !parts.some(isNaN) ? parts : null;
-    } catch {
-        return null;
-    }
-};
 
 export const UUIDInput = ({
     alias, 
@@ -52,7 +51,7 @@ export const UUIDInput = ({
     hintUrl, 
     errorText,
     readOnly = false, 
-    inputVariant = 'uuid-outline',
+    inputVariant = 'input-outline',
     size = "2", 
     className, 
     ...props
@@ -67,10 +66,36 @@ export const UUIDInput = ({
         const parsed = safeParseUuidFormat(type);
         return parsed || format;
     }, [type, format]);
+    const maxHexChars = activeFormat.reduce((a, b) => a + b, 0);
+    const maxTotalLength = maxHexChars + (activeFormat.length - 1); 
+    const formatUUID = (value: string) => {
+        if (!value) return "";
+        const clean = value.replace(/[^0-9a-fA-F]/g, "").toUpperCase().slice(0, maxHexChars);
+        let result = "";
+        let currentIdx = 0;
+        for (let i = 0; i < activeFormat.length; i++) {
+            const chunkLen = activeFormat[i];
 
-    const maskPattern = useMemo(() => {
-        return activeFormat.map(len => '#'.repeat(len)).join(delimiter);
-    }, [activeFormat, delimiter]);
+            if (currentIdx < clean.length) {
+                const chunk = clean.substring(currentIdx, chunkLen);
+                result += chunk;
+                
+                if (chunk.length === chunkLen && i < activeFormat.length - 1 && (currentIdx + chunkLen) < clean.length) {
+                    result += delimiter;
+                }
+                currentIdx += chunkLen;
+            } else {
+                break;
+            }
+        }
+        return result;
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        const formatted = formatUUID(val);
+        setFieldValue(alias, formatted);
+    };
 
     const handleCopy = () => {
         if (field.value) {
@@ -80,34 +105,34 @@ export const UUIDInput = ({
         }
     };
 
-    const variantClass = inputVariant !== 'uuid-outline' ? `input-${inputVariant}` : '';
+    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
 
     return (
         <Column span={width} newLine={newRow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 
-                <TextField.Root 
+                <TextField.Root
                     size={size} 
                     variant="surface" 
                     color={hasError ? 'red' : undefined}
                     className={`${variantClass} ${className || ''}`}
-                    style={{ cursor: readOnly ? 'default' : 'text' }}
+                    {...props}
                 >
-                    <IMaskInput
-                        mask={maskPattern}
-                        definitions={{
-                            '#': /[0-9a-fA-F]/
-                        }}
-                        prepare={(str) => str.toUpperCase()}
-                        value={field.value || ''}
-                        unmask={false}
-                        onAccept={(value: string) => {
-                             setFieldValue(alias, value);
-                        }}
-                        onBlur={() => setFieldTouched(alias, true)}
+                    <input
                         id={`${alias}FormInput`}
-                        placeholder={placeholder}
+                        name={alias}
+                        aria-describedby={`${alias}InputLabel`}
+                        
+                        value={field.value || ''}
+                        onChange={handleChange}
+                        onBlur={() => setFieldTouched(alias, true)}
+                        
+                        maxLength={maxTotalLength}
                         readOnly={readOnly}
+                        placeholder={placeholder}
+                        autoComplete="off"
+                        spellCheck={false}
+                        
                         style={{
                             flex: 1,
                             border: 'none',
@@ -122,6 +147,7 @@ export const UUIDInput = ({
                             width: '100%'
                         }}
                     />
+
                     <TextField.Slot>
                         <Tooltip content={copied ? "Copied!" : "Copy to clipboard"}>
                             <IconButton 
@@ -131,32 +157,36 @@ export const UUIDInput = ({
                                 onClick={handleCopy}
                                 type="button"
                                 disabled={!field.value}
+                                style={{ margin: 0 }}
                             >
                                 {copied ? <CheckIcon /> : <CopyIcon />}
                             </IconButton>
                         </Tooltip>
                     </TextField.Slot>
                 </TextField.Root>
+
                 <div>
                     {inputLabel && (
-                        <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
+                        <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
                             {inputLabel}
                         </Text>
                     )}
-                    &nbsp;
+                    
                     {isHinted && (
-                        <Tooltip content={hintText || "No hint available"}>
+                        <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray', marginLeft: 4 }} />
                             </a> 
                         </Tooltip>
                     )} 
+
                     {hasError && (
                         <Text id={errorId} size="1" color="red" style={{ display: 'block', marginTop: 2 }}>
                             {errorText || meta.error || "Required field"}
                         </Text>
                     )} 
                 </div>
+
             </Flex>
         </Column>
     );

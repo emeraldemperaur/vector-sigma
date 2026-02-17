@@ -34,6 +34,7 @@ export const PhoneInput = ({
         <Column span={width} newLine={newRow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <TextField.Root 
+                    id={`${alias}FormInput`} 
                     size={size} 
                     variant="surface" 
                     color={hasError ? "red" : undefined}
@@ -46,6 +47,7 @@ export const PhoneInput = ({
                             onValueChange={(value) => setCountry(value as Country)}
                         >
                             <Select.Trigger 
+                                id={`${alias}PhoneSelect`}
                                 variant="ghost" 
                                 style={{ 
                                     height: '100%', 
@@ -107,7 +109,7 @@ export const PhoneInput = ({
                 </TextField.Root>
 
                 <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
+                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
                         {inputLabel}
                     </Text>
                     

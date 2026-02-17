@@ -137,6 +137,7 @@ export const Toggle = ({
                     `}} />
 
                     <input 
+                        id={`${alias}FormInput`}
                         className="neu-toggle-state" 
                         type="checkbox" 
                         checked={!!field.value} 
@@ -151,8 +152,10 @@ export const Toggle = ({
                     color={iconColor}
                     style={{ 
                         transition: 'color 0.3s ease',
-                        opacity: readOnly ? 0.5 : 1 
+                        opacity: readOnly ? 0.5 : 1, 
+                        cursor: 'pointer'
                     }}
+                    onClick={() => handleToggle(!field.value)}
                 />
             </div>
         ) : (
@@ -204,7 +207,7 @@ export const Toggle = ({
 
         <div>
             {inputLabel && (
-                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
+                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
                     {inputLabel}
                 </Text>
             )}
