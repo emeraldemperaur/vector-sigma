@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.16
+
+### Patch Changes
+
+- 63da8bb: xForm Components Triage Fix 16.02::10:50
+
 ## 1.4.15
 
 ### Patch Changes
