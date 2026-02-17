@@ -10,24 +10,24 @@ export type RadioDesign = 'radio' | 'radio-material' | 'radio-outline' | 'radio-
 
 interface RadioGroupProps {
     inputtype?: RadioDesign & {},
-    alias: string, inputlabel?: string, icon?: React.ReactNode,
-    width: number, defaultvalue?: any[], value?: any[], newrow?: boolean, isedit?: boolean,
-    placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
-    inputoptions: InputOption[];
+    alias: string, inputLabel?: string, icon?: React.ReactNode,
+    width: number, defaultvalue?: any[], value?: any[], newRow?: boolean,
+    placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+    inputOptions: InputOption[];
     direction?: 'row' | 'column'; // CSS Layout direction
     columns?: string; // CSS grid template columns (e.g., "1fr 1fr")
-    classname?: string,  errorText?: ReactNode | string | null,
+    className?: string,  errorText?: ReactNode | string | null,
     style?: React.CSSProperties;
 }
 
 export const RadioGroupInput = ({
   inputtype = 'radio-outline',
-  alias, readonly, width, inputlabel,
-  placeholder = '',
-  style, inputoptions,
+  alias, readOnly, width, inputLabel,
+  placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
+  style, inputOptions,
   direction = 'column',
   columns, 
-  classname, ...props
+  className, ...props
 }: RadioGroupProps) => {
   
   const { setFieldValue, setFieldTouched } = useFormikContext();
@@ -50,14 +50,14 @@ export const RadioGroupInput = ({
   }, [inputtype]);
 
   return (
-    <Column span={width} newLine={props.newrow}>
+    <Column span={width} newLine={newRow}>
     <Flex 
       direction="column" 
       gap="2" 
       width="100%" 
       ref={containerRef} 
       style={style} 
-      className={classname}
+      className={className}
     >
 
       {inputtype === 'radio-neumorphic' && (
@@ -101,7 +101,7 @@ export const RadioGroupInput = ({
         name={alias}
         id={`${alias}FormInput`}
         aria-describedby={`${alias}InputLabel`}
-        disabled={readonly}
+        disabled={readOnly}
         value={field.value}
         onValueChange={(val) => {
           setFieldValue(alias, val);
@@ -113,7 +113,7 @@ export const RadioGroupInput = ({
           gap="3"
           style={neuVars}
         >
-          {inputoptions.map((inputoption) => {
+          {inputOptions.map((inputoption) => {
              const isChecked = String(field.value) === String(inputoption.optionvalue);
 
              return (
@@ -139,12 +139,12 @@ export const RadioGroupInput = ({
       </RadioGroup.Root>
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
             &nbsp;
-            {props.ishinted ?
+            {isHinted ?
                 <>
-                    <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                                  <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                    <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                                  <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                                   <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                                   </a> 
                               </Tooltip>
@@ -152,7 +152,7 @@ export const RadioGroupInput = ({
              {hasError ?
                 <>
                     <p id={errorId} className='core-input-label-error'>
-                            {props.errorText || `Required field`}
+                            {errorText || `Required field`}
                     </p>
                 </> : null } 
      </div>

@@ -10,9 +10,9 @@ export type RangeDesign = 'range' | 'range-material' | 'range-outline' | 'range-
 
 interface RangeProps {
   inputtype?: RangeDesign & {},
-  alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultvalue?: string, value?: string, newrow?: boolean, errortext?: ReactNode | string | null,
-  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
+  alias: string, inputLabel?: string, icon?: React.ReactNode,
+  width: number, defaultvalue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
+  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
   minvalue?: number,
   maxvalue?: number,
   stepvalue?: number,
@@ -25,8 +25,8 @@ interface RangeProps {
 
 export const RangeSlider = ({
   inputtype = 'range-outline',
-  alias, readonly, width, inputlabel,
-  placeholder = '',
+  alias, readOnly, width, inputLabel,
+  placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
   minvalue = 0,
   maxvalue = 100,
   stepvalue = 1,
@@ -64,7 +64,7 @@ export const RangeSlider = ({
   }, [inputtype]);
 
   return (
-    <Column span={width} newLine={props.newrow}>
+    <Column span={width} newLine={newRow}>
     <Flex 
       direction="column" 
       gap="3" 
@@ -113,7 +113,7 @@ export const RangeSlider = ({
       <Slider 
         name={alias}
         id={`${alias}FormInput`} 
-        disabled={readonly}
+        disabled={readOnly}
         aria-describedby={`${alias}InputLabel`}
         min={minvalue} 
         max={maxvalue} 
@@ -132,12 +132,12 @@ export const RangeSlider = ({
       />
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
                 &nbsp;
-                {props.ishinted ?
+                {isHinted ?
                         <>
-                        <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                        <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                            <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                             <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
@@ -145,7 +145,7 @@ export const RangeSlider = ({
                  {hasError ?
                         <>
                         <p id={errorId} className='core-input-label-error'>
-                            {props.errortext || `Required field`}
+                            {errorText || `Required field`}
                         </p>
                         </> : null } 
       </div>

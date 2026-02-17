@@ -10,11 +10,11 @@ export type FileMultipleInputDesign = 'filemultiple' | 'filemultiple-material' |
 
 export interface FileMultipleInputProps {
   inputtype?: FileMultipleInputDesign  & {},
-  alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultvalue?: any, value?: any, newrow?: boolean, isedit?: boolean,
-  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
-  preview?: boolean,  errortext?: ReactNode | string | null,
-  classname?: string,
+  alias: string, inputLabel?: string, icon?: React.ReactNode,
+  width: number, defaultvalue?: any, value?: any, newRow?: boolean,
+  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  preview?: boolean,  errorText?: ReactNode | string | null,
+  className?: string,
   style?: React.CSSProperties
 }
 
@@ -62,10 +62,10 @@ const styles: Record<FileMultipleInputDesign, React.CSSProperties> = {
 
 export const FileMultiple = ({ 
   inputtype = 'filemultiple-outline',
-  alias, readonly, width, inputlabel,
-  placeholder = '',
+  alias, readOnly, width, inputLabel,
+  placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
   preview = true, 
-  classname,
+  className,
   style, ...props
 }: FileMultipleInputProps) => {
   const [field, meta] = useField(alias);
@@ -103,11 +103,9 @@ export const FileMultiple = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const newFiles = Array.from(e.target.files);
-      // Append new files to extants
       setFieldValue(alias, [...currentFiles, ...newFiles]);
       setFieldTouched(alias, true);
     }
-    // Reset input value to allow file reselection
     if (inputRef.current) inputRef.current.value = '';
   };
 
@@ -125,8 +123,8 @@ export const FileMultiple = ({
   const hasError = meta.touched && meta.error;
 
   return (
-    <Column span={width} newLine={props.newrow}>
-    <Box className={classname} style={style}>
+    <Column span={width} newLine={newRow}>
+    <Box className={className} style={style}>
       <Box
         onClick={() => inputRef.current?.click()}
         p="4"
@@ -165,7 +163,7 @@ export const FileMultiple = ({
         <input
           id={inputId || alias}
           ref={inputRef}
-          readOnly={readonly}
+          readOnly={readOnly}
           name={alias}
           type="file"
           multiple
@@ -251,12 +249,12 @@ export const FileMultiple = ({
       )}
 
       <div><br/>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
             &nbsp;
-            {props.ishinted ?
+            {isHinted ?
                   <>
-                  <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                  <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                      <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                       </a> 
                   </Tooltip>
@@ -265,7 +263,7 @@ export const FileMultiple = ({
                   <>
                   <p id={errorId} className='core-input-label-error'>
                       {typeof meta.error === 'string' ? 
-                      <>{props.errortext || "Required field"}</> 
+                      <>{errorText || "Required field"}</> 
                       : 'Invalid file selection'}
                   </p>
                   </> : null } 

@@ -9,23 +9,115 @@ import '../../styles/main.scss';
 export type CheckBoxDesign = 'checkbox' | 'checkbox-material' | 'checkbox-outline' | 'checkbox-neumorphic';
 
 export interface CheckboxGroup {
-  inputtype?: CheckBoxDesign & {},
-  alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultvalue?: any[], value?: any[], newRow?: boolean, isEdit?: boolean,
-  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
-  inputoptions: InputOption[], errortext?: ReactNode | string | null,
-  direction?: 'row' | 'column'; // CSS Layout direction
-  columns?: string; // CSS grid template columns (e.g., "1fr 1fr")
+   /**
+   * * The design variation of the Checkbox Group input. 
+   * Default: 'checkbox-outline' 
+   * Variants: 'checkbox', 'checkbox-outline', 'checkbox-material', 'checkbox-neumorphic'.
+   * * @example
+   * inputtype="checkbox-neumorphic"
+   */
+  inputtype?: CheckBoxDesign & {};
+  /**
+   * * The required unique identifier for the input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="carteBlanche"
+   */
+  alias: string;
+  /**
+   * * The optional input label or description for the Checkbox Group input field. 
+   * * @example
+   * inputLabel="Select VΣ Product Categories"
+   */
+  inputLabel?: string; 
+  /**
+   * * The required viewport column width for the Checkbox Group input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={6}
+   */
+  width: number; 
+   /**
+   * * Option to render Checkbox Group input field on new row.
+   * * @example
+   * newRow
+   */
+  newRow?: boolean;
+   /**
+   * * Option to disable edits for Checkbox Group input field.
+   * * @example
+   * readOnly
+   */
+  readOnly?: boolean;
+  /**
+     * * Option to enable a hint for Checkbox Group input field.
+     * * @example
+     * isHinted
+     */
+  isHinted?: boolean; 
+  /**
+   * * Option to specify hint text for Checkbox Group input field.
+   * * @example
+   * hintText="This is a hint for a VΣ Checkbox Group"
+   */
+  hintText?: string; 
+  /**
+   * * Option to specify a hint url reference or resource for Checkbox Group input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */
+  hintUrl?: string;
+  /**
+   * * Required  inputOptions{} for the Checkbox Group input field.
+   * * @example
+   * inputOptions={
+            [
+              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+              ]}
+  */
+  inputOptions: InputOption[];
+  /**
+   * * Option to specify the isRequired error text for the Checkbox Group input field.
+   * * @example
+   * errorText="A VΣ category selection is required"
+   */
+  errorText?: ReactNode | string | null,
+   /**
+   * * Option to specify CSS layout direction for the Checkbox Group input field.
+   * Default: "row"
+   * * @example
+   * direction="column"
+   */
+  direction?: 'row' | 'column';
+  /**
+   * * Option to specify CSS grid template columns for the Checkbox Group input field.
+   * * @example
+   * columns="1fr 1fr"
+   */
+  columns?: string;
+  /**
+   * * Option to specify the .scss class selector for the Checkbox Group input field.
+   * * @example
+   * className="teletraan-1-checkbox"
+   */
   className?: string;
+  /**
+   * * Option to inject custom CSS the Checkbox Group input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
   style?: React.CSSProperties;
 }
 
 export const CheckboxGroupInput = ({
   inputtype = 'checkbox-outline',
-  alias, readonly, width,
-  placeholder = '', inputlabel,
-  style, value, inputoptions,
-  direction = 'column',
+  alias, readOnly, width,
+  inputLabel,
+  style, inputOptions,
+  newRow, isHinted, hintText, hintUrl, errorText,
+  direction = 'row',
   columns, 
   className, ...props
 }: CheckboxGroup) => {
@@ -62,7 +154,7 @@ export const CheckboxGroupInput = ({
   }, [inputtype]);
 
   return (
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={newRow}>
     <Flex 
       direction="column" 
       gap="2" 
@@ -98,7 +190,7 @@ export const CheckboxGroupInput = ({
         gap="3"
         style={neuVars} 
       >
-        {inputoptions.map((inputoption) => {
+        {inputOptions.map((inputoption) => {
           const isChecked = currentValues.some(val => String(val) === String(inputoption.optionvalue));
           return (
             <Text 
@@ -116,7 +208,7 @@ export const CheckboxGroupInput = ({
                 name={alias}
                 id={`${alias}FormInput${inputoption.optionid}`}
                 aria-describedby={`${alias}InputLabel${inputoption.optionid}`}
-                disabled={readonly}
+                disabled={readOnly}
                 value={inputoption.optionvalue}
                 checked={isChecked}
                 onCheckedChange={(checked) => handleCheckedChange(checked as boolean, inputoption.optionvalue)}
@@ -138,12 +230,12 @@ export const CheckboxGroupInput = ({
       </Grid>
 
       <div>
-                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
                       &nbsp;
-                      {props.ishinted ?
+                      {isHinted ?
                               <>
-                              <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                                  <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                                  <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                                   <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                                   </a> 
                               </Tooltip>
@@ -151,7 +243,7 @@ export const CheckboxGroupInput = ({
                        {hasError ?
                               <>
                               <p id={errorId} className='core-input-label-error'>
-                                  {props.errortext || "Required field"}
+                                  {errorText || "Required field"}
                               </p>
                               </> : null } 
        </div>

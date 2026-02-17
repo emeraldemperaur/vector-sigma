@@ -13,10 +13,10 @@ import '../../styles/main.scss';
 
 export const PhoneInput = ({
     alias,
-    inputlabel,
+    inputLabel,
     width,
-    placeholder = "Phone Number",
-    readonly,
+    placeholder = "Phone Number", newRow, isHinted, hintText, hintUrl, errorText,
+    readOnly,
     inputvariant = 'input-outline',
     size = "2",
     className,
@@ -31,7 +31,7 @@ export const PhoneInput = ({
     const errorId = `${alias}-error`;
 
     return (
-        <Column span={width} newLine={props.newrow}>
+        <Column span={width} newLine={newRow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <TextField.Root 
                     size={size} 
@@ -88,7 +88,7 @@ export const PhoneInput = ({
                         value={field.value || ''}
                         onChange={(val?: Value) => setFieldValue(alias, val || '')} 
                         onBlur={() => setFieldTouched(alias, true)}
-                        readOnly={readonly}
+                        readOnly={readOnly}
                         placeholder={placeholder}
                         id={`${alias}FormInput`}
                         aria-describedby={`${alias}InputLabel`}
@@ -109,19 +109,19 @@ export const PhoneInput = ({
 
                 <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputlabel}
+                        {inputLabel}
                     </Text>
                     
-                    {props.ishinted && (
-                        <Tooltip content={props.hinttext || "No hint available"}>
-                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    {isHinted && (
+                        <Tooltip content={hintText || "No hint available"}>
+                            <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <QuestionMarkCircledIcon height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {props.errortext || meta.error || `Required field`}
+                            {errorText || meta.error || `Required field`}
                         </Text>
                     )} 
                 </div>

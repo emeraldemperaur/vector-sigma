@@ -11,20 +11,20 @@ export type xDropDownDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outli
 export interface xDropDownProps {
   inputtype?: xDropDownDesign & {};
   alias: string;
-  inputlabel?: string;
+  inputLabel?: string;
   icon?: React.ReactNode;
   width: number;
   defaultvalue?: string;
   value?: string;
-  newrow?: boolean;
+  newRow?: boolean;
   placeholder?: string;
-  readonly?: boolean;
-  ishinted?: boolean;
-  hinttext?: string;
-  hinturl?: string;
+  readOnly?: boolean;
+  isHinted?: boolean;
+  hintText?: string;
+  hintUrl?: string;
   onValueChange?: (value: string) => void;
-  errortext?: ReactNode | string | null;
-  inputoptions: { 
+  errorText?: ReactNode | string | null;
+  inputOptions: { 
     optionid: number | string; 
     text: string; 
     optionvalue: string; 
@@ -33,26 +33,16 @@ export interface xDropDownProps {
     note?: string; 
     optionurl?: string;
   }[];
-  classname?: string;
+  className?: string;
   style?: React.CSSProperties;
 }
 
 export const Dropdown = ({
   inputtype = 'dropdown-outline',
-  alias, 
-  readonly, 
-  width, 
-  inputlabel,
-  placeholder, 
-  value,
-  inputoptions,
-  style,
-  newrow,
-  ishinted,
-  hinttext,
-  hinturl,
-  defaultvalue,
-  errortext,
+  alias, readOnly, width, inputLabel,
+  placeholder, value, inputOptions,
+  style, newRow, isHinted, hintText,
+  hintUrl, defaultvalue, errorText, className,
   ...props
 }: xDropDownProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -142,7 +132,7 @@ export const Dropdown = ({
 
   return (
     <>
-    <Column span={width} newLine={newrow}>
+    <Column span={width} newLine={newRow}>
     <Flex direction="column" gap="2" style={{ width: '100%' }}>
       {inputtype === 'dropdown-neumorphic' && (
         <style dangerouslySetInnerHTML={{__html: `
@@ -158,7 +148,7 @@ export const Dropdown = ({
       )}
       <Select.Root
         name={alias}
-        disabled={readonly}
+        disabled={readOnly}
         value={field.value || ""} 
         onValueChange={(val) => {
           const finalVal = val === "__RESET__" ? "" : val;
@@ -177,7 +167,7 @@ export const Dropdown = ({
           ref={triggerRef}
           variant="ghost" 
           placeholder={placeholder || "Select an option"}
-          className={`${inputtype === 'dropdown-neumorphic' ? 'neu-select-trigger' : ''} ${props.classname || ''}`}
+          className={`${inputtype === 'dropdown-neumorphic' ? 'neu-select-trigger' : ''} ${className || ''}`}
           style={{ ...activeTriggerStyle, ...style }}
           {...props} 
         />
@@ -193,7 +183,7 @@ export const Dropdown = ({
           
           <Separator size="4" style={{ margin: '4px 0', opacity: 0.5 }} />
 
-          {inputoptions.map((inputoption) => (
+          {inputOptions.map((inputoption) => (
             <React.Fragment key={inputoption.optionid || crypto.randomUUID()}>
             {inputoption.optionurl ?            
             <Select.Item 
@@ -220,12 +210,12 @@ export const Dropdown = ({
       </Select.Root>
 
        <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
             &nbsp;    
-            {ishinted ?
+            {isHinted ?
               <>
-              <Tooltip content={hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                  <a href={hinturl || ""} target="_blank" rel="noopener noreferrer">
+              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                  <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                   <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                   </a> 
               </Tooltip>
@@ -233,7 +223,7 @@ export const Dropdown = ({
             {hasError ?
               <>
               <p id={errorId} className='core-input-label-error'>
-                  {errortext || meta.error || "Required field"}
+                  {errorText || meta.error || "Required field"}
               </p>
               </> : null } 
       </div>

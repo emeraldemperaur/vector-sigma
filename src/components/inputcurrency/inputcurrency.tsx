@@ -12,30 +12,30 @@ import '../../styles/main.scss';
 type CurrencyInputProps = {
     alias: string, 
     inputtype?: SupportedCurrency | "currency", 
-    inputlabel?: string, 
+    inputLabel?: string, 
     width: number, 
     newRow?: boolean, 
     defaultvalue?: string, 
     placeholder?: string, 
-    readonly?: boolean, 
-    ishinted?: boolean, 
-    hinttext?: string, 
-    errortext?: ReactNode | string | null, 
-    hinturl?: string, 
+    readOnly?: boolean, 
+    isHinted?: boolean, 
+    hintText?: string, 
+    errorText?: ReactNode | string | null, 
+    hintUrl?: string, 
     inputvariant?: InputDesign & {}, 
-    classname?: string
+    className?: string
 };
 
 export const CurrencyInput = ({
     alias, 
     inputtype = "currency",
-    inputlabel, 
+    inputLabel, 
     width,
     defaultvalue = "USD", 
-    placeholder,
-    readonly = false, 
+    placeholder, newRow, isHinted, hintText, hintUrl, errorText,
+    readOnly = false, 
     inputvariant = 'input-outline',
-    classname, 
+    className, 
     ...props
 }: CurrencyInputProps) => {
 
@@ -62,11 +62,11 @@ export const CurrencyInput = ({
     const errorId = `${alias}-error`;
 
     return (
-        <Column span={width} newLine={props.newRow}>
+        <Column span={width} newLine={newRow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <Flex 
                     align="center"
-                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${classname || ''}`}
+                    className={`rt-TextFieldRoot rt-r-size-2 rt-variant-surface ${variantClass} ${className || ''}`}
                     style={{
                         width: '100%',
                         boxShadow: (isOutline && hasError) ? 'inset 0 0 0 1px var(--red-9)' : undefined,
@@ -77,7 +77,7 @@ export const CurrencyInput = ({
                     <Select.Root 
                         value={activeCurrency.code} 
                         onValueChange={(val) => setFieldValue(currencyAlias, val)}  
-                        disabled={readonly || inputtype !== "currency"} 
+                        disabled={readOnly || inputtype !== "currency"} 
                     >
                         <Select.Trigger 
                             variant="ghost" 
@@ -132,7 +132,7 @@ export const CurrencyInput = ({
                         unmask={true}
                         onAccept={(val: string) => setFieldValue(alias, val)}
                         onBlur={() => setFieldTouched(alias, true)} 
-                        readOnly={readonly}
+                        readOnly={readOnly}
                         placeholder={placeholder || '0.00'}
                         style={{
                             flex: 1,
@@ -154,19 +154,19 @@ export const CurrencyInput = ({
 
                 <div>
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
-                        {inputlabel}
+                        {inputLabel}
                     </Text>
                     &nbsp;
-                    {props.ishinted && (
-                        <Tooltip content={props.hinttext || "No hint available"}>
-                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    {isHinted && (
+                        <Tooltip content={hintText || "No hint available"}>
+                            <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {props.errortext || amountMeta.error || `Required field`}
+                            {errorText || amountMeta.error || `Required field`}
                         </Text>
                     )} 
                 </div>

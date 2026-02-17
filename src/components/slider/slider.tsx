@@ -10,12 +10,12 @@ export type SliderDesign = 'slider' | 'slider-material' | 'slider-outline' | 'sl
 
 interface SliderProps {
   inputtype?: SliderDesign & {},
-  alias: string, inputlabel?: string, icon?: React.ReactNode,
-  width: number, defaultvalue?: string, value?: string, newrow?: boolean, errortext?: ReactNode | string | null,
-  placeholder?: string, readonly?: boolean, ishinted?: boolean, hinttext?: string, hinturl?: string
-  minvalue?: number,
-  maxvalue?: number,
-  stepvalue?: number,
+  alias: string, inputLabel?: string, icon?: React.ReactNode,
+  width: number, defaultvalue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
+  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+  minValue?: number,
+  maxValue?: number,
+  stepValue?: number,
   className?: string,
   style?: React.CSSProperties
 }
@@ -23,18 +23,18 @@ interface SliderProps {
 
 export const SliderInput = ({
   inputtype = 'slider-outline',
-  alias, readonly, width, inputlabel,
-  placeholder = '',
-  minvalue = 0,
-  maxvalue = 100,
-  stepvalue = 1,
+  alias, readOnly, width, inputLabel,
+  placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
+  minValue = 0,
+  maxValue = 100,
+  stepValue = 1,
   className,
   style, ...props
 }: SliderProps) => {
   
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
-  const fieldValue = Array.isArray(field.value) ? field.value : [field.value || minvalue];
+  const fieldValue = Array.isArray(field.value) ? field.value : [field.value || minValue];
   const hasError = Boolean(meta.touched && meta.error);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
@@ -53,7 +53,7 @@ export const SliderInput = ({
   }, [inputtype]);
 
   return (
-    <Column span={width} newLine={props.newrow}>
+    <Column span={width} newLine={newRow}>
     <Flex 
       direction="column" 
       gap="3" 
@@ -129,14 +129,13 @@ export const SliderInput = ({
       <Slider 
         name={alias}
         id={`${alias}FormInput`} 
-        disabled={readonly}
+        disabled={readOnly}
         aria-describedby={`${alias}InputLabel`}
-        min={minvalue} 
-        max={maxvalue} 
-        step={stepvalue}
+        min={minValue} 
+        max={maxValue} 
+        step={stepValue}
         value={fieldValue}
         onValueChange={(val) => {
-          // Formik Implementation - For array, pass 'val' directly
           setFieldValue(alias, val[0]);
         }}
         onValueCommit={() => {
@@ -148,12 +147,12 @@ export const SliderInput = ({
       />
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
                 &nbsp;
-                {props.ishinted ?
+                {isHinted ?
                         <>
-                        <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                            <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
+                        <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                            <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                             <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
@@ -161,7 +160,7 @@ export const SliderInput = ({
                  {hasError ?
                         <>
                         <p id={errorId} className='core-input-label-error'>
-                            {props.errortext || `Required field`}
+                            {errorText || `Required field`}
                         </p>
                         </> : null } 
       </div>

@@ -3,7 +3,7 @@ import { useField, useFormikContext } from 'formik';
 import { Popover, Flex, Text, TextField, Tooltip } from '@radix-ui/themes';
 import { format, isValid, parseISO } from 'date-fns';
 import { DayPicker } from 'react-day-picker';
-import { ensureDate } from 'utils/chronos';
+import { ensureDate } from 'utils/chronos'; 
 import { Icon } from 'components/icons/icons';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
 import { Column } from 'layouts/column/column';
@@ -12,22 +12,22 @@ import '../../styles/main.scss';
 export type DatePickerDesign = 'datepicker' | 'datepicker-material' | 'datepicker-outline' | 'datepicker-neumorphic';
 
 export interface DatePickerProps {
-  inputtype?: DatePickerDesign & {};
+  inputtype?: DatePickerDesign;
   alias: string;
-  inputlabel?: string;
+  inputLabel?: string;
   icon?: React.ReactNode;
   width: number;
-  defaultvalue?: string;
+  defaultValue?: string;
   value?: string;
   newRow?: boolean;
   placeholder?: string;
-  readonly?: boolean;
-  ishinted?: boolean;
-  hinttext?: string;
-  hinturl?: string;
-  minvalue?: Date | string;
-  maxvalue?: Date | string;
-  errortext?: ReactNode | string | null;
+  readOnly?: boolean;
+  isHinted?: boolean;
+  hintText?: string;
+  hintUrl?: string;
+  minDate?: Date | string;
+  maxDate?: Date | string;
+  errorText?: ReactNode | string | null;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -35,12 +35,12 @@ export interface DatePickerProps {
 export const DatePicker = ({
   inputtype = 'datepicker-outline',
   alias,
-  readonly,
+  readOnly, newRow, isHinted, hintText, hintUrl, errorText,
   width,
-  inputlabel,
+  inputLabel,
   placeholder = 'Pick a date',
-  minvalue,
-  maxvalue,
+  minDate,
+  maxDate,
   className,
   style,
   ...props
@@ -49,19 +49,23 @@ export const DatePicker = ({
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
   const hasError = Boolean(meta.touched && meta.error);
-  const selectedDate = field.value 
-    ? (typeof field.value === 'string' ? parseISO(field.value) : field.value) 
-    : undefined;
+  const selectedDate = React.useMemo(() => {
+    if (!field.value) return undefined;
+    if (field.value instanceof Date) return field.value;
+    const parsed = parseISO(field.value);
+    return isValid(parsed) ? parsed : undefined;
+  }, [field.value]);
 
-  const parsedMin = ensureDate(minvalue);
-  const parsedMax = ensureDate(maxvalue);
+  const parsedMin = ensureDate(minDate);
+  const parsedMax = ensureDate(maxDate);
   const inputId = `${alias}FormInput`;
   const errorId = `${alias}-error`;
-  
+   
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
 
+  // Neumorphic Dynamic Colors
   useEffect(() => {
     if (inputtype === 'datepicker-neumorphic' && containerRef.current) {
       const parentBg = getNearestParentBackground(containerRef.current.parentElement);
@@ -104,9 +108,8 @@ export const DatePicker = ({
     };
   }, [inputtype, hasError, neuVars]);
 
-  // --- CALENDAR POPUP STYLES ---
   const calendarContainerStyle = React.useMemo(() => {
-    const base = { padding: '16px', borderRadius: '12px' };
+    const base = { padding: '20px', borderRadius: '16px', zIndex: 50 };
 
     if (inputtype === 'datepicker-neumorphic') {
         return {
@@ -117,25 +120,16 @@ export const DatePicker = ({
             ...neuVars
         };
     }
-    if (inputtype === 'datepicker-outline') {
-        return {
-            ...base,
-            backgroundColor: 'var(--color-panel-solid)',
-            border: '1px solid var(--gray-6)',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-        };
-    }
-    // Material
     return {
         ...base,
         backgroundColor: 'var(--color-panel-solid)',
-        border: 'none',
-        boxShadow: '0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2)',
+        border: '1px solid var(--gray-4)',
+        boxShadow: '0 12px 24px -10px rgba(0,0,0,0.15), 0 8px 12px -6px rgba(0,0,0,0.1)',
     };
   }, [inputtype, neuVars]);
 
   return (
-    <Column span={width} newLine={props.newRow}>
+    <Column span={width} newLine={newRow}>
       <Flex 
         direction="column" 
         gap="2" 
@@ -147,94 +141,93 @@ export const DatePicker = ({
         <input type="hidden" aria-describedby={`${alias}InputLabel`} name={alias} value={selectedDate ? selectedDate.toISOString() : ''} />
         
         <style dangerouslySetInnerHTML={{__html: `
-          /* Reset & Layout */
           .rdp { 
-             --rdp-cell-size: 36px;
-             --rdp-caption-font-size: 16px;
-             margin: 0; 
-             font-family: var(--default-font-family, sans-serif);
+             --rdp-cell-size: 40px; /* Bigger touch targets */
+             --rdp-accent-color: var(--accent-9);
+             --rdp-background-color: var(--accent-3);
+             margin: 0;
           }
-          .rdp-months { justify-content: center; }
-          .rdp-month { background: transparent; }
+          /* Hide internal input field of DayPicker if present */
+          .rdp-vhidden { display: none; }
+
+          /* Layout Construction - Critical for "Google Style" Grid */
+          .rdp-month { display: table; margin: 0 auto; border-collapse: collapse; }
+          .rdp-caption { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding: 0 8px; }
           
-          /* Header (Month Name + Nav) */
-          .rdp-caption { 
-             display: flex; 
-             align-items: center; 
-             justify-content: space-between; 
-             margin-bottom: 12px; 
-             padding: 0 4px;
-          }
+          /* Header Typography */
           .rdp-caption_label { 
+             font-size: 1rem; 
              font-weight: 600; 
              color: var(--gray-12); 
-             font-size: var(--font-size-3); 
-             text-transform: capitalize;
+             text-transform: capitalize; 
           }
-          .rdp-nav { display: flex; gap: 8px; }
+          
+          /* Navigation Arrows */
+          .rdp-nav { display: flex; gap: 4px; }
           .rdp-nav_button {
-             color: var(--gray-11);
-             border-radius: 6px;
-             padding: 4px;
-             transition: background 0.2s;
-             background: transparent;
+             width: 32px; height: 32px;
+             display: flex; align-items: center; justify-content: center;
+             border-radius: 50%;
              border: none;
+             background: transparent;
              cursor: pointer;
-             display: flex;
-             align-items: center;
-             justify-content: center;
+             color: var(--gray-11);
+             transition: all 0.2s ease;
           }
           .rdp-nav_button:hover { background-color: var(--gray-4); color: var(--gray-12); }
 
-          /* Weekdays Row */
-          .rdp-head_cell { 
-             font-size: 0.75rem; 
-             font-weight: 600; 
-             color: var(--gray-9); 
-             text-transform: uppercase; 
-             padding-bottom: 8px; 
-             width: var(--rdp-cell-size);
-             text-align: center;
-          }
+          /* Table Structure */
+          .rdp-table { max-width: 100%; border-collapse: collapse; }
+          .rdp-tbody { border: 0; }
           
-          /* Day Cells */
-          .rdp-cell { text-align: center; }
-          .rdp-day { 
-             width: var(--rdp-cell-size); 
-             height: var(--rdp-cell-size); 
-             border-radius: 50%;
-             border: 2px solid transparent; 
-             background: transparent; 
-             cursor: pointer; 
-             color: var(--gray-12); 
-             font-size: var(--font-size-2);
-             display: flex; 
-             align-items: center; 
-             justify-content: center;
-             transition: all 0.15s ease;
-             margin: 1px;
+          /* Weekday Headers (S M T W...) */
+          .rdp-head_cell { 
+             width: var(--rdp-cell-size); height: 32px;
+             font-size: 0.75rem; font-weight: 600; 
+             color: var(--gray-9); text-transform: uppercase; 
+             text-align: center; vertical-align: middle;
           }
 
-          /* States */
-          .rdp-day:hover:not(.rdp-day_selected):not([disabled]) { 
-             background-color: var(--gray-4); 
+          /* Days */
+          .rdp-cell { text-align: center; padding: 0; }
+          .rdp-day { 
+             width: var(--rdp-cell-size); height: var(--rdp-cell-size);
+             border-radius: 50%;
+             border: none;
+             background: transparent;
+             color: var(--gray-12);
+             font-size: 0.9rem;
+             cursor: pointer;
+             display: flex; align-items: center; justify-content: center;
+             margin: 1px;
+             transition: background-color 0.2s ease;
           }
-          
+
+          /* Hover State */
+          .rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_disabled) { 
+             background-color: var(--gray-4); 
+             font-weight: 500;
+          }
+
+          /* Selected State - Solid Circle */
           .rdp-day_selected { 
-             background-color: var(--accent-9) !important; 
+             background-color: var(--rdp-accent-color) !important; 
              color: white !important; 
              font-weight: 600;
           }
 
+          /* Today State */
           .rdp-day_today { 
-             color: var(--accent-11); 
+             color: var(--rdp-accent-color); 
              font-weight: 700;
-             position: relative;
           }
+          /* If today is selected, keep text white */
+          .rdp-day_selected.rdp-day_today { color: white; }
 
-          .rdp-day_disabled { opacity: 0.3; cursor: not-allowed; }
+          /* Disabled State */
+          .rdp-day_disabled { opacity: 0.25; cursor: not-allowed; }
 
-          /* NEUMORPHIC OVERRIDES */
+          /* Neumorphic Overrides */
           ${inputtype === 'datepicker-neumorphic' ? `
             .rdp-day:hover:not(.rdp-day_selected) {
                 box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
@@ -257,53 +250,51 @@ export const DatePicker = ({
                  height: inputtype === 'datepicker-neumorphic' ? '40px' : '32px', 
                  ...activeInputStyle 
                }}
-               onClick={() => !readonly && setIsOpen(true)}
+               onClick={() => !readOnly && setIsOpen(true)}
             >
               <TextField.Slot>
                 <Icon name='calendar' height="16" width="16" style={{ color: 'var(--gray-10)' }} />
               </TextField.Slot>
-              
               <input 
                 readOnly
-                disabled={readonly}
-                value={selectedDate && isValid(selectedDate) ? format(selectedDate, 'PPP') : ''}
+                disabled={readOnly}
+                value={selectedDate ? format(selectedDate, 'PPP') : ''}
                 placeholder={placeholder}
                 style={{
                   backgroundColor: 'transparent',
                   border: 'none',
                   outline: 'none',
                   width: '100%',
-                  cursor: readonly ? 'default' : 'pointer',
+                  cursor: readOnly ? 'default' : 'pointer',
                   color: 'inherit',
                   fontFamily: 'inherit',
                   fontSize: 'var(--font-size-2)',
-                  fontWeight: 500
+                  fontWeight: 500,
+                  pointerEvents: 'none' 
                 }}
                 id={inputId} 
                 aria-describedby={hasError ? errorId : `${alias}InputLabel`}
               />
             </TextField.Root>
           </Popover.Trigger>
-
           <Popover.Content 
             style={calendarContainerStyle}
             align="start"
-            sideOffset={5}
+            sideOffset={8}
           >
             <DayPicker
               mode="single"
               selected={selectedDate}
               onSelect={(date) => {
-                setFieldValue(alias, date); 
+                setFieldValue(alias, date ? date.toISOString() : ''); 
                 setIsOpen(false); 
                 setFieldTouched(alias, true);
               }}
               disabled={[
-                  ...(readonly ? [{ from: new Date(1900, 0, 1), to: new Date(2100, 0, 1) }] : []),
+                  ...(readOnly ? [{ from: new Date(1900, 0, 1), to: new Date(2100, 0, 1) }] : []),
                   { before: parsedMin || new Date(1900, 0, 1) }, 
                   { after: parsedMax || new Date(2100, 0, 1) }
               ]}
-              
               components={{
                 Chevron: (props) => {
                     const style = { display: 'block', cursor: 'pointer', color: 'var(--gray-11)' };
@@ -316,25 +307,26 @@ export const DatePicker = ({
             />
           </Popover.Content>
         </Popover.Root>
-
         <div>
-           <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputlabel}</Text>
+           {inputLabel && (
+             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
+               {inputLabel}
+             </Text>
+           )}
            &nbsp;
-           {props.ishinted ?
-               <>
-                   <Tooltip content={props.hinttext || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                       <a href={props.hinturl || ""} target="_blank" rel="noopener noreferrer">
-                           <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                       </a> 
-                   </Tooltip>
-               </> : null} 
+           {isHinted && (
+               <Tooltip content={hintText || "No hint available"}>
+                   <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                   </a> 
+               </Tooltip>
+           )} 
            
-           {hasError ?
-               <>
-                   <p id={errorId} className='core-input-label-error'>
-                       {props.errortext || (meta.error || "Required field")}
-                   </p>
-               </> : null } 
+           {hasError && (
+               <Text id={errorId} size="1" color="red" className='core-input-label-error'>
+                   {errorText || (meta.error || "Required field")}
+               </Text>
+           )} 
         </div>
       </Flex>
     </Column>
