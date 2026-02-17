@@ -1,26 +1,15 @@
-import React, { ReactNode, useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { TextField, IconButton, Tooltip, Flex, Text } from '@radix-ui/themes';
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons';
 import { Icon } from "components/icons/icons";
 import { useField, useFormikContext } from "formik"; 
 import { Column } from "layouts/column/column";
-import { InputDesign } from "./input"; 
-import { IMaskInput } from 'react-imask'; 
+import { IMaskInput } from 'react-imask';
 import '../../styles/main.scss';
-
-const safeParseUuidFormat = (typeString: string): number[] | null => {
-    try {
-        if (!typeString.startsWith('uuid')) return null;
-        const parts = typeString.split('-').slice(1).map(Number);
-        return parts.length > 0 && !parts.some(isNaN) ? parts : null;
-    } catch {
-        return null;
-    }
-};
 
 type startsWithUuid = `uuid${string}`;
 
-type UUIDInputProps = {
+interface UUIDInputProps {
     alias: string;
     type?: startsWithUuid | string; 
     inputLabel?: string;
@@ -32,11 +21,21 @@ type UUIDInputProps = {
     hintText?: string;
     hintUrl?: string;
     placeholder?: string;
-    errorText?: ReactNode | string | null;
+    errorText?: React.ReactNode | string | null;
     className?: string;
-    inputVariant?: InputDesign;
+    inputVariant?: 'uuid' | 'uuid-outline' | 'uuid-material' | 'uuid-neumorphic';
     readOnly?: boolean;
     size?: "1" | "2" | "3";
+}
+
+const safeParseUuidFormat = (typeString: string): number[] | null => {
+    try {
+        if (!typeString.startsWith('uuid')) return null;
+        const parts = typeString.split('-').slice(1).map(Number);
+        return parts.length > 0 && !parts.some(isNaN) ? parts : null;
+    } catch {
+        return null;
+    }
 };
 
 export const UUIDInput = ({
@@ -53,7 +52,7 @@ export const UUIDInput = ({
     hintUrl, 
     errorText,
     readOnly = false, 
-    inputVariant = 'input-outline',
+    inputVariant = 'uuid-outline',
     size = "2", 
     className, 
     ...props
@@ -70,7 +69,7 @@ export const UUIDInput = ({
     }, [type, format]);
 
     const maskPattern = useMemo(() => {
-        return activeFormat.map(len => '*'.repeat(len)).join(delimiter);
+        return activeFormat.map(len => '#'.repeat(len)).join(delimiter);
     }, [activeFormat, delimiter]);
 
     const handleCopy = () => {
@@ -81,28 +80,29 @@ export const UUIDInput = ({
         }
     };
 
-    const variantClass = inputVariant !== 'input-outline' ? `input-${inputVariant}` : '';
+    const variantClass = inputVariant !== 'uuid-outline' ? `input-${inputVariant}` : '';
 
     return (
         <Column span={width} newLine={newRow}>
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
+                
                 <TextField.Root 
                     size={size} 
                     variant="surface" 
                     color={hasError ? 'red' : undefined}
                     className={`${variantClass} ${className || ''}`}
-                    {...(props as any)} 
+                    style={{ cursor: readOnly ? 'default' : 'text' }}
                 >
-                   
                     <IMaskInput
                         mask={maskPattern}
                         definitions={{
-                            '*': /[0-9a-fA-F]/
+                            '#': /[0-9a-fA-F]/
                         }}
                         prepare={(str) => str.toUpperCase()}
                         value={field.value || ''}
-                        onAccept={(val: string) => {
-                             setFieldValue(alias, val);
+                        unmask={false}
+                        onAccept={(value: string) => {
+                             setFieldValue(alias, value);
                         }}
                         onBlur={() => setFieldTouched(alias, true)}
                         id={`${alias}FormInput`}
@@ -114,15 +114,14 @@ export const UUIDInput = ({
                             outline: 'none',
                             backgroundColor: 'transparent',
                             height: '100%',
-                            paddingLeft: '8px',
+                            paddingLeft: 'var(--space-2)',
                             color: 'var(--gray-12)',
-                            fontFamily: 'var(--code-font-family)', 
+                            fontFamily: 'var(--code-font-family, monospace)', 
                             fontSize: 'var(--font-size-2)',
                             textTransform: 'uppercase',
                             width: '100%'
                         }}
                     />
-
                     <TextField.Slot>
                         <Tooltip content={copied ? "Copied!" : "Copy to clipboard"}>
                             <IconButton 
@@ -154,7 +153,7 @@ export const UUIDInput = ({
                     )} 
                     {hasError && (
                         <Text id={errorId} size="1" color="red" style={{ display: 'block', marginTop: 2 }}>
-                            {errorText || meta.error || `Required field`}
+                            {errorText || meta.error || "Required field"}
                         </Text>
                     )} 
                 </div>
