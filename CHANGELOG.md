@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.13
+
+### Patch Changes
+
+- c85e957: UUID Input Component Triage Fix
+
 ## 1.4.12
 
 ### Patch Changes
