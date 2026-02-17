@@ -115,7 +115,7 @@ export const StockInput = ({
                 </Flex>
                 
                 <div>
-                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>
+                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
                         {inputLabel}
                     </Text>
                     &nbsp;

@@ -289,7 +289,7 @@ export const ConditionalTrigger = ({
       </div>
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias} style={{ cursor: 'pointer' }}>
+            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId} style={{ cursor: 'pointer' }}>
                 {inputLabel}
             </Text>
             &nbsp;

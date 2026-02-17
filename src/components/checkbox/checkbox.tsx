@@ -128,6 +128,7 @@ export const CheckboxGroupInput = ({
   const hasError = Boolean(meta.touched && meta.error);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+  const inputId = `${alias}FormInput` || crypto.randomUUID();
   const errorId = `${alias}-error`;
 
   const handleCheckedChange = (checked: boolean, value: string) => {
@@ -230,7 +231,7 @@ export const CheckboxGroupInput = ({
       </Grid>
 
       <div>
-                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
+                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>{inputLabel}</Text>
                       &nbsp;
                       {isHinted ?
                               <>

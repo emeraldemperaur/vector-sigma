@@ -210,7 +210,7 @@ export const File = ({
       </div>
 
        <div>
-                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={alias}>{inputLabel}</Text>
+                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>{inputLabel}</Text>
                 &nbsp;  
                 {isHinted ?
                   <>

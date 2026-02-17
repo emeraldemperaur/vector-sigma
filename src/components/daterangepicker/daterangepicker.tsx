@@ -39,6 +39,7 @@ export const DateRangePicker = ({
     const { setFieldValue, setFieldTouched } = useFormikContext();
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
+    const inputId = `${alias}FormInput` || crypto.randomUUID();
     const getDates = (): [Date | null, Date | null] => {
         const val = field.value;
         if (!val) return [null, null];
@@ -162,6 +163,7 @@ export const DateRangePicker = ({
                 `}</style>
 
                 <ReactDatePicker
+                    id={`${alias}DatePicker`}
                     selectsRange={true}
                     startDate={startDate}
                     endDate={endDate}
@@ -177,6 +179,7 @@ export const DateRangePicker = ({
                     dateFormat="MMM d, yyyy"
                     customInput={
                         <TextField.Root 
+                            id={inputId}
                             variant="surface"
                             style={getInputStyles()}
                         >
@@ -188,7 +191,7 @@ export const DateRangePicker = ({
                 />
 
                 <div>
-                    {inputlabel && <Text size="2" weight="bold" as="label" htmlFor={alias}>{inputlabel}</Text>}
+                    {inputlabel && <Text size="2" weight="bold" as="label" htmlFor={inputId}>{inputlabel}</Text>}
                     
                     {isHinted && (
                         <Tooltip content={hintText || "No hint"} align="start">

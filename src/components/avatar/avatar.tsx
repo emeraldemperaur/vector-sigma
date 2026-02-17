@@ -48,11 +48,11 @@ export interface AvatarProps {
    * readOnly
    */
   readOnly?: boolean; 
-/**
-   * * Option to enable a hint for Avatar input field.
-   * * @example
-   * isHinted
-   */
+  /**
+     * * Option to enable a hint for Avatar input field.
+     * * @example
+     * isHinted
+     */
   isHinted?: boolean;
   /**
    * * Option to specify hint text for Avatar input field.
@@ -274,7 +274,7 @@ export const AvatarInput = ({
       />
         <div>
                 {inputLabel && (
-                      <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" color='gray' highContrast={inputtype !== 'avatar-neumorphic'} htmlFor={alias}>
+                      <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" color='gray' highContrast={inputtype !== 'avatar-neumorphic'} htmlFor={inputId}>
                         {inputLabel}
                       </Text>)}
                 &nbsp;

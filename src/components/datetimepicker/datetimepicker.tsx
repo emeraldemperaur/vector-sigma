@@ -38,6 +38,7 @@ export const DateTimePicker = ({
 }: DateTimePickerProps) => {
     const { setFieldValue, setFieldTouched } = useFormikContext();
     const [field, meta] = useField(alias);
+    const inputId = `${alias}FormInput` || crypto.randomUUID();
     const hasError = Boolean(meta.touched && meta.error);
     const errorId = `${alias}-error`;
     const containerRef = useRef<HTMLDivElement>(null);
@@ -163,6 +164,7 @@ export const DateTimePicker = ({
                 `}</style>
 
                 <ReactDatePicker
+                    id={`${alias}DatePicker`}
                     selected={(field.value && new Date(field.value)) || null}
                     onChange={(val: Date | null) => {
                         setFieldValue(alias, val);
@@ -176,6 +178,7 @@ export const DateTimePicker = ({
                     placeholderText={placeholder}
                     customInput={
                         <TextField.Root 
+                            id={inputId}
                             variant="surface"
                             style={getInputStyles()}
                         >
@@ -186,7 +189,7 @@ export const DateTimePicker = ({
                     }
                 />
                 <div>
-                    {inputlabel && <Text size="2" weight="bold" as="label" htmlFor={alias}>{inputlabel}</Text>}
+                    {inputlabel && <Text size="2" weight="bold" as="label" htmlFor={inputId}>{inputlabel}</Text>}
                     
                     {isHinted && (
                         <Tooltip content={hintText || "No hint"} align="start">

@@ -12,7 +12,7 @@ export type DatePickerDesign = 'datepicker' | 'datepicker-outline' | 'datepicker
 
 interface DatePickerProps {
     alias: string;
-    inputlabel?: string;
+    inputLabel?: string;
     inputtype?: DatePickerDesign;
     width?: number;
     newRow?: boolean;
@@ -27,7 +27,7 @@ interface DatePickerProps {
 
 export const DatePicker = ({
     alias,
-    inputlabel,
+    inputLabel,
     inputtype = 'datepicker-outline',
     width = 12,
     newRow,
@@ -38,6 +38,7 @@ export const DatePicker = ({
 }: DatePickerProps) => {
     const { setFieldValue, setFieldTouched } = useFormikContext();
     const [field, meta] = useField(alias);
+    const inputId = `${alias}FormInput` || crypto.randomUUID();
     const hasError = Boolean(meta.touched && meta.error);
     const containerRef = useRef<HTMLDivElement>(null);
     const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
@@ -122,6 +123,7 @@ export const DatePicker = ({
                 `}</style>
 
                 <ReactDatePicker
+                    id={`${alias}DatePicker`}
                     selected={(field.value && new Date(field.value)) || null}
                     onChange={(val: Date | null) => {
                         setFieldValue(alias, val);
@@ -132,6 +134,7 @@ export const DatePicker = ({
                     dateFormat="MMM d, yyyy"
                     customInput={
                         <TextField.Root 
+                            id={inputId}
                             variant="surface"
                             style={getInputStyles()}
                         >
@@ -143,7 +146,7 @@ export const DatePicker = ({
                 />
 
                 <div>
-                    {inputlabel && <Text size="2" weight="bold" as="label" htmlFor={alias}>{inputlabel}</Text>}
+                    {inputLabel && <Text size="2" weight="bold" as="label" htmlFor={inputId}>{inputLabel}</Text>}
                     {isHinted && (
                         <Tooltip content={hintText || "No hint"} align="start">
                             <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 6 }}>
