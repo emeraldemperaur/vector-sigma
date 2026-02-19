@@ -96,7 +96,7 @@ const App = () => {
 
 <li><strong>🧩Exported UI Components</strong></br>
 <p align="justify">Explicitly exported reusable form UI components with material, outline and neumorphic design variants from package entry point <code>src/index.ts</code> to enable developer-friendly use as lightweight component library.</p>
-<p><em>Container, Row, Column, Theme, AvatarInput, ButtonInput, CheckboxGroupInput, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, UUIDInput, CreditCardInput, CurrencyInput, StockInput, RadioGroupInput, OptionSelect, MultipleSelect, RangeSlider, SliderInput, Toggle, SectionTitle</em></p>
+<p><em>Container, Row, Column, Theme, AvatarInput, ButtonInput, CheckboxGroupInput, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, CreditCardInput, CurrencyInput, StockInput, RadioGroupInput, OptionSelect, MultipleSelect, RangeSlider, SliderInput, Toggle, SectionTitle</em></p>
 
 ```javascript
 import { Container, Column, Row, CheckboxGroup, Dropdown, File, RangeSlider } 
@@ -190,6 +190,8 @@ const App = () => {
 
 ```bash
 npm install --save-dev @changesets/cli
+# Changeset project initializer
+npx changeset init
 ```
 </li>
 <li>
@@ -208,6 +210,15 @@ git checkout -b new-changeset-branchname
 ```bash
 # Changeset - patch, minor, major versioning
 npx changeset
+
+# PreRelease mode (alpha)
+npx changeset pre enter alpha
+
+# PreRelease mode (beta)
+npx changeset pre enter beta
+
+# Exit PreRelease mode 
+npx changeset pre exit
 ```
 </li>
 

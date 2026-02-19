@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Select, Flex, Text, Tooltip, Separator } from '@radix-ui/themes';
-import { adjustColor, getNearestParentBackground } from "utils/vinci";
+import { adjustColor, getNearestParentBackground, InputOption } from "utils/vinci";
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
 import { useField, useFormikContext } from 'formik';
@@ -10,31 +10,104 @@ export type OptionSelectDesign = 'dropdown' | 'dropdown-material' | 'dropdown-ou
 
 
 export interface SelectProps {
-  inputtype?: OptionSelectDesign & {};
+  /**
+   * * The required unique identifier for the OptionSelect input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="productCategory"
+   */
   alias: string;
+  /**
+   * * The design variation of the OptionSelect input field. 
+   * Default: 'dropdown-outline' 
+   * Variants: 'dropdown', 'dropdown-outline', 'dropdown-material', 'dropdown-neumorphic'.
+   * * @example
+   * inputtype="dropdown-neumorphic"
+   */ 
+  inputtype?: OptionSelectDesign & {};
+  /**
+   * * The optional input label or description for the OptionSelect input field. 
+   * * @example
+   * inputLabel="Choose a VΣ category"
+   */
   inputLabel?: string;
-  icon?: React.ReactNode;
+  /**
+   * * The required viewport column width for the OptionSelect input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
   width: number;
-  defaultvalue?: string;
-  value?: string;
+  /**
+   * * Option to render OptionSelect input field on new row.
+   * * @example
+   * newRow
+   */
   newRow?: boolean;
+   /**
+   * * Option to force set the placeholder text for a OptionSelect input field.
+   * * @example
+   * placeholder="Select a category"
+   */
   placeholder?: string;
+   /**
+   * * Option to disable edits for OptionSelect input field.
+   * * @example
+   * readOnly
+   */
   readOnly?: boolean;
+  /**
+     * * Option to enable a hint for OptionSelect input field.
+     * * @example
+     * isHinted
+     */
   isHinted?: boolean;
+  /**
+   * * Option to specify hint text for OptionSelect input field.
+   * * @example
+   * hintText="This is a hint for a VΣ OptionSelect"
+   */
   hintText?: string;
+  /**
+   * * Option to specify a hint url reference or resource for OptionSelect input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
   hintUrl?: string;
+  /**
+    * * onValueChange event handler function for OptionSelect input field.
+    * * @example
+    * props.onValueChange(finalVal)
+    */
   onValueChange?: (value: string) => void;
+  /**
+   * * Option to specify the isRequired error text for the OptionSelect input field.
+   * * @example
+   * errorText="VΣ category is required"
+   */
   errorText?: ReactNode | string | null;
-  inputOptions: { 
-    optionid: number | string; 
-    text: string; 
-    optionvalue: string; 
-    tag?: string; 
-    score?: number | string;
-    note?: string; 
-    optionurl?: string;
-  }[];
+  /**
+   * * Required  inputOptions{} for the OptionSelect input field.
+   * * @example
+   * inputOptions={
+            [
+              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+              ]}
+  */
+  inputOptions: InputOption[];
+  /**
+   * * Option to specify the .scss class selector for the OptionSelect input field.
+   * * @example
+   * className="teletraan-1-optionselect"
+   */
   className?: string;
+  /**
+   * * Option to inject custom CSS the OptionSelect input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
   style?: React.CSSProperties;
 }
 
@@ -45,14 +118,12 @@ export const OptionSelect = ({
   width, 
   inputLabel,
   placeholder, 
-  value,
   inputOptions,
   style,
   newRow,
   isHinted,
   hintText,
   hintUrl,
-  defaultvalue,
   errorText,
   ...props
 }: SelectProps) => {

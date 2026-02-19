@@ -11,17 +11,81 @@ import '../../styles/main.scss';
 export type DateTimePickerDesign = 'datetimepicker' | 'datetimepicker-outline' | 'datetimepicker-material' | 'datetimepicker-neumorphic';
 
 interface DateTimePickerProps {
+    /**
+   * * The required unique identifier for the DateTimePicker input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="esppEnrollmentWindowStart"
+   */
     alias: string;
+    /**
+   * * The optional input label or description for the DateTimePicker input field. 
+   * * @example
+   * inputLabel="ESPP Enrollment Window (Start)"
+   */
     inputLabel?: string;
+     /**
+   * * The design variation of the DateTimePicker input. 
+   * Default: 'datetimepicker-outline' 
+   * Variants: 'datetimepicker', 'datetimepicker-outline', 'datetimepicker-material', 'datetimepicker-neumorphic',
+   * * @example
+   * inputtype="datetimepicker-neumorphic"
+   */
     inputtype?: DateTimePickerDesign;
+    /**
+   * * The required viewport column width for the DateTimePicker input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={6}
+   */
     width?: number;
+    /**
+   * * Option to render DateTimePicker input field on new row.
+   * * @example
+   * newRow
+   */
     newRow?: boolean;
+    /**
+   * * Option to set the default placeholder text for the DateTimePicker input field.
+   * * @example
+   * placeholder="Select VΣCG ESPP enrollment start date & time"
+   */
     placeholder?: string;
+    /**
+     * * Option to enable a hint for DateTimePicker input field.
+     * * @example
+     * isHinted
+     */ 
     isHinted?: boolean;
+    /**
+   * * Option to specify hint text for DateTimePicker input field.
+   * * @example
+   * hintText="This is a hint for a VΣ DateTimePicker"
+   */ 
     hintText?: string;
+    /**
+   * * Option to specify a hint url reference or resource for DateTimePicker input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
     hintUrl?: string;
+    /**
+   * * Option to specify the isRequired error text for the DateTimePicker input field.
+   * * @example
+   * errorText="VΣ resrvation dates required"
+   */
     errorText?: string;
+    /**
+   * * Option to disable edits for DateTimePicker input field.
+   * * @example
+   * readOnly
+   */ 
     readOnly?: boolean;
+    /**
+   * * Option to specify the .scss class selector for the DateTimePicker input field.
+   * * @example
+   * className="teletraan-1-datetimepicker"
+   */
     className?: string;
 }
 

@@ -9,12 +9,87 @@ import '../../styles/main.scss';
 export type FileInputDesign = 'fileinput' | 'fileinput-material' | 'fileinput-outline' | 'fileinput-neumorphic';
 
 export interface FileInputProps {
-  inputtype?: FileInputDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultvalue?: any, value?: any, newRow?: boolean,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  preview?: boolean, 
-  className?: string, errorText?: ReactNode | string | null,
+  /**
+   * * The required unique identifier for the File input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="pmpCertificationFile"
+   */
+  alias: string; 
+  /**
+   * * The design variation of the File input. 
+   * Default: 'fileinput-outline' 
+   * Variants: 'fileinput', 'fileinput-outline', 'fileinput-material', 'fileinput-neumorphic'.
+   * * @example
+   * inputtype="fileinput-neumorphic"
+   */
+  inputtype?: FileInputDesign & {};
+  /**
+   * * The optional input label or description for the File input field. 
+   * * @example
+   * inputLabel="Upload PMP® Certication"
+   */
+  inputLabel?: string; 
+  /**
+   * * The required viewport column width for the File input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
+  width: number;
+  /**
+   * * Option to render File input field on new row.
+   * * @example
+   * newRow
+   */
+  newRow?: boolean;
+  /**
+   * * Option to disable edits for File input field.
+   * * @example
+   * readOnly
+   */
+  readOnly?: boolean; 
+  /**
+     * * Option to enable a hint for File input field.
+     * * @example
+     * isHinted
+     */ 
+  isHinted?: boolean; 
+  /**
+   * * Option to specify hint text for File input field.
+   * * @example
+   * hintText="This is a hint for a VΣ File"
+   */
+  hintText?: string; 
+  /**
+   * * Option to specify a hint url reference or resource for File input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */
+  hintUrl?: string;
+  /**
+   * * Option to enable image file previews for File input field.
+   * * @example
+   * preview
+   */
+  preview?: boolean;
+  /**
+   * * Option to specify the .scss class selector for the File input field.
+   * * @example
+   * className="teletraan-1-file"
+   */
+  className?: string; 
+  /**
+   * * Option to specify the isRequired error text for the File input field.
+   * * @example
+   * errorText="Proof of PMP® certificartion is required"
+   */
+  errorText?: ReactNode | string | null;
+  /**
+   * * Option to inject custom CSS the File input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
   style?: React.CSSProperties;
 }
 
@@ -30,7 +105,7 @@ const getFileIcon = (type: string, name: string) => {
 export const File = ({
   inputtype = 'fileinput-outline',
   alias, readOnly, width, inputLabel,
-  placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
+  newRow, isHinted, hintText, hintUrl, errorText,
   preview = false,
   className,
   style, ...props

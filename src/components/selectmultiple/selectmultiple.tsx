@@ -9,13 +9,99 @@ import '../../styles/main.scss';
 export type MultipleSelectDesign = 'multiselect' | 'multiselect-material' | 'multiselect-outline' | 'multiselect-neumorphic';
 
 interface MultipleSelectProps {
-    inputtype?: MultipleSelectDesign & {},
-    alias: string, inputLabel?: string, icon?: React.ReactNode,
-    width: number, defaultvalue?: any[], value?: any[], newRow?: boolean,
-    placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-    inputOptions: InputOption[], errorText?: ReactNode | string | null,
-    className?: string,
-    style?: React.CSSProperties
+    /**
+   * * The required unique identifier for the MultipleSelect input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="productCategories"
+   */
+    alias: string; 
+   /**
+   * * The design variation of the MultipleSelect input. 
+   * Default: 'multiselect-outline' 
+   * Variants: 'multiselect', 'multiselect-outline', 'multiselect-material', 'multiselect-neumorphic'.
+   * * @example
+   * inputtype="multiselect-neumorphic"
+   */
+    inputtype?: MultipleSelectDesign & {};
+    /**
+   * * The optional input label or description for the MultipleSelect input field. 
+   * * @example
+   * inputLabel="Choose at least one VΣ category"
+   */
+    inputLabel?: string;
+    /**
+   * * The required viewport column width for the MultipleSelect input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */ 
+    width: number;
+    /**
+   * * Option to render MultipleSelect input field on new row.
+   * * @example
+   * newRow
+   */
+    newRow?: boolean;
+    /**
+   * * Option to force set the placeholder text for a MultipleSelect input field.
+   * * @example
+   * placeholder="Select products of interest"
+   */
+    placeholder?: string;
+    /**
+   * * Option to disable edits for MultipleSelect input field.
+   * * @example
+   * readOnly
+   */
+    readOnly?: boolean;
+    /**
+     * * Option to enable a hint for MultipleSelect input field.
+     * * @example
+     * isHinted
+     */
+    isHinted?: boolean; 
+    /**
+   * * Option to specify hint text for MultipleSelect input field.
+   * * @example
+   * hintText="This is a hint for a VΣ MultipleSelect"
+   */
+    hintText?: string;
+    /**
+   * * Option to specify a hint url reference or resource for MultipleSelect input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
+    hintUrl?: string;
+    /**
+   * * Required  inputOptions{} for the MultipleSelect input field.
+   * * @example
+   * inputOptions={
+            [
+              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+              ]}
+    */
+    inputOptions: InputOption[]; 
+    /**
+   * * Option to specify the isRequired error text for the MultipleSelect input field.
+   * * @example
+   * errorText="At least one product category selection is required"
+   */
+    errorText?: ReactNode | string | null;
+    /**
+   * * Option to specify the .scss class selector for the MultipleSelect input field.
+   * * @example
+   * className="teletraan-1-multipleselect"
+   */
+    className?: string;
+    /**
+   * * Option to inject custom CSS the MultipleSelect input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
+    style?: React.CSSProperties;
 }
 
 export const MultipleSelect = ({
@@ -148,11 +234,10 @@ export const MultipleSelect = ({
           align="start" 
           sideOffset={5}
           style={{ 
-            width: triggerRef.current?.offsetWidth, // Match trigger width
+            width: triggerRef.current?.offsetWidth,
             padding: 0,
             overflow: 'hidden',
             backgroundColor: inputtype === 'multiselect-neumorphic' ? 'var(--neu-bg)' : 'var(--color-panel-solid)',
-            // Pass the neuvars down to content
             ...neuVars 
           }}
         >

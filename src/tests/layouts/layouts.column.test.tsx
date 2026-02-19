@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { Column } from '../layouts/column/column';
+import { Column } from '../../layouts/column/column';
 import '@testing-library/jest-dom';
 
 jest.mock('@radix-ui/themes', () => ({

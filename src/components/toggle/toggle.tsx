@@ -11,16 +11,77 @@ import '../../styles/main.scss';
 export type ToggleDesign = 'toggle' | 'toggle-material' | 'toggle-outline' | 'toggle-neumorphic';
 
 interface ToggleProps extends ButtonProps {
-  inputtype?: ToggleDesign & {};
+  /**
+     * * The required unique identifier for the Toggle input field in useFormikContext(). 
+     * Alias referenced as `name` attribute and Formik state key.
+     * * @example
+     * alias="numberOfRentalRooms"
+     */
   alias: string;
+  /**
+     * * The design variation of the Toggle input field. 
+     * Default: 'slider-outline' 
+     * Variants: 'slider', 'slider-outline', 'slider-material', 'slider-neumorphic'.
+     * * @example
+     * inputtype="slider-neumorphic"
+     */
+  inputtype?: ToggleDesign & {};
+  /**
+     * * The optional input label or description for the Toggle input field. 
+     * * @example
+     * inputLabel="Enable VΣ AI Insights"
+     */
   inputLabel?: string;
+  /**
+     * * The required viewport column width for the Toggle input field.
+     * i.e. 1 - 12
+     * * @example
+     * width={5}
+     */ 
   width: number;
+  /**
+     * * Option to render Toggle input field on new row.
+     * * @example
+     * newRow
+     */
   newRow?: boolean;
+  /**
+     * * Option to disable edits for Toggle input field.
+     * * @example
+     * readOnly
+     */
   readOnly?: boolean;
+  /**
+       * * Option to enable a hint for Toggle input field.
+       * * @example
+       * isHinted
+       */
   isHinted?: boolean;
+  /**
+     * * Option to specify hint text for Toggle input field.
+     * * @example
+     * hintText="This is a hint for a VΣ Toggle input"
+     */
   hintText?: string;
+  /**
+     * * Option to specify a hint url reference or resource for Toggle input field.
+     * * @example
+     * hintUrl="https://www.mekaegwim.ca"
+     */ 
   hintUrl?: string;
+  /**
+     * * Option to specify an Icon name for Toggle input field.
+     * e.g. `sun`, `moon`
+     * Defaults to `stack` icon if `name` not provided
+     * * @example
+     * icon="star"
+     */ 
   icon?: string;
+  /**
+     * * Option to specify the isRequired error text for the Toggle input field.
+     * * @example
+     * errorText="A toggled selection is required"
+     */
   errorText?: ReactNode | string | null;
 }
 
@@ -84,7 +145,6 @@ export const Toggle = ({
     }
   };
 
-  // Determine Icon Color: Deep accent if Checked & Active, Grey otherwise
   const iconColor = field.value && !readOnly ? 'var(--accent-9)' : 'var(--gray-8)';
 
   return (

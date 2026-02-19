@@ -1,4 +1,4 @@
-import { parseUuidFormat } from '../utils/uuidparser';
+import { parseUuidFormat } from '../../utils/uuidparser';
 
 describe('VΣ Utility(uuidParser) Test', () => {
 

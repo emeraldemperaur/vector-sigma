@@ -10,20 +10,108 @@ import { InputDesign } from "components/input/input";
 import '../../styles/main.scss';
 
 type CurrencyInputProps = {
-    alias: string, 
-    inputtype?: SupportedCurrency | "currency", 
-    inputLabel?: string, 
-    width: number, 
-    newRow?: boolean, 
-    defaultvalue?: string, 
-    placeholder?: string, 
-    readOnly?: boolean, 
-    isHinted?: boolean, 
-    hintText?: string, 
-    errorText?: ReactNode | string | null, 
-    hintUrl?: string, 
-    inputvariant?: InputDesign & {}, 
-    className?: string
+    /**
+   * * The required unique identifier for the CurrencyInput field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="productSKUPrice"
+   */
+    alias: string;
+    /**
+   * * The optional input value type for the CurrencyInput field. 
+   * Default: 'currency' -> "USD"
+   * Options: "USD" | "CAD" | "MXN" | "GTQ" | "CRC" | "DOP" | "JMD" | "PAB" | "BRL" 
+   * | "ARS" | "COP" | "CLP" | "PEN" | "UYU" | "PYG" | "BOB" | "VES" | "EUR" | "GBP" 
+   * | "CHF" | "SEK" | "NOK" | "DKK" | "PLN" | "CZK" | "HUF" | "RON" | "ISK" | "UAH" 
+   * | "JPY" | "CNY" | "HKD" | "TWD" | "INR" | "KRW" | "SGD" | "MYR" | "THB" | "VND" 
+   * | "PHP" | "IDR" | "PKR" | "AED" | "SAR" | "ILS" | "TRY" | "QAR" | "ZAR" | "NGN" 
+   * | "EGP" | "KES" | "GHS" | "MAD" | "TZS" | "UGX" | "XOF" | "AUD" | "NZD" | "FJD"
+   * * @example
+   * inputtype="currency"
+   */ 
+    inputtype?: SupportedCurrency | "currency";
+    /**
+   * * The optional input label or description for the CurrencyInput field. 
+   * * @example
+   * inputLabel="VΣ Product Price"
+   */ 
+    inputLabel?: string;
+    /**
+   * * The required viewport column width for the CurrencyInput field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
+    width: number;
+    /**
+   * * Option to render CurrencyInput field on new row.
+   * * @example
+   * newRow
+   */
+    newRow?: boolean; 
+     /**
+   * * The optional default currency for the CurrencyInput field. 
+   * Default: 'USD'
+   * Options: "USD" | "CAD" | "MXN" | "GTQ" | "CRC" | "DOP" | "JMD" | "PAB" | "BRL" 
+   * | "ARS" | "COP" | "CLP" | "PEN" | "UYU" | "PYG" | "BOB" | "VES" | "EUR" | "GBP" 
+   * | "CHF" | "SEK" | "NOK" | "DKK" | "PLN" | "CZK" | "HUF" | "RON" | "ISK" | "UAH" 
+   * | "JPY" | "CNY" | "HKD" | "TWD" | "INR" | "KRW" | "SGD" | "MYR" | "THB" | "VND" 
+   * | "PHP" | "IDR" | "PKR" | "AED" | "SAR" | "ILS" | "TRY" | "QAR" | "ZAR" | "NGN" 
+   * | "EGP" | "KES" | "GHS" | "MAD" | "TZS" | "UGX" | "XOF" | "AUD" | "NZD" | "FJD"
+   * * @example
+   * defaultvalue="USD"
+   */ 
+    defaultvalue?: string;
+    /**
+   * * Option to set the default placeholder text for the CurrencyInput input field.
+   * * @example
+   * placeholder="0.00"
+   */
+    placeholder?: string; 
+    /**
+   * * Option to disable edits for CurrencyInput input field.
+   * * @example
+   * readOnly
+   */ 
+    readOnly?: boolean;
+    /**
+     * * Option to enable a hint for CurrencyInput input field.
+     * * @example
+     * isHinted
+     */  
+    isHinted?: boolean;
+    /**
+   * * Option to specify hint text for CurrencyInput input field.
+   * * @example
+   * hintText="This is a hint for a VΣ CurrencyInput"
+   */ 
+    hintText?: string;
+    /**
+   * * Option to specify the isRequired error text for the CurrencyInput input field.
+   * * @example
+   * errorText="VΣ product price is required"
+   */ 
+    errorText?: ReactNode | string | null;
+    /**
+   * * Option to specify a hint url reference or resource for CurrencyInput input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
+    hintUrl?: string; 
+    /**
+   * * The design variation of the CurrencyInput input. 
+   * Default: 'input-outline' 
+   * Variants: 'input', 'input-outline', 'input-material', 'input-neumorphic',
+   * * @example
+   * inputtype="input-neumorphic"
+   */
+    inputvariant?: InputDesign & {};
+    /**
+   * * Option to specify the .scss class selector for the CurrencyInput input field.
+   * * @example
+   * className="teletraan-1-currencyinput"
+   */
+    className?: string;
 };
 
 export const CurrencyInput = ({

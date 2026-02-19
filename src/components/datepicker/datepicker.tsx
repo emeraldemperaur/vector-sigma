@@ -11,17 +11,81 @@ import '../../styles/main.scss';
 export type DatePickerDesign = 'datepicker' | 'datepicker-outline' | 'datepicker-material' | 'datepicker-neumorphic';
 
 interface DatePickerProps {
+    /**
+   * * The required unique identifier for the DatePicker input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="citizenshipDateCA"
+   */
     alias: string;
+    /**
+   * * The optional input label or description for the DatePicker input field. 
+   * * @example
+   * inputLabel="Canadian Citizenship Date"
+   */
     inputLabel?: string;
+    /**
+   * * The design variation of the DatePicker input. 
+   * Default: 'datepicker-outline' 
+   * Variants: 'datepicker', 'datepicker-outline', 'datepicker-material', 'datepicker-neumorphic',
+   * * @example
+   * inputtype="datepicker-neumorphic"
+   */
     inputtype?: DatePickerDesign;
+    /**
+   * * The required viewport column width for the DatePicker input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={6}
+   */
     width?: number;
+    /**
+   * * Option to render DatePicker input field on new row.
+   * * @example
+   * newRow
+   */
     newRow?: boolean;
+    /**
+   * * Option to set the default placeholder text for the DatePicker input field.
+   * * @example
+   * placeholder="Select Citizenship Date"
+   */
     placeholder?: string;
+    /**
+     * * Option to enable a hint for DatePicker input field.
+     * * @example
+     * isHinted
+     */ 
     isHinted?: boolean;
+    /**
+   * * Option to specify hint text for DatePicker input field.
+   * * @example
+   * hintText="This is a hint for a VΣ DatePicker"
+   */ 
     hintText?: string;
+    /**
+   * * Option to specify a hint url reference or resource for DatePicker input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
     hintUrl?: string;
+    /**
+   * * Option to specify the isRequired error text for the DatePicker input field.
+   * * @example
+   * errorText="VΣ Citizenship date is required"
+   */
     errorText?: string;
+    /**
+   * * Option to disable edits for DatePicker input field.
+   * * @example
+   * readOnly
+   */ 
     readOnly?: boolean;
+    /**
+   * * Option to specify the .scss class selector for the DatePicker input field.
+   * * @example
+   * className="teletraan-1-datepicker"
+   */
     className?: string;
 }
 

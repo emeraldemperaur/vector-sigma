@@ -9,32 +9,117 @@ import '../../styles/main.scss';
 export type SliderDesign = 'slider' | 'slider-material' | 'slider-outline' | 'slider-neumorphic';
 
 interface SliderProps {
-  inputtype?: SliderDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultvalue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  minValue?: number,
-  maxValue?: number,
-  stepValue?: number,
-  className?: string,
-  style?: React.CSSProperties
+  /**
+     * * The required unique identifier for the SliderInput field in useFormikContext(). 
+     * Alias referenced as `name` attribute and Formik state key.
+     * * @example
+     * alias="numberOfRentalRooms"
+     */
+    alias: string; 
+    /**
+     * * The optional input label or description for the SliderInput field. 
+     * * @example
+     * inputLabel="Specify number of rooms for rental"
+     */
+    inputLabel?: string; 
+    /**
+     * * The design variation of the SliderInput field. 
+     * Default: 'slider-outline' 
+     * Variants: 'slider', 'slider-outline', 'slider-material', 'slider-neumorphic'.
+     * * @example
+     * inputtype="slider-neumorphic"
+     */
+    inputtype?: SliderDesign & {};
+     /**
+     * * The required viewport column width for the SliderInput field.
+     * i.e. 1 - 12
+     * * @example
+     * width={5}
+     */ 
+    width: number;
+     /**
+     * * Option to render SliderInput field on new row.
+     * * @example
+     * newRow
+     */
+    newRow?: boolean; 
+     /**
+     * * Option to specify the isRequired error text for the SliderInput field.
+     * * @example
+     * errorText="A number range selection is required"
+     */
+    errorText?: ReactNode | string | null;
+    /**
+     * * Option to disable edits for SliderInput field.
+     * * @example
+     * readOnly
+     */
+    readOnly?: boolean;
+    /**
+       * * Option to enable a hint for SliderInput field.
+       * * @example
+       * isHinted
+       */
+    isHinted?: boolean; 
+    /**
+     * * Option to specify hint text for SliderInput field.
+     * * @example
+     * hintText="This is a hint for a VΣ SliderInput"
+     */
+    hintText?: string;
+    /**
+     * * Option to specify a hint url reference or resource for SliderInput field.
+     * * @example
+     * hintUrl="https://www.mekaegwim.ca"
+     */ 
+    hintUrl?: string;
+     /**
+     * * Option to specify a minimum value for SliderInput field.
+     * * @example
+     * minvalue={10}
+     */ 
+    minvalue?: number;
+      /**
+     * * Option to specify a maximum value for SliderInput field.
+     * * @example
+     * minvalue={100}
+     */ 
+    maxvalue?: number;
+      /**
+     * * Option to specify an incremental step value for SliderInput field.
+     * * @example
+     * minvalue={10}
+     */ 
+    stepvalue?: number;
+    /**
+     * * Option to specify the .scss class selector for the SliderInput field.
+     * * @example
+     * className="teletraan-1-sliderinput"
+     */
+    className?: string;
+    /**
+     * * Option to inject custom CSS the SliderInput field.
+     * * @example
+     * style={{ color: "#000000" }}
+     */
+    style?: React.CSSProperties;
 }
 
 
 export const SliderInput = ({
   inputtype = 'slider-outline',
   alias, readOnly, width, inputLabel,
-  placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
-  minValue = 0,
-  maxValue = 100,
-  stepValue = 1,
+  newRow, isHinted, hintText, hintUrl, errorText,
+  minvalue = 0,
+  maxvalue = 100,
+  stepvalue = 1,
   className,
   style, ...props
 }: SliderProps) => {
   
   const { setFieldValue, setFieldTouched } = useFormikContext();
   const [field, meta] = useField(alias);
-  const fieldValue = Array.isArray(field.value) ? field.value : [field.value || minValue];
+  const fieldValue = Array.isArray(field.value) ? field.value : [field.value || minvalue];
   const hasError = Boolean(meta.touched && meta.error);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
@@ -131,9 +216,9 @@ export const SliderInput = ({
         id={`${alias}FormInput`} 
         disabled={readOnly}
         aria-describedby={`${alias}InputLabel`}
-        min={minValue} 
-        max={maxValue} 
-        step={stepValue}
+        min={minvalue} 
+        max={maxvalue} 
+        step={stepvalue}
         value={fieldValue}
         onValueChange={(val) => {
           setFieldValue(alias, val[0]);

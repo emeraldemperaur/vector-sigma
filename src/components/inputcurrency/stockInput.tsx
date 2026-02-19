@@ -9,13 +9,89 @@ import { InputDesign } from "components/input/input";
 import '../../styles/main.scss';
 
 type StockInputProps = {
-    alias: string, inputLabel?: string;
-    width: number, defaultvalue: string; 
-    newRow?: boolean, placeholder?: string;
-    readOnly?: boolean, isHinted?: boolean;
-    hintText?: string, hintUrl?: string, 
-    errorText?: ReactNode | string | null,
-    inputvariant?: InputDesign & {}, className?: string;
+    /**
+   * * The required unique identifier for the StockInput field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="restrictedStocksTSLA"
+   */
+    alias: string; 
+    /**
+   * * The optional input label or description for the StockInput field. 
+   * * @example
+   * inputLabel="VΣ Stock Price"
+   */ 
+    inputLabel?: string;
+    /**
+   * * The required viewport column width for the StockInput field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
+    width: number;
+    /**
+   * * The optional default stock ticker symbol for the StockInput field. 
+   * Renders a chart icon if no ticker symbol text value is provided 
+   * * @example
+   * defaultvalue="TSLA"
+   */  
+    defaultvalue: string; 
+    /**
+   * * Option to render StockInput field on new row.
+   * * @example
+   * newRow
+   */
+    newRow?: boolean; 
+    /**
+   * * Option to set the default placeholder text for the StockInput input field.
+   * * @example
+   * placeholder="00.00"
+   */
+    placeholder?: string;
+    /**
+   * * Option to disable edits for StockInput input field.
+   * * @example
+   * readOnly
+   */
+    readOnly?: boolean;
+    /**
+     * * Option to enable a hint for StockInput input field.
+     * * @example
+     * isHinted
+     */  
+    isHinted?: boolean;
+    /**
+   * * Option to specify hint text for StockInput input field.
+   * * @example
+   * hintText="This is a hint for a VΣ StockInput"
+   */
+    hintText?: string;
+    /**
+   * * Option to specify a hint url reference or resource for StockInput input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */  
+    hintUrl?: string, 
+    /**
+   * * Option to specify the isRequired error text for the StockInput input field.
+   * * @example
+   * errorText="VΣ product price is required"
+   */
+    errorText?: ReactNode | string | null;
+    /**
+   * * The design variation of the StockInput input. 
+   * Default: 'input-outline' 
+   * Variants: 'input', 'input-outline', 'input-material', 'input-neumorphic',
+   * * @example
+   * inputtype="input-neumorphic"
+   */
+    inputvariant?: InputDesign & {}; 
+    /**
+   * * Option to specify the .scss class selector for the StockInput input field.
+   * * @example
+   * className="teletraan-1-stockinput"
+   */
+    className?: string;
 };
 
 export const StockInput = ({

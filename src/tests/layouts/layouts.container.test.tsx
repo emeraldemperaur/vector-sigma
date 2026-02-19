@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { Container } from '../layouts/container/container';
+import { Container } from '../../layouts/container/container';
 import '@testing-library/jest-dom';
 
 

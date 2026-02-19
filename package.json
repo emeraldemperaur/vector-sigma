@@ -28,7 +28,12 @@
     "prepublishOnly": "npm run build",
     "release-package": "npm run build && npx changeset publish",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:fast": "jest --runInBand",
+    "test:watch": "jest --watch",
+    "test:leaks": "jest --detectOpenHandles",
+    "test:changed": "jest --onlyChanged",
+    "test:bail": "jest --bail",
+    "test:ci": "jest --maxWorkers=50% --ci"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
