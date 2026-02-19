@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Select, Flex, Text, Tooltip, Separator } from '@radix-ui/themes';
-import { adjustColor, getNearestParentBackground } from "utils/vinci";
+import { adjustColor, getNearestParentBackground, InputOption } from "utils/vinci";
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
 import { useField, useFormikContext } from 'formik';
@@ -9,40 +9,113 @@ import '../../styles/main.scss';
 export type xDropDownDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outline' | 'dropdown-neumorphic';
 
 export interface xDropDownProps {
-  inputtype?: xDropDownDesign & {};
+  /**
+   * * The required unique identifier for the Dropdown input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="mercedesCarModels"
+   */
   alias: string;
+  /**
+   * * The optional input label or description for the Dropdown input field. 
+   * * @example
+   * inputLabel="Choose VΣ Auto Fleet"
+   */
   inputLabel?: string;
-  icon?: React.ReactNode;
+   /**
+   * * The design variation of the Dropdown input. 
+   * Default: 'dropdown-outline' 
+   * Variants: 'dropdown', 'dropdown-outline', 'dropdown-material', 'dropdown-neumorphic'.
+   * * @example
+   * inputtype="dropdown-neumorphic"
+   */
+  inputtype?: xDropDownDesign & {};
+  /**
+   * * The required viewport column width for the Dropdown input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
   width: number;
-  defaultvalue?: string;
-  value?: string;
+  /**
+   * * Option to render Dropdown input field on new row.
+   * * @example
+   * newRow
+   */
   newRow?: boolean;
+   /**
+   * * Option to force set the default value for a Dropdown input field.
+   * * @example
+   * placeholder="Select an auto model"
+   */
   placeholder?: string;
+  /**
+   * * Option to disable edits for Dropdown input field.
+   * * @example
+   * readOnly
+   */
   readOnly?: boolean;
+  /**
+     * * Option to enable a hint for Dropdown input field.
+     * * @example
+     * isHinted
+     */ 
   isHinted?: boolean;
+  /**
+   * * Option to specify hint text for Dropdown input field.
+   * * @example
+   * hintText="This is a hint for a VΣ Dropdown"
+   */ 
   hintText?: string;
+  /**
+   * * Option to specify a hint url reference or resource for Dropdown input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
   hintUrl?: string;
+  /**
+    * * onValueChange event handler function for Dropdown input field.
+    * * @example
+    * props.onValueChange(finalVal)
+    */
   onValueChange?: (value: string) => void;
+  /**
+   * * Option to specify the isRequired error text for the Dropdown input field.
+   * * @example
+   * errorText="VΣ resrvation dates required"
+   */
   errorText?: ReactNode | string | null;
-  inputOptions: { 
-    optionid: number | string; 
-    text: string; 
-    optionvalue: string; 
-    tag?: string; 
-    score?: number | string;
-    note?: string; 
-    optionurl?: string;
-  }[];
+   /**
+   * * Required  inputOptions{} for the Dropdown input field.
+   * * @example
+   * inputOptions={
+            [
+              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+              ]}
+  */
+  inputOptions: InputOption[];
+  /**
+   * * Option to specify the .scss class selector for the Dropdown input field.
+   * * @example
+   * className="teletraan-1-dropdown"
+   */
   className?: string;
+  /**
+   * * Option to inject custom CSS the Dropdown input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
   style?: React.CSSProperties;
 }
 
 export const Dropdown = ({
   inputtype = 'dropdown-outline',
   alias, readOnly, width, inputLabel,
-  placeholder, value, inputOptions,
+  placeholder, inputOptions,
   style, newRow, isHinted, hintText,
-  hintUrl, defaultvalue, errorText, className,
+  hintUrl, errorText, className,
   ...props
 }: xDropDownProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);

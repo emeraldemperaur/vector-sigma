@@ -39,11 +39,11 @@ interface UUIDInputProps {
 
 export const UUIDInput = ({
     alias, 
-    type = "uuid", 
+    type = "uuid-4-4-4-4", 
     inputLabel, 
     width, 
     delimiter = "-",
-    format = [8, 4, 4, 4, 12],
+    format = [4, 4, 4, 4],
     placeholder = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX', 
     newRow, 
     isHinted, 
@@ -61,6 +61,7 @@ export const UUIDInput = ({
     const [field, meta] = useField(alias);
     const hasError = Boolean(meta.touched && meta.error);
     const [copied, setCopied] = useState(false);
+    const [uuidNumber, setUUIDNumber] = useState("");
     const errorId = `${alias}-error`;
 
     const activeFormat = useMemo(() => {
@@ -94,7 +95,8 @@ export const UUIDInput = ({
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         const formatted = formatUUID(val);
-        setFieldValue(alias, formatted);
+        setUUIDNumber(formatted)
+        setFieldValue(alias, uuidNumber);
     };
 
     const handleCopy = () => {

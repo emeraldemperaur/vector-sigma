@@ -4,13 +4,57 @@ import { Box } from '@radix-ui/themes';
 type ColSize = number | "auto" | boolean;
 
 type ColProps = React.ComponentProps<typeof Box> & {
+  /**
+     * * Option to specify a span number for the Column component.
+     * i.e. 1 - 12
+     * * @example
+     * span={6}
+     */
   span?: number;
+  /**
+     * * Option to render Column component on a line.
+     * * @example
+     * newRow
+     */
   newLine?: boolean; 
+   /**
+     * * Option to enable or specify `xs` viewport column size/breakpoint.
+     * * @example
+     * xs={3}
+     */
   xs?: ColSize;
+  /**
+     * * Option to enable or specify `sm` viewport column size/breakpoint.
+     * * @example
+     * sm={4}
+     */
   sm?: ColSize;
+  /**
+     * * Option to enable or specify `md` viewport column size/breakpoint.
+     * * @example
+     * md={5}
+     */
   md?: ColSize;
+  /**
+     * * Option to enable or specify `lg` viewport column size/breakpoint.
+     * * @example
+     * lg={6}
+     */
   lg?: ColSize;
+  /**
+     * * Option to enable or specify `xl` viewport column size/breakpoint.
+     * * @example
+     * xl={6}
+     */
   xl?: ColSize;
+    /**
+     * * Required Column child components.
+     * * @example
+     * children={
+     * <Text/>
+     * ......
+     * }
+     */ 
   children?: React.ReactNode;
 }
 

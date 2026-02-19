@@ -9,16 +9,105 @@ import '../../styles/main.scss';
 export type RangeDesign = 'range' | 'range-material' | 'range-outline' | 'range-neumorphic';
 
 interface RangeProps {
-  inputtype?: RangeDesign & {},
-  alias: string, inputLabel?: string, icon?: React.ReactNode,
-  width: number, defaultvalue?: string, value?: string, newRow?: boolean, errorText?: ReactNode | string | null,
-  placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
-  minvalue?: number,
-  maxvalue?: number,
-  stepvalue?: number,
-  minStepsBetweenThumbs?: number,
-  design?: RangeDesign,
-  className?: string, 
+   /**
+   * * The required unique identifier for the RangeSlider input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="coverageRange"
+   */
+  alias: string; 
+  /**
+   * * The optional input label or description for the RangeSlider input field. 
+   * * @example
+   * inputLabel="Specify the desired coverage radius"
+   */
+  inputLabel?: string; 
+  /**
+   * * The design variation of the RangeSlider input. 
+   * Default: 'range-outline' 
+   * Variants: 'range', 'range-outline', 'range-material', 'range-neumorphic'.
+   * * @example
+   * inputtype="range-neumorphic"
+   */
+  inputtype?: RangeDesign & {};
+   /**
+   * * The required viewport column width for the RangeSlider input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */ 
+  width: number;
+   /**
+   * * Option to render RangeSlider input field on new row.
+   * * @example
+   * newRow
+   */
+  newRow?: boolean; 
+   /**
+   * * Option to specify the isRequired error text for the RangeSlider input field.
+   * * @example
+   * errorText="A coverage range selection is required"
+   */
+  errorText?: ReactNode | string | null;
+  /**
+   * * Option to disable edits for RangeSlider input field.
+   * * @example
+   * readOnly
+   */
+  readOnly?: boolean;
+  /**
+     * * Option to enable a hint for RangeSlider input field.
+     * * @example
+     * isHinted
+     */
+  isHinted?: boolean; 
+  /**
+   * * Option to specify hint text for RangeSlider input field.
+   * * @example
+   * hintText="This is a hint for a VΣ RangeSlider"
+   */
+  hintText?: string;
+  /**
+   * * Option to specify a hint url reference or resource for RangeSlider input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
+  hintUrl?: string;
+   /**
+   * * Option to specify a minimum value for RangeSlider input field.
+   * * @example
+   * minvalue={10}
+   */ 
+  minvalue?: number;
+    /**
+   * * Option to specify a maximum value for RangeSlider input field.
+   * * @example
+   * minvalue={100}
+   */ 
+  maxvalue?: number;
+    /**
+   * * Option to specify an incremental step value for RangeSlider input field.
+   * * @example
+   * minvalue={10}
+   */ 
+  stepvalue?: number;
+   /**
+   * * Option to specify a number for the minimum steps expected between values for RangeSlider input field.
+   * * @example
+   * minvalue={10}
+   */ 
+  minStepsBetweenThumbs?: number;
+  /**
+   * * Option to specify the .scss class selector for the RangeSlider input field.
+   * * @example
+   * className="teletraan-1-rangeslider"
+   */
+  className?: string;
+  /**
+   * * Option to inject custom CSS the RangeSlider input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
   style?: React.CSSProperties;
 }
 
@@ -26,7 +115,7 @@ interface RangeProps {
 export const RangeSlider = ({
   inputtype = 'range-outline',
   alias, readOnly, width, inputLabel,
-  placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
+  newRow, isHinted, hintText, hintUrl, errorText,
   minvalue = 0,
   maxvalue = 100,
   stepvalue = 1,

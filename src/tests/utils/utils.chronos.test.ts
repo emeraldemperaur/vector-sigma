@@ -1,4 +1,4 @@
-import { getTimeStamp, getExtantDate, ensureDate } from '../utils/chronos'; 
+import { getTimeStamp, getExtantDate, ensureDate } from '../../utils/chronos'; 
 
 describe('VΣ Utility(Chronos) Test', () => {
  

@@ -9,22 +9,93 @@ import '../../styles/main.scss';
 export type FileMultipleInputDesign = 'filemultiple' | 'filemultiple-material' | 'filemultiple-outline' | 'filemultiple-neumorphic';
 
 export interface FileMultipleInputProps {
-  inputtype?: FileMultipleInputDesign;
+  /**
+   * * The required unique identifier for the FileMultiple input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="awsCertificationFiles"
+   */
   alias: string;
+  /**
+   * * The design variation of the FileMultiple input. 
+   * Default: 'fileinput-outline' 
+   * Variants: 'fileinput', 'fileinput-outline', 'fileinput-material', 'fileinput-neumorphic'.
+   * * @example
+   * inputtype="fileinput-neumorphic"
+   */
+  inputtype?: FileMultipleInputDesign;
+  /**
+   * * The optional input label or description for the FileMultiple input field. 
+   * * @example
+   * inputLabel="Upload AWS Certication(s)"
+   */
   inputLabel?: string;
-  icon?: React.ReactNode;
+  /**
+   * * The required viewport column width for the FileMultiple input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
   width: number;
-  defaultvalue?: any;
-  value?: any;
+  /**
+   * * Option to render FileMultiple input field on new row.
+   * * @example
+   * newRow
+   */
   newRow?: boolean;
+  /**
+   * * Option to force set the placeholder text for a FileMultiple input field.
+   * * @example
+   * placeholder="Select an auto model"
+   */
   placeholder?: string;
+  /**
+   * * Option to disable edits for FileMultiple input field.
+   * * @example
+   * readOnly
+   */
   readOnly?: boolean;
+  /**
+     * * Option to enable a hint for FileMultiple input field.
+     * * @example
+     * isHinted
+     */ 
   isHinted?: boolean;
+  /**
+   * * Option to specify hint text for FileMultiple input field.
+   * * @example
+   * hintText="This is a hint for a VΣ FileMultiple"
+   */
   hintText?: string;
+  /**
+   * * Option to specify a hint url reference or resource for FileMultiple input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */
   hintUrl?: string;
+  /**
+   * * Option to enable image file previews for FileMultiple input field.
+   * * @example
+   * preview
+   */
   preview?: boolean;
+  /**
+   * * Option to specify the isRequired error text for the FileMultiple input field.
+   * * @example
+   * errorText="Proof of AWS certificartion is required"
+   */
   errorText?: ReactNode | string | null;
+  /**
+   * * Option to specify the .scss class selector for the FileMultiple input field.
+   * * @example
+   * className="teletraan-1-file"
+   */
   className?: string;
+  /**
+   * * Option to inject custom CSS the FileMultiple input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
   style?: React.CSSProperties;
 }
 

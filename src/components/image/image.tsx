@@ -5,16 +5,77 @@ export type ImageDesign = 'outline' | 'material' | 'neumorphic';
 export type ImageLayout = 'normal' | 'rounded' | 'squared';
 
 export interface ImageDisplayProps {
+   /**
+   * * The required unique identifier for the ImageOutput component. 
+   * * @example
+   * id="profileImage"
+   */
   id: string | number;
+  /**
+   * * The required source or url file path for the ImageOutput component. 
+   * * @example
+   * src="https://www.mekaegwim.ca/logo.png"
+   */
   src: string;
+   /**
+   * * The optional alternative text for ImageOutput component accessibility
+   * * @example
+   * src="https://www.mekaegwim.ca/logo.png"
+   */
   alt?: string;
+  /**
+   * * The design variation of the ImageOutput component. 
+   * Default: 'outline' 
+   * Variants: 'outline', 'material', 'neumorphic'.
+   * * @example
+   * design="neumorphic"
+   */
   design?: ImageDesign  & {};
+   /**
+   * * The layout variation of the ImageOutput component. 
+   * Default: 'normal' 
+   * Variants: 'normal', 'rounded', 'squared'.
+   * * @example
+   * design="rounded"
+   */
   layout?: ImageLayout  & {};
+   /**
+   * * The aspect ratio of the ImageOutput component. 
+   * Default: 16 / 9
+   * Variants: 16 / 9, 4 / 3, 1.
+   * * @example
+   * aspectratio={ 16 / 9 || 4 / 3 }
+   */
   aspectratio?: number; // 16/9, 4/3, 1
+  /**
+   * * Option to specify a height for ImageOutput component.
+   * * @example
+   * preview
+   */
   height?: string | number; 
+  /**
+   * * Option to specify a width for ImageOutput component.
+   * * @example
+   * preview
+   */
   width?: string | number;
+  /**
+   * * Option to specify the .scss class selector for the ImageOutput component.
+   * * @example
+   * className="teletraan-1-image"
+   */
   className?: string;
+  /**
+   * * Option to inject custom CSS the ImageOutput component.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
   style?: React.CSSProperties;
+  /**
+    * * onClick event handler function for ImageOutput component.
+    * * @example
+    * onClick={onClickHandlerFunction}
+    */
   onClick?: () => void;
 }
 

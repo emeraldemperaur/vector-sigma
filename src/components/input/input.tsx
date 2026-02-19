@@ -11,25 +11,104 @@ export type InputType = 'date' | 'datetime-local' | 'email' | 'hidden' | 'month'
 export type InputDesign = "input" | "input-material" | "input-outline" | "input-neumorphic"
 
 export type xInputFieldProps = React.ComponentProps<typeof TextField.Root> & {
-    alias: string, 
-    inputtype?: InputType, 
-    inputLabel?: string, 
-    width: number, 
-    newRow?: boolean, 
-    placeholder?: string, 
-    readOnly?: boolean, 
-    isHinted?: boolean, 
-    hintText?: string, 
-    hintUrl?: string, 
-    icon?: React.ReactNode, 
-    defaultvalue?: string, 
-    value?: string, 
-    errorText?: ReactNode | string | null, 
-    className?: string, 
+    /**
+   * * The required unique identifier for the Input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="userInput"
+   */
+    alias: string; 
+    /**
+   * * The optional input value type for the Input field. 
+   * Default: 'text'
+   * Options: "number" | "hidden" | "date" | "datetime-local" | 
+   * "email" | "month" | "password" | "search" | 
+   * "tel" | "text" | "time" | "url" | "week"
+   * * @example
+   * inputtype="email"
+   */
+    inputtype?: InputType; 
+    /**
+   * * The optional input label or description for the Input field. 
+   * * @example
+   * inputLabel="Upload PMP® Certication"
+   */
+    inputLabel?: string; 
+    /**
+   * * The required viewport column width for the Input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
+    width: number; 
+    /**
+   * * Option to render Input field on new row.
+   * * @example
+   * newRow
+   */
+    newRow?: boolean; 
+    /**
+   * * Option to force set the default value for Input field.
+   * * @example
+   * placeholder="Enter a value"
+   */
+    placeholder?: string; 
+     /**
+   * * Option to disable edits for Input field.
+   * * @example
+   * readOnly
+   */
+    readOnly?: boolean;
+    /**
+     * * Option to enable a hint for Input field.
+     * * @example
+     * isHinted
+     */  
+    isHinted?: boolean; 
+    /**
+   * * Option to specify hint text for Input field.
+   * * @example
+   * hintText="This is a hint for a VΣ Input field"
+   */
+    hintText?: string; 
+    /**
+   * * Option to specify a hint url reference or resource for Input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */
+    hintUrl?: string; 
+    /**
+    * * Option to render Input field with icon passed as a ReactNode {}.
+    * * @example
+    * icon={<Icon name="stack"/>}
+    */
+    icon?: React.ReactNode; 
+    /**
+   * * Option to specify the isRequired error text for the Input field.
+   * * @example
+   * errorText="Username is required"
+   */
+    errorText?: ReactNode | string | null; 
+    /**
+   * * Option to specify the .scss class selector for the Input field.
+   * * @example
+   * className="teletraan-1-input"
+   */
+    className?: string; 
+    /**
+   * * Option to inject custom CSS the Input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
     style?: React.CSSProperties;
-    inputvariant?: InputDesign, 
-    delimiter?: string, 
-    format?: number[]
+    /**
+   * * The design variation of the Input field. 
+   * Default: 'input-outline' 
+   * Variants: 'input', 'input-outline', 'input-material', 'input-neumorphic'.
+   * * @example
+   * inputvariant="input-neumorphic"
+   */
+    inputvariant?: InputDesign;
 };
 
 export const Input = ({

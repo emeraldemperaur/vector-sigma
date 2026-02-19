@@ -10,8 +10,12 @@ const jestConfig = {
   },
   setupFilesAfterEnv: ["<rootDir>/src/jest.setup.ts"],
   moduleNameMapper: {
-    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
-    "\\.(jpg|jpeg|png|gif|webp|svg)$": "<rootDir>/__mocks__/fileMock.js",
+    '^components/(.*)$': '<rootDir>/src/components/$1',
+    '^layouts/(.*)$': '<rootDir>/src/layouts/$1',
+    '^styles/(.*)$': '<rootDir>/src/styles/$1',
+    '^utils/(.*)$': '<rootDir>/src/utils/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
 };
 

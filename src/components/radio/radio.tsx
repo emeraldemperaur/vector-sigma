@@ -9,21 +9,114 @@ import '../../styles/main.scss';
 export type RadioDesign = 'radio' | 'radio-material' | 'radio-outline' | 'radio-neumorphic';
 
 interface RadioGroupProps {
-    inputtype?: RadioDesign & {},
-    alias: string, inputLabel?: string, icon?: React.ReactNode,
-    width: number, defaultvalue?: any[], value?: any[], newRow?: boolean,
-    placeholder?: string, readOnly?: boolean, isHinted?: boolean, hintText?: string, hintUrl?: string
+    /**
+   * * The required unique identifier for the Radio Group input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="productSKUPrice"
+   */
+    alias: string; 
+    /**
+   * * The optional input label or description for the Radio Group input field. 
+   * * @example
+   * inputLabel="VΣ Stock Price"
+   */ 
+    inputLabel?: string;
+    /**
+   * * The optional input value type for the Radio Group input field. 
+   * Default: 'text'
+   * Options: "number" | "hidden" | "date" | "datetime-local" | 
+   * "email" | "month" | "password" | "search" | 
+   * "tel" | "text" | "time" | "url" | "week"
+   * * @example
+   * inputtype="email"
+   */ 
+    inputtype?: RadioDesign & {};
+    /**
+   * * The required viewport column width for the Radio Group input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
+    width: number;
+    /**
+   * * Option to render Radio Group input field on new row.
+   * * @example
+   * newRow
+   */
+    newRow?: boolean;
+    /**
+   * * Option to disable edits for Radio Group input field.
+   * * @example
+   * readOnly
+   */
+    readOnly?: boolean;
+    /**
+     * * Option to enable a hint for Radio Group input field.
+     * * @example
+     * isHinted
+     */
+    isHinted?: boolean;
+    /**
+   * * Option to specify hint text for Radio Group input field.
+   * * @example
+   * hintText="This is a hint for a VΣ RadioGroup"
+   */
+    hintText?: string;
+    /**
+   * * Option to specify a hint url reference or resource for Radio Group input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
+    hintUrl?: string;
+    /**
+   * * Required  inputOptions{} for the Radio Group input field.
+   * * @example
+   * inputOptions={
+            [
+              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+              ]}
+    */
     inputOptions: InputOption[];
-    direction?: 'row' | 'column'; // CSS Layout direction
-    columns?: string; // CSS grid template columns (e.g., "1fr 1fr")
-    className?: string,  errorText?: ReactNode | string | null,
+    /**
+   * * Option to specify CSS layout direction for the Radio Group input field.
+   * Default: "row"
+   * * @example
+   * direction="column"
+   */
+    direction?: 'row' | 'column';
+    /**
+   * * Option to specify CSS grid template columns for the Radio Group input field.
+   * * @example
+   * columns="1fr 1fr"
+   */
+    columns?: string;
+    /**
+   * * Option to specify the .scss class selector for the Radio Group input field.
+   * * @example
+   * className="teletraan-1-stockinput"
+   */
+    className?: string; 
+    /**
+   * * Option to specify the isRequired error text for the Radio Group input field.
+   * * @example
+   * errorText="VΣ product price is required"
+   */ 
+    errorText?: ReactNode | string | null;
+    /**
+   * * Option to inject custom CSS the Radio Group input field.
+   * * @example
+   * style={{ color: "#000000" }}
+   */
     style?: React.CSSProperties;
 }
 
 export const RadioGroupInput = ({
   inputtype = 'radio-outline',
   alias, readOnly, width, inputLabel,
-  placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
+  newRow, isHinted, hintText, hintUrl, errorText,
   style, inputOptions,
   direction = 'column',
   columns, 

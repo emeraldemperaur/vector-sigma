@@ -11,17 +11,81 @@ import '../../styles/main.scss';
 export type DateRangePickerDesign = 'daterangepicker' | 'daterangepicker-outline' | 'daterangepicker-material' | 'daterangepicker-neumorphic';
 
 interface DateRangePickerProps {
+    /**
+   * * The required unique identifier for the DateRangePicker input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="hotelReservationDays"
+   */
     alias: string;
+    /**
+   * * The optional input label or description for the DateRangePicker input field. 
+   * * @example
+   * inputLabel="VΣ Hotel Reservation Dates"
+   */
     inputLabel?: string;
+    /**
+   * * The design variation of the DateRangePicker input. 
+   * Default: 'daterangepicker-outline' 
+   * Variants: 'daterangepicker', 'daterangepicker-outline', 'daterangepicker-material', 'daterangepicker-neumorphic',
+   * * @example
+   * inputtype="daterangepicker-neumorphic"
+   */
     inputtype?: DateRangePickerDesign;
+    /**
+   * * The required viewport column width for the DateRangePicker input field.
+   * i.e. 1 - 12
+   * * @example
+   * width={6}
+   */
     width?: number;
+    /**
+   * * Option to render DateRangePicker input field on new row.
+   * * @example
+   * newRow
+   */
     newRow?: boolean;
+    /**
+   * * Option to set the default placeholder text for the DateRangePicker input field.
+   * * @example
+   * placeholder="Select VΣ reservation dates"
+   */
     placeholder?: string;
+    /**
+     * * Option to enable a hint for DateRangePicker input field.
+     * * @example
+     * isHinted
+     */ 
     isHinted?: boolean;
+    /**
+   * * Option to specify hint text for DateRangePicker input field.
+   * * @example
+   * hintText="This is a hint for a VΣ DateRangePicker"
+   */ 
     hintText?: string;
+    /**
+   * * Option to specify a hint url reference or resource for DateRangePicker input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */ 
     hintUrl?: string;
+    /**
+   * * Option to specify the isRequired error text for the DateRangePicker input field.
+   * * @example
+   * errorText="VΣ resrvation dates required"
+   */
     errorText?: string;
+    /**
+   * * Option to disable edits for DateRangePicker input field.
+   * * @example
+   * readOnly
+   */ 
     readOnly?: boolean;
+    /**
+   * * Option to specify the .scss class selector for the DateRangePicker input field.
+   * * @example
+   * className="teletraan-1-daterangepicker"
+   */
     className?: string;
 }
 

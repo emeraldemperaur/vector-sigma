@@ -1,4 +1,4 @@
-import { getNearestBackgroundColor, adjustColor, formatBytes, classNames } from '../utils/vinci'; 
+import { getNearestBackgroundColor, adjustColor, formatBytes, classNames } from '../../utils/vinci'; 
 
 describe('VΣ Utility(Vinci) Test', () => {
 
