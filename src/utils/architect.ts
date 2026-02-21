@@ -16,6 +16,7 @@ const NestedQuerySchema = z.object({
   inputAlias: z.string(),
   inputLabel: z.string(),
   inputPlaceholder: z.string(),
+  defaultValue: z.any().optional(),
   newRow: z.boolean(),
   inputWidth: z.number(),
   isRequired: z.boolean(),
@@ -25,7 +26,8 @@ const NestedQuerySchema = z.object({
   queryResponse: z.any().nullable(),
   inputOptions: z.array(InputOptionSchema).nullable().optional(),
   toggledInput: z.any().nullable().optional(),
-  toggleTrigger: z.any().nullable().optional()
+  toggleTrigger: z.any().nullable().optional(),
+  errorText: z.string().optional()
 });
 
 
@@ -35,6 +37,7 @@ const QuerySchema = z.object({
   inputAlias: z.string(),
   inputLabel: z.string(),
   inputPlaceholder: z.string(),
+  defaultValue: z.any().optional(),
   minValue: z.number().optional(),
   maxValue: z.number().optional(),
   stepValue: z.number().or(z.float64()).optional(),
@@ -47,7 +50,8 @@ const QuerySchema = z.object({
   queryResponse: z.any().nullable(),
   inputOptions: z.array(InputOptionSchema).optional(),
   toggledInput: NestedQuerySchema.nullable().optional(),
-  toggleTrigger: z.any().nullable().optional()
+  toggleTrigger: z.any().nullable().optional(),
+  errorText: z.string().optional()
 });
 
 const SectionSchema = z.object({

@@ -52,7 +52,7 @@ describe('VΣ Component(DatePicker | DateRangePicker | DateTimeicker) Tests', ()
   describe('VΣ Component(DatePicker)', () => {
     it('DatePicker :: Rendered with label and placeholder', () => {
       renderWithFormik(
-        <DatePicker alias="singleDate" inputLabel="Start Date" placeholder="Pick a date" />
+        <DatePicker alias="singleDate" inputLabel="Start Date" placeholder="Pick a date" width={12}/>
       );
       expect(screen.getByText('Start Date')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('Pick a date')).toBeInTheDocument();
@@ -60,7 +60,7 @@ describe('VΣ Component(DatePicker | DateRangePicker | DateTimeicker) Tests', ()
 
     it('DatePicker :: Displayed an error message for required field', async () => {
       renderWithFormik(
-        <DatePicker alias="singleDate" errorText="Date is required" />,
+        <DatePicker alias="singleDate" errorText="Date is required" width={12}/>,
         { singleDate: null },
         { initialErrors: { singleDate: 'Required' }, initialTouched: { singleDate: true } }
       );
@@ -71,7 +71,7 @@ describe('VΣ Component(DatePicker | DateRangePicker | DateTimeicker) Tests', ()
 
     it('DatePicker :: Disabled interaction when readOnly', () => {
       renderWithFormik(
-        <DatePicker alias="singleDate" placeholder="Pick a date" readOnly />
+        <DatePicker alias="singleDate" placeholder="Pick a date" readOnly width={12}/>
       );
 
       const input = screen.getByPlaceholderText('Pick a date');

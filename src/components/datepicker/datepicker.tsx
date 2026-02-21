@@ -38,7 +38,7 @@ interface DatePickerProps {
    * * @example
    * width={6}
    */
-    width?: number;
+    width: number;
     /**
    * * Option to render DatePicker input field on new row.
    * * @example
