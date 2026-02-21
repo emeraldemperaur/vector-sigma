@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Theme } from '@radix-ui/themes';
 import { Codex, CodexItem } from '../../layouts/codex/codex';
+import { CodexControls } from '../../layouts/codex/codexcontrols';
+
 
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', {
@@ -79,7 +81,6 @@ describe('VΣ Layouts(Codex) Test', () => {
 
     expect(screen.getByTestId('content-1')).toBeInTheDocument();
     expect(screen.queryByTestId('content-2')).not.toBeInTheDocument();
-
     const step2Header = screen.getByText('Payment Details');
     fireEvent.click(step2Header);
 
@@ -101,3 +102,67 @@ describe('VΣ Layouts(Codex) Test', () => {
   });
 
 });
+
+describe('VΣ Layouts(CodexControls) Test', () => {
+    it('CodexControls :: Navigated between steps using the Next and Back buttons', () => {
+      renderWithTheme(
+        <Codex width={12}>
+          <CodexItem stepId="step-1" title="Step 1">
+            <div data-testid="content-1">
+              <CodexControls nextStepId="step-2" />
+            </div>
+          </CodexItem>
+          <CodexItem stepId="step-2" title="Step 2">
+            <div data-testid="content-2">
+              <CodexControls prevStepId="step-1" />
+            </div>
+          </CodexItem>
+        </Codex>
+      );
+
+      const nextButton = screen.getByRole('button', { name: 'Continue' });
+      fireEvent.click(nextButton);
+      expect(screen.queryByTestId('content-1')).not.toBeInTheDocument();
+      expect(screen.getByTestId('content-2')).toBeInTheDocument();
+      const backButton = screen.getByRole('button', { name: 'Back' });
+      fireEvent.click(backButton);
+      expect(screen.getByTestId('content-1')).toBeInTheDocument();
+      expect(screen.queryByTestId('content-2')).not.toBeInTheDocument();
+    });
+
+    it('CodexControls :: Triggered bespoke onNext, onPrev, onFinish callback functions', () => {
+      const mockOnNext = jest.fn();
+      const mockOnFinish = jest.fn();
+
+      renderWithTheme(
+        <Codex width={12}>
+          <CodexItem stepId="step-1" title="Step 1">
+            <div data-testid="content-1">
+              <CodexControls 
+                nextStepId="step-2" 
+                nextLabel="Bespoke Next" 
+                onNext={mockOnNext} 
+              />
+            </div>
+          </CodexItem>
+          <CodexItem stepId="step-2" title="Step 2">
+            <div data-testid="content-2">
+              <CodexControls 
+                finishLabel="Launch App" 
+                onFinish={mockOnFinish} 
+              />
+            </div>
+          </CodexItem>
+        </Codex>
+      );
+
+      const customNextButton = screen.getByRole('button', { name: 'Bespoke Next' });
+      fireEvent.click(customNextButton);
+      expect(mockOnNext).toHaveBeenCalledTimes(1);
+
+      const finishButton = screen.getByRole('button', { name: 'Launch App' });
+      fireEvent.click(finishButton);
+      expect(mockOnFinish).toHaveBeenCalledTimes(1);
+    });
+  });
+
