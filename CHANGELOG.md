@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.21
+
+### Patch Changes
+
+- e095ce7: xForm Layout Components (Accordion, Codex) export fix
+
 ## 1.4.20
 
 ### Patch Changes
