@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.24
+
+### Patch Changes
+
+- bc6f729: xForm Layout Component Update :: Accordion brandcolor update
+
 ## 1.4.23
 
 ### Patch Changes
