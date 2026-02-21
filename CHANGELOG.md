@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.23
+
+### Patch Changes
+
+- f575ce8: xForm Component Update :: Codex, CodexControls brandcolor
+
 ## 1.4.22
 
 ### Patch Changes
