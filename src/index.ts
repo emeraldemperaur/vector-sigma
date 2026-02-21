@@ -31,6 +31,8 @@ export * from './components/xtitle/xtitle';
 export * from './layouts/container/container';
 export * from './layouts/column/column';
 export * from './layouts/row/row';
+export * from './layouts/accordion/accordion';
+export * from './layouts/codex/codex';
 export * from './utils/architect';
 export * from './utils/uuidparser';
 export * from './utils/currencyconfig';
