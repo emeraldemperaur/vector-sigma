@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.22
+
+### Patch Changes
+
+- 3f1ccb4: xForm Components :: CodexControls Named Export
+
 ## 1.4.21
 
 ### Patch Changes
