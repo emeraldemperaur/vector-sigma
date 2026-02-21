@@ -1,9 +1,8 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Button, Flex } from '@radix-ui/themes';
-import { useStepper } from './codex';
 import { Icon } from "components/icons/icons";
+import { useStepper } from './codex';
 import '../../styles/main.scss';
-
 
 export interface CodexControlsProps {
     /**
@@ -27,7 +26,7 @@ export interface CodexControlsProps {
     nextLabel?: string;
      /**
      * * Custom icon for the Next button.
-     * Default: "Continue"
+     * Default: "doublearrowright"
      */
     nextIcon?: string;
     /**
@@ -37,17 +36,17 @@ export interface CodexControlsProps {
     prevLabel?: string;
     /**
      * * Custom icon name for the Previous button.
-     * Default: "Back"
+     * Default: "doublearrowleft"
      */
     prevIcon?: string;
     /**
      * * Custom text for the Finish button (rendered when nextStepId undefined).
-     * Default: "Complete Setup"
+     * Default: "Submit"
      */
     finishLabel?: string;
     /**
      * * Custom icon name for the Finish button (rendered when no nextStepId undefined).
-     * Default: "flag"
+     * Default: "paperplane"
      */
     finishIcon?: string;
     /**
@@ -65,22 +64,21 @@ export interface CodexControlsProps {
     onFinish?: () => void;
 }
 
-
 export const CodexControls = ({
     nextStepId,
     prevStepId,
     nextLabel = "Continue",
     prevLabel = "Back",
     finishLabel = "Submit",
-    prevIcon="doublearrowleft",
-    nextIcon="doublearrowright",
-    finishIcon="paperplane",
+    prevIcon = "doublearrowleft",
+    nextIcon = "doublearrowright",
+    finishIcon = "paperplane",
     onNext,
     onPrev,
     onFinish
 }: CodexControlsProps) => {
     
-    const { setActiveStepId } = useStepper();
+    const { setActiveStepId, brandColor } = useStepper();
 
     const handlePrev = () => {
         if (onPrev) onPrev();
@@ -106,7 +104,12 @@ export const CodexControls = ({
         >
             {prevStepId ? (
                 <Button variant="soft" color="gray" onClick={handlePrev} style={{ cursor: 'pointer' }}>
-                {prevIcon ? <><Icon name={prevIcon}/>&nbsp;</>: null}{prevLabel}
+                    {prevIcon && (
+                        <>
+                            <Icon name={prevIcon}/>&nbsp;
+                        </>
+                    )}
+                    {prevLabel}
                 </Button>
             ) : (
                 <div /> 
@@ -114,11 +117,24 @@ export const CodexControls = ({
 
             <Button 
                 variant="solid" 
-                color={nextStepId ? "blue" : "green"} 
+                color={brandColor ? undefined : (nextStepId ? "blue" : "green")} 
                 onClick={handleNext}
-                style={{ cursor: 'pointer' }}
+                style={{ 
+                    cursor: 'pointer',
+                    ...(brandColor ? { backgroundColor: 'var(--codex-brand)', color: '#fff' } : {}) 
+                }}
             >
-            {nextStepId && nextIcon ? <><Icon name={nextIcon}/>&nbsp;</>: <><Icon name={finishIcon}/>&nbsp;</>}{nextStepId ? nextLabel : finishLabel}
+                {nextStepId ? (
+                    <>
+                        {nextIcon && <><Icon name={nextIcon}/>&nbsp;</>}
+                        {nextLabel}
+                    </>
+                ) : (
+                    <>
+                        {finishIcon && <><Icon name={finishIcon}/>&nbsp;</>}
+                        {finishLabel}
+                    </>
+                )}
             </Button>
         </Flex>
     );
