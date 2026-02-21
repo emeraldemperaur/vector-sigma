@@ -8,7 +8,11 @@ import '../../styles/main.scss';
 
 export type AccordionDesign = 'material' | 'outline' | 'neumorphic';
 
-const AccordionContext = createContext<{ design: AccordionDesign; brandcolor?: string }>({ design: 'outline' });
+const AccordionContext = createContext<{ 
+    design: AccordionDesign; 
+    brandcolor?: string;
+    titleColor?: string;
+}>({ design: 'outline' });
 
 export interface AccordionProps {
     /**
@@ -40,6 +44,13 @@ export interface AccordionProps {
      * brandcolor="var(--accent-3)"
      */
     brandcolor?: string;
+    /**
+     * * Option to specify the text and icon color of the AccordionItem headers.
+     * Useful when using a dark brandcolor to ensure legibility.
+     * * @example
+     * titleColor="#ffffff"
+     */
+    titleColor?: string;
     /**
      * * The required viewport column width for the Accordion component.
      * i.e. 1 - 12
@@ -107,6 +118,7 @@ export const Accordion = ({
     defaultOpenId = "",
     allowMultiple = false,
     brandcolor,
+    titleColor,
     width = 12,
     newRow,
     className,
@@ -148,7 +160,7 @@ export const Accordion = ({
     );
 
     return (
-        <AccordionContext.Provider value={{ design, brandcolor }}>
+        <AccordionContext.Provider value={{ design, brandcolor, titleColor }}>
             <Column span={width} newLine={newRow}>
                 <div 
                     ref={containerRef} 
@@ -157,8 +169,8 @@ export const Accordion = ({
                         width: '100%', 
                         ...style, 
                         ...neuVars,
-                        // Dynamically inject the header background color
-                        ...(brandcolor ? { '--accordion-header-bg': brandcolor } : {})
+                        ...(brandcolor ? { '--accordion-header-bg': brandcolor } : {}),
+                        ...(titleColor ? { '--accordion-title-color': titleColor } : {})
                     } as React.CSSProperties}
                 >
                     
@@ -184,14 +196,15 @@ export const Accordion = ({
                         }
                         .v-accordion-chevron {
                             transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
-                            color: var(--gray-10);
+                            /* Inherit custom title color if provided, else fallback to gray */
+                            color: var(--accordion-title-color, var(--gray-10));
                         }
 
                         .v-accordion-root-outline {
                             border: 1px solid var(--gray-6);
                             border-radius: var(--radius-3);
                             background-color: transparent;
-                            overflow: hidden; /* Clips the background color to the rounded corners */
+                            overflow: hidden; 
                         }
                         .v-accordion-item-outline {
                             border-bottom: 1px solid var(--gray-6);
@@ -204,7 +217,7 @@ export const Accordion = ({
                             border-radius: var(--radius-3);
                             background-color: var(--color-surface);
                             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                            overflow: hidden; /* Clips the background color to the rounded corners */
+                            overflow: hidden; 
                         }
                         .v-accordion-item-material {
                             border-bottom: 1px solid var(--gray-4);
@@ -226,7 +239,7 @@ export const Accordion = ({
                             border-radius: 12px;
                             box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light);
                             transition: all 0.3s ease;
-                            overflow: hidden; /* Clips the background color to the rounded corners */
+                            overflow: hidden; 
                         }
                         .v-accordion-item-neumorphic[data-state='open'] {
                             box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
@@ -242,7 +255,7 @@ export const Accordion = ({
                             cursor: pointer;
                             font-family: var(--default-font-family);
                             box-sizing: border-box;
-                            background-color: var(--accordion-header-bg, transparent); /* Applies the custom color */
+                            background-color: var(--accordion-header-bg, transparent); 
                         }
                         .v-accordion-trigger:disabled {
                             cursor: not-allowed;
@@ -277,11 +290,15 @@ export const AccordionItem = ({
                 <RadixAccordion.Trigger className="v-accordion-trigger">
                     <Flex align="center" gap="3">
                         {icon && (
-                            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-9)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--accordion-title-color, var(--accent-9))' }}>
                                 {icon}
                             </div>
                         )}
-                        <Text size="3" weight="bold" style={{ color: 'var(--gray-12)' }}>
+                        <Text 
+                            size="3" 
+                            weight="bold" 
+                            style={{ color: 'var(--accordion-title-color, var(--gray-12))' }}
+                        >
                             {title}
                         </Text>
                     </Flex>
