@@ -11,6 +11,7 @@ interface CodexContextProps {
     activeStepId: string;
     setActiveStepId: (id: string) => void;
     design: CodexDesign;
+    brandColor?: string;
 }
 
 const CodexContext = createContext<CodexContextProps>({ 
@@ -26,40 +27,34 @@ export interface CodexProps {
      * * The design variation of the Codex component. 
      * Default: 'outline' 
      * Variants: 'outline', 'material', 'neumorphic'.
-     * * @example
-     * design="neumorphic"
      */
     design?: CodexDesign;
     /**
      * * The sectionId of the step that should be active on render. 
      * Defaults to the first child step when undefined.
-     * * @example
-     * defaultStepId="billing-info"
      */
     defaultStepId?: string;
     /**
-     * * The required viewport column width for the Codex component.
-     * i.e. 1 - 12
+     * * Option to pass a custom hex, rgb, or css variable to color the active 
+     * step lines, icons, circles, and navigation buttons.
      * * @example
-     * width={12}
+     * brandColor="#800020"
+     */
+    brandColor?: string;
+    /**
+     * * The required viewport column width for the Codex component.
      */
     width?: number;
     /**
      * * Option to render Codex component on a new row.
-     * * @example
-     * newRow
      */
     newRow?: boolean;
     /**
      * * Option to specify the .scss class selector for the Codex component.
-     * * @example
-     * className="teletraan-1-codex"
      */
     className?: string;
     /**
-     * * Option to inject custom CSS to the Stepper wrapper.
-     * * @example
-     * style={{ margin: "20px 0" }}
+     * * Option to inject custom CSS to the Codex wrapper.
      */
     style?: React.CSSProperties;
     /**
@@ -69,39 +64,17 @@ export interface CodexProps {
 }
 
 export interface CodexItemProps {
-    /**
-     * * The unique identifier for the step item.
-     * * @example
-     * stepId="step-1"
-     */
     stepId: string;
-    /**
-     * * The display title for the step header.
-     * * @example
-     * title="Account Setup"
-     */
     title: string;
-    /**
-     * * An optional subtitle description displayed below the title.
-     * * @example
-     * description="Enter your details"
-     */
     subtitleDescription?: string;
-    /**
-     * * The content revealed when this step is active.
-     */
     children: ReactNode;
-    /**
-     * * Option to provide a custom icon for the step circle.
-     * * @example
-     * icon={<Icon name="user" />}
-     */
     icon?: ReactNode;
 }
 
 export const Codex = ({
     design = 'outline',
     defaultStepId,
+    brandColor,
     width = 12,
     newRow,
     className,
@@ -145,9 +118,18 @@ export const Codex = ({
     const activeIndex = steps.findIndex(s => s.id === activeStepId);
 
     return (
-        <CodexContext.Provider value={{ activeStepId, setActiveStepId, design }}>
+        <CodexContext.Provider value={{ activeStepId, setActiveStepId, design, brandColor }}>
             <Column span={width} newLine={newRow}>
-                <div ref={containerRef} className={className} style={{ width: '100%', ...style, ...neuVars }}>
+                <div 
+                    ref={containerRef} 
+                    className={className} 
+                    style={{ 
+                        width: '100%', 
+                        ...style, 
+                        ...neuVars,
+                        '--codex-brand': brandColor || 'var(--accent-9)' 
+                    } as React.CSSProperties}
+                >
                     
                     <style dangerouslySetInnerHTML={{__html: `
                         .v-step-circle {
@@ -176,42 +158,45 @@ export const Codex = ({
                             to { opacity: 1; transform: translateY(0); }
                         }
 
+                        /* --- OUTLINE --- */
                         .v-stepper-outline .v-step-circle.pending {
                             border: 2px solid var(--gray-6);
                             background: transparent;
                             color: var(--gray-10);
                         }
                         .v-stepper-outline .v-step-circle.active {
-                            border: 2px solid var(--accent-9);
+                            border: 2px solid var(--codex-brand);
                             background: var(--accent-2);
-                            color: var(--accent-9);
+                            color: var(--codex-brand);
                         }
                         .v-stepper-outline .v-step-circle.completed {
-                            border: 2px solid var(--accent-9);
-                            background: var(--accent-9);
+                            border: 2px solid var(--codex-brand);
+                            background: var(--codex-brand);
                             color: white;
                         }
                         .v-stepper-outline .v-step-line.pending { background-color: var(--gray-5); }
-                        .v-stepper-outline .v-step-line.completed { background-color: var(--accent-9); }
+                        .v-stepper-outline .v-step-line.completed { background-color: var(--codex-brand); }
 
+                        /* --- MATERIAL --- */
                         .v-stepper-material .v-step-circle.pending {
                             background: var(--color-surface);
                             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                             color: var(--gray-10);
                         }
                         .v-stepper-material .v-step-circle.active {
-                            background: var(--accent-9);
+                            background: var(--codex-brand);
                             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
                             color: white;
                             transform: scale(1.1);
                         }
                         .v-stepper-material .v-step-circle.completed {
-                            background: var(--accent-9);
+                            background: var(--codex-brand);
                             color: white;
                         }
                         .v-stepper-material .v-step-line.pending { background-color: var(--gray-5); }
-                        .v-stepper-material .v-step-line.completed { background-color: var(--accent-9); }
+                        .v-stepper-material .v-step-line.completed { background-color: var(--codex-brand); }
 
+                        /* --- NEUMORPHIC --- */
                         .v-stepper-neumorphic .v-step-circle {
                             background: var(--neu-bg);
                             border: none;
@@ -222,19 +207,19 @@ export const Codex = ({
                         }
                         .v-stepper-neumorphic .v-step-circle.active {
                             box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
-                            color: var(--accent-9);
+                            color: var(--codex-brand);
                         }
                         .v-stepper-neumorphic .v-step-circle.completed {
                             box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
-                            color: var(--accent-9);
+                            color: var(--codex-brand);
                         }
                         .v-stepper-neumorphic .v-step-line.pending {
                             background-color: transparent;
                             box-shadow: inset 1px 1px 2px var(--neu-shadow-dark), inset -1px -1px 2px var(--neu-shadow-light);
                         }
                         .v-stepper-neumorphic .v-step-line.completed {
-                            background-color: var(--accent-9);
-                            box-shadow: 0 0 4px var(--accent-9);
+                            background-color: var(--codex-brand);
+                            box-shadow: 0 0 4px var(--codex-brand);
                         }
                     `}} />
 
@@ -244,10 +229,12 @@ export const Codex = ({
                                 const isCompleted = index < activeIndex;
                                 const isActive = index === activeIndex;
                                 const statusClass = isActive ? 'active' : isCompleted ? 'completed' : 'pending';
+                                
+                                const isFirst = index === 0;
+                                const isLast = index === steps.length - 1;
 
                                 return (
                                     <React.Fragment key={step.id}>
-                                        
                                         <Box style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                             <div 
                                                 className={`v-step-circle ${statusClass}`}
@@ -266,8 +253,11 @@ export const Codex = ({
                                                     top: '100%', 
                                                     marginTop: '12px', 
                                                     width: '120px', 
-                                                    textAlign: 'center',
-                                                    cursor: 'pointer'
+                                                    cursor: 'pointer',
+                                                    left: isFirst ? '0' : isLast ? 'auto' : '50%',
+                                                    right: isLast ? '0' : 'auto',
+                                                    transform: (!isFirst && !isLast) ? 'translateX(-50%)' : 'none',
+                                                    textAlign: isFirst ? 'left' : isLast ? 'right' : 'center',
                                                 }}
                                                 onClick={() => setActiveStepId(step.id)}
                                             >
