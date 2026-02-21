@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.20
+
+### Patch Changes
+
+- 993033e: xForm Components Update :: Accordion, Codex
+
 ## 1.4.19
 
 ### Patch Changes
