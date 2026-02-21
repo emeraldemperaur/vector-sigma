@@ -8,8 +8,7 @@ import '../../styles/main.scss';
 
 export type AccordionDesign = 'material' | 'outline' | 'neumorphic';
 
-
-const AccordionContext = createContext<{ design: AccordionDesign }>({ design: 'outline' });
+const AccordionContext = createContext<{ design: AccordionDesign; brandcolor?: string }>({ design: 'outline' });
 
 export interface AccordionProps {
     /**
@@ -34,6 +33,13 @@ export interface AccordionProps {
      * allowMultiple={true}
      */
     allowMultiple?: boolean;
+    /**
+     * * Option to pass a custom hex, rgb, or css variable to color the background 
+     * of the AccordionItem headers.
+     * * @example
+     * brandcolor="var(--accent-3)"
+     */
+    brandcolor?: string;
     /**
      * * The required viewport column width for the Accordion component.
      * i.e. 1 - 12
@@ -100,6 +106,7 @@ export const Accordion = ({
     design = 'outline',
     defaultOpenId = "",
     allowMultiple = false,
+    brandcolor,
     width = 12,
     newRow,
     className,
@@ -125,7 +132,6 @@ export const Accordion = ({
         children
     };
 
-    
     const accordionRoot = allowMultiple ? (
         <RadixAccordion.Root
             type="multiple"
@@ -142,9 +148,19 @@ export const Accordion = ({
     );
 
     return (
-        <AccordionContext.Provider value={{ design }}>
+        <AccordionContext.Provider value={{ design, brandcolor }}>
             <Column span={width} newLine={newRow}>
-                <div ref={containerRef} className={className} style={{ width: '100%', ...style, ...neuVars }}>
+                <div 
+                    ref={containerRef} 
+                    className={className} 
+                    style={{ 
+                        width: '100%', 
+                        ...style, 
+                        ...neuVars,
+                        // Dynamically inject the header background color
+                        ...(brandcolor ? { '--accordion-header-bg': brandcolor } : {})
+                    } as React.CSSProperties}
+                >
                     
                     <style dangerouslySetInnerHTML={{__html: `
                         @keyframes slideDown {
@@ -175,6 +191,7 @@ export const Accordion = ({
                             border: 1px solid var(--gray-6);
                             border-radius: var(--radius-3);
                             background-color: transparent;
+                            overflow: hidden; /* Clips the background color to the rounded corners */
                         }
                         .v-accordion-item-outline {
                             border-bottom: 1px solid var(--gray-6);
@@ -187,6 +204,7 @@ export const Accordion = ({
                             border-radius: var(--radius-3);
                             background-color: var(--color-surface);
                             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                            overflow: hidden; /* Clips the background color to the rounded corners */
                         }
                         .v-accordion-item-material {
                             border-bottom: 1px solid var(--gray-4);
@@ -201,16 +219,16 @@ export const Accordion = ({
                         .v-accordion-root-neumorphic {
                             display: flex;
                             flex-direction: column;
-                            gap: 16px; /* Neumorphic items look best separated */
+                            gap: 16px; 
                         }
                         .v-accordion-item-neumorphic {
                             background-color: var(--neu-bg);
                             border-radius: 12px;
                             box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light);
                             transition: all 0.3s ease;
+                            overflow: hidden; /* Clips the background color to the rounded corners */
                         }
                         .v-accordion-item-neumorphic[data-state='open'] {
-                            /* Pressed-in effect when open */
                             box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
                         }
                         
@@ -224,6 +242,7 @@ export const Accordion = ({
                             cursor: pointer;
                             font-family: var(--default-font-family);
                             box-sizing: border-box;
+                            background-color: var(--accordion-header-bg, transparent); /* Applies the custom color */
                         }
                         .v-accordion-trigger:disabled {
                             cursor: not-allowed;
