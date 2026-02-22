@@ -28,6 +28,7 @@ export * from './components/slider/slider';
 export * from './components/slider/range';
 export * from './components/toggle/toggle';
 export * from './components/xtitle/xtitle';
+export * from './teletraan1';
 export * from './layouts/container/container';
 export * from './layouts/column/column';
 export * from './layouts/row/row';
