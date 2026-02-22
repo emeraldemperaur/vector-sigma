@@ -1,16 +1,11 @@
+import React, { useState } from 'react';
 import { AvatarInput } from 'components/avatar/avatar';
 import { ButtonInput } from 'components/button/button';
 import { CheckboxGroupInput } from 'components/checkbox/checkbox';
 import { DatePicker } from 'components/datepicker/datepicker';
 import { Dropdown } from 'components/dropdown/dropdown';
 import { DateRangePicker } from 'components/daterangepicker/daterangepicker';
-import React from 'react'
 import { InputOption, InputOptionsPlaceholder } from "utils/vinci";
-import { avatarInputType, buttonInputType, checkboxInputType, conditionalInputType, creditCardInputType, 
-    currencyInputType, datePickerInputType, dateRangePickerInputType, dateTimePickerInputType, dropdownInputType, 
-    fileInputType, fileMultipleInputType, imageOutputType, passwordInputType, phoneInputType, radioInputType, 
-    rangeSliderInputType, sectionTitleOutputType, selectInputType, selectMultipleInputType, sliderInputType, 
-    stockInputType, textInputType, toggleInputType } from "utils/voltaire";
 import { File } from 'components/file/file';
 import { FileMultiple } from 'components/file/filemultiple';
 import { ImageOutput } from 'components/image/image';
@@ -34,243 +29,305 @@ import { Codex, CodexItem } from 'layouts/codex/codex';
 import { CodexControls } from 'layouts/codex/codexcontrols';
 import { SectionTitle } from 'components/xtitle/xtitle';
 import { Icon } from 'components/icons/icons';
+import { 
+    avatarInputType, buttonInputType, checkboxInputType, conditionalInputType, creditCardInputType, 
+    currencyInputType, datePickerInputType, dateRangePickerInputType, dateTimePickerInputType, dropdownInputType, 
+    fileInputType, fileMultipleInputType, imageOutputType, passwordInputType, phoneInputType, radioInputType, 
+    rangeSliderInputType, selectInputType, selectMultipleInputType, sliderInputType, 
+    stockInputType, textInputType, toggleInputType 
+} from "utils/voltaire";
 
 export type teletraan1Display = 'accordion' | 'codice' | 'codex' | 'dual';
 
+export interface Teletraan1Props {
+    xFormModel: xForm;
+    readOnlyMode?: boolean;
+    displayMode?: teletraan1Display;
+    brandColor?: string;
+}
 
-export const teletraan1 = (xFormModel: xForm, readOnlyMode: boolean, displayMode: teletraan1Display, brandColor: string = "#000000") => {
-    let jsonModel = JSON.stringify(xFormModel, null, 2);
+export const Teletraan1 = ({ 
+    xFormModel, 
+    readOnlyMode = false, 
+    displayMode = 'codice', 
+    brandColor = "#000000" 
+}: Teletraan1Props) => {
 
-    
+    const [dualToggled, setDualToggled] = useState(false);
+      const [neuVars] = useState<React.CSSProperties>({
+          '--neu-bg': '#ecf0f3',
+          '--neu-shadow-light': '#ffffff',
+          '--neu-shadow-dark': '#d1d9e6'
+      } as React.CSSProperties);
+
     const inputAlphaTrion = (
         inputAlias: string, inputType: string, inputWidth: number, inputLabel: string, 
         inputMinValue: number | string, inputMaxValue: number | string, defaultValue: any, inputOptions: InputOption[],
         stepValue?: number | string, inputHeight?: number | string, toggledInput?: React.ReactNode,
         newRow?: boolean, inputPlaceholder?: string, readOnly?: boolean, isHinted?: boolean, 
-        hintText?: string, hintUrl?: string, errorText?: string, inputUID?: string) => {
+        hintText?: string, hintUrl?: string, errorText?: string, inputUID?: string
+    ) => {
+        if(inputWidth == null || inputWidth > 12) inputWidth = 4;
+        if(inputHeight == null) inputHeight = 4;
+        if(inputUID == null) inputUID = crypto.randomUUID();
+        if(readOnlyMode) readOnly = true;
 
+        const normalizedType = inputType.toLocaleLowerCase();
 
-            if(inputWidth == null || inputWidth > 12) inputWidth = 4;
-            if(inputHeight == null) inputHeight = 4;
-            if(inputUID == null) inputUID = crypto.randomUUID();
-            if(readOnlyMode) readOnly = true;
-            switch(true){
-                case avatarInputType.includes(inputType.toLocaleLowerCase()):
-                    return <AvatarInput alias={inputAlias} width={inputWidth} inputLabel={inputLabel} key={inputUID} 
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} errorText={errorText}/>
-                case buttonInputType.includes(inputType.toLocaleLowerCase()):
-                    return <ButtonInput alias={inputAlias} width={inputWidth} readOnly={readOnly} newRow={newRow} 
-                    children={<>{defaultValue}</>} key={inputUID}/>
-                case checkboxInputType.includes(inputType.toLocaleLowerCase()):
-                    return <CheckboxGroupInput alias={inputAlias} width={inputWidth} inputLabel={inputLabel} 
-                    inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} 
-                    hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
-                case conditionalInputType.includes(inputType.toLocaleLowerCase()):
-                    return <ConditionalTrigger alias={inputAlias} width={inputWidth} inputLabel={inputLabel} 
-                    inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} triggerValue={defaultValue}
-                    hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} children={toggledInput}/>
-                case datePickerInputType.includes(inputType.toLocaleLowerCase()):
-                    return <DatePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} 
-                    placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} 
-                    hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
-                case dateRangePickerInputType.includes(inputType.toLocaleLowerCase()):
-                    return <DateRangePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} 
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case dateTimePickerInputType.includes(inputType.toLocaleLowerCase()):
-                    return <DateRangePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow}
-                    readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case dropdownInputType.includes(inputType.toLocaleLowerCase()):
-                    return <Dropdown alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions} 
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText} />
-                case fileInputType.includes(inputType.toLocaleLowerCase()):
-                    return <File alias={inputAlias} inputLabel={inputLabel} width={inputWidth} 
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText} preview/>
-                case fileMultipleInputType.includes(inputType.toLocaleLowerCase()):
-                    return <FileMultiple alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText} preview/>
-                case imageOutputType.includes(inputType.toLocaleLowerCase()):
-                    return <ImageOutput id={inputAlias} src={defaultValue} alt={inputPlaceholder} width={inputWidth} 
-                    height={inputHeight}/>
-                case textInputType.includes(inputType.toLocaleLowerCase()):
-                    return <Input alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case passwordInputType.includes(inputType.toLocaleLowerCase()):
-                    return <PasswordInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case phoneInputType.includes(inputType.toLocaleLowerCase()):
-                    return <PhoneInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case creditCardInputType.includes(inputType.toLocaleLowerCase()):
-                    return <CreditCardInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case currencyInputType.includes(inputType.toLocaleLowerCase()):
-                    return <CurrencyInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case stockInputType.includes(inputType.toLocaleLowerCase()):
-                    return <StockInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} 
-                    placeholder={inputPlaceholder} defaultvalue={defaultValue}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case radioInputType.includes(inputType.toLocaleLowerCase()):
-                    return <RadioGroupInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case selectInputType.includes(inputType.toLocaleLowerCase()):
-                    return <OptionSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case selectMultipleInputType.includes(inputType.toLocaleLowerCase()):
-                    return <MultipleSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case sliderInputType.includes(inputType.toLocaleLowerCase()):
-                    return <SliderInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} stepvalue={Number(stepValue)}
-                    minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case rangeSliderInputType.includes(inputType.toLocaleLowerCase()):
-                    return <RangeSlider alias={inputAlias} inputLabel={inputLabel} width={inputWidth} stepvalue={Number(stepValue)}
-                    minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-                case toggleInputType.includes(inputType.toLocaleLowerCase()):
-                    return <Toggle alias={inputAlias} inputLabel={inputLabel} width={inputWidth}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText} icon={defaultValue}/>
-                default:
-                    return <Input alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder}
-                    newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} 
-                    key={inputUID} errorText={errorText}/>
-            }
-    }
+        switch(true){
+            case avatarInputType.includes(normalizedType):
+                return <AvatarInput alias={inputAlias} width={inputWidth} inputLabel={inputLabel} key={inputUID} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} errorText={errorText}/>
+            case buttonInputType.includes(normalizedType):
+                return <ButtonInput alias={inputAlias} width={inputWidth} readOnly={readOnly} newRow={newRow} key={inputUID}>{defaultValue}</ButtonInput>
+            case checkboxInputType.includes(normalizedType):
+                return <CheckboxGroupInput alias={inputAlias} width={inputWidth} inputLabel={inputLabel} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case conditionalInputType.includes(normalizedType):
+                return <ConditionalTrigger alias={inputAlias} width={inputWidth} inputLabel={inputLabel} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} triggerValue={defaultValue} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} children={toggledInput}/>
+            case datePickerInputType.includes(normalizedType):
+                return <DatePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case dateRangePickerInputType.includes(normalizedType):
+                return <DateRangePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case dateTimePickerInputType.includes(normalizedType):
+                return <DateRangePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case dropdownInputType.includes(normalizedType):
+                return <Dropdown alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} />
+            case fileInputType.includes(normalizedType):
+                return <File alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} preview/>
+            case fileMultipleInputType.includes(normalizedType):
+                return <FileMultiple alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} preview/>
+            case imageOutputType.includes(normalizedType):
+                return <ImageOutput id={inputAlias} src={defaultValue} alt={inputPlaceholder} width={inputWidth} height={inputHeight as number}/>
+            case textInputType.includes(normalizedType):
+                return <Input alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case passwordInputType.includes(normalizedType):
+                return <PasswordInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case phoneInputType.includes(normalizedType):
+                return <PhoneInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case creditCardInputType.includes(normalizedType):
+                return <CreditCardInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case currencyInputType.includes(normalizedType):
+                return <CurrencyInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case stockInputType.includes(normalizedType):
+                return <StockInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} defaultvalue={defaultValue} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case radioInputType.includes(normalizedType):
+                return <RadioGroupInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case selectInputType.includes(normalizedType):
+                return <OptionSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case selectMultipleInputType.includes(normalizedType):
+                return <MultipleSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case sliderInputType.includes(normalizedType):
+                return <SliderInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case rangeSliderInputType.includes(normalizedType):
+                return <RangeSlider alias={inputAlias} inputLabel={inputLabel} width={inputWidth} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+            case toggleInputType.includes(normalizedType):
+                return <Toggle alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} icon={defaultValue}/>
+            default:
+                return <Input alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+        }
+    };
 
-    return(
-    <>
-    <Row>
-    {displayMode === "dual" ? 
-    <>
-    Dual Display
-    </> 
-    : displayMode === "accordion" ? 
-    <>
-    Accordion Display
-    <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
-      {xFormModel.model.map( (formsection) => (
-        <React.Fragment key={formsection.sectionId}>
-            <AccordionItem key={formsection.sectionId} 
-            sectionId={String(formsection.sectionId)} title={formsection.title}>
-                <Row key={formsection.sectionId}>
-                    {formsection.queries ? 
-                    formsection.queries.map((xFormelement) => (
-                        <React.Fragment key={xFormelement.queryId}>
-                            {inputAlphaTrion(xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth,
-                                xFormelement.inputLabel, Number(xFormelement.minValue), Number(xFormelement.maxValue), xFormelement.defaultValue,
-                                [InputOptionsPlaceholder], xFormelement.stepValue, xFormelement.inputHeight,
+    const renderQueries = (queries: any[]) => {
+        if (!queries) return null;
+        return queries.map((xFormelement) => (
+            <React.Fragment key={xFormelement.queryId}>
+                {inputAlphaTrion(
+                    xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth,
+                    xFormelement.inputLabel, Number(xFormelement.minValue), Number(xFormelement.maxValue), xFormelement.defaultValue,
+                    [InputOptionsPlaceholder], xFormelement.stepValue, xFormelement.inputHeight,
+                    xFormelement.toggledInput ? inputAlphaTrion(
+                        xFormelement.toggledInput.inputAlias, xFormelement.toggledInput.inputType, xFormelement.toggledInput.inputWidth,
+                        xFormelement.toggledInput.inputLabel, Number(xFormelement.toggledInput.minValue), Number(xFormelement.toggledInput.maxValue), xFormelement.toggledInput.defaultValue,
+                        [InputOptionsPlaceholder], xFormelement.toggledInput.stepValue, xFormelement.toggledInput.inputHeight, null,  
+                        xFormelement.toggledInput.newRow, xFormelement.toggledInput.inputPlaceholder, 
+                        readOnlyMode, xFormelement.toggledInput.isHinted, xFormelement.toggledInput.hintText || "", xFormelement.toggledInput.hintUrl || "",
+                        xFormelement.toggledInput.errorText, String(xFormelement.toggledInput.queryId) || crypto.randomUUID()
+                    ) : null,
+                    xFormelement.newRow, xFormelement.inputPlaceholder, readOnlyMode, xFormelement.isHinted, xFormelement.hintText || "", xFormelement.hintUrl || "",
+                    xFormelement.errorText, String(xFormelement.queryId) || crypto.randomUUID()
+                )}
+            </React.Fragment>
+        ));
+    };
 
-                                xFormelement.toggledInput? inputAlphaTrion(xFormelement.toggledInput.inputAlias, xFormelement.toggledInput.inputType, xFormelement.toggledInput.inputWidth,
-                                xFormelement.toggledInput.inputLabel, Number(xFormelement.toggledInput.minValue), Number(xFormelement.toggledInput.maxValue), xFormelement.toggledInput.defaultValue,
-                                [InputOptionsPlaceholder], xFormelement.toggledInput.stepValue, xFormelement.toggledInput.inputHeight, null,  xFormelement.toggledInput.newRow, xFormelement.toggledInput.inputPlaceholder, 
-                                readOnlyMode, xFormelement.toggledInput.isHinted, xFormelement.toggledInput.hintText || "", xFormelement.toggledInput.hintUrl || "",
-                                xFormelement.toggledInput.errorText, String(xFormelement.toggledInput.queryId) || crypto.randomUUID()) : null,
-
-                                xFormelement.newRow, xFormelement.inputPlaceholder, readOnlyMode, xFormelement.isHinted, xFormelement.hintText || "", xFormelement.hintUrl || "",
-                                xFormelement.errorText, String(xFormelement.queryId) || crypto.randomUUID()
-                            )}
+    const renderDisplayMode = () => {
+        switch (displayMode) {
+            case 'dual':
+                return (
+                    <>
+                        Dual Display
+                        <Row>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <div 
+                                            className="neu-toggle-wrapper"
+                                            style={{ ...neuVars, opacity: readOnlyMode ? 0.6 : 1, pointerEvents: readOnlyMode ? 'none' : 'auto' }}
+                                            onClick={() => setDualToggled(!dualToggled)}
+                                        >
+                                            <style dangerouslySetInnerHTML={{__html: `
+                                                .neu-toggle-wrapper {
+                                                    isolation: isolate;
+                                                    position: relative;
+                                                    height: 30px;
+                                                    width: 60px;
+                                                    border-radius: 15px;
+                                                    overflow: hidden;
+                                                    cursor: pointer;
+                                                    background: var(--neu-bg);
+                                                    box-shadow:
+                                                        -8px -4px 8px 0px var(--neu-shadow-light),
+                                                        8px 4px 12px 0px var(--neu-shadow-dark),
+                                                        4px 4px 4px 0px var(--neu-shadow-dark) inset,
+                                                        -4px -4px 4px 0px var(--neu-shadow-light) inset;
+                                                }
+                                                
+                                                .neu-toggle-state {
+                                                    display: none;
+                                                }
+                        
+                                                .neu-indicator {
+                                                    height: 100%;
+                                                    width: 200%;
+                                                    background: var(--neu-bg);
+                                                    border-radius: 15px;
+                                                    transform: translate3d(-75%, 0, 0);
+                                                    transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
+                                                    box-shadow:
+                                                        -8px -4px 8px 0px var(--neu-shadow-light),
+                                                        8px 4px 12px 0px var(--neu-shadow-dark);
+                                                }
+                        
+                                                .neu-toggle-state:checked ~ .neu-indicator {
+                                                    transform: translate3d(25%, 0, 0);
+                                                }
+                                            `}} />
+                        
+                                            <input 
+                                                id={`teletraan1DualToggle`}
+                                                className="neu-toggle-state" 
+                                                type="checkbox" 
+                                                checked={dualToggled} 
+                                                readOnly 
+                                            />
+                                            <div className="neu-indicator"></div>
+                                        </div>
+                                        <Icon 
+                                            name="stack"
+                                            height="20" 
+                                            width="20" 
+                                            color={brandColor}
+                                            style={{ 
+                                                transition: 'color 0.3s ease',
+                                                opacity: readOnlyMode ? 0.5 : 1, 
+                                                cursor: 'pointer'
+                                            }}
+                                            onClick={() => setDualToggled(!dualToggled)}
+                                        />
+                            </div>
+                        {dualToggled ? 
+                        <>
+                        Accordion Display
+                        <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
+                            {xFormModel.model.map((formsection) => (
+                                <AccordionItem 
+                                    key={formsection.sectionId} 
+                                    sectionId={String(formsection.sectionId)} 
+                                    title={formsection.title}
+                                >
+                                    <Row key={formsection.sectionId}>
+                                        {renderQueries(formsection.queries)}
+                                    </Row>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                        </>
+                        : 
+                        <>
+                        Codice Display
+                        <React.Fragment key={xFormModel.uuid}>
+                            {xFormModel.model.map((formsection) => (
+                                <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
+                                    <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
+                                    <Row>
+                                        {renderQueries(formsection.queries)}
+                                    </Row>
+                                </React.Fragment>
+                            ))}
                         </React.Fragment>
-                    ))
-                    : null}
-                </Row>
-            </AccordionItem>
-        </React.Fragment>
-    ))}
-    </Accordion>
-    </> 
-    : displayMode === "codex" ? 
-    <>Codex Display
-    <Codex brandColor={brandColor}>
-    {xFormModel.model.map( (formsection, index, array) => {
-        
-        const prevStepId = index > 0 ? String(array[index - 1].sectionId) : undefined;
-        const nextStepId = index < array.length - 1 ? String(array[index + 1].sectionId) : undefined;
-        
-        return(
-            <CodexItem key={formsection.sectionId} stepId={String(formsection.sectionId)} title={formsection.title}>
-                <Row key={formsection.sectionId}>
-                     {formsection.queries ? 
-                    formsection.queries.map((xFormelement) => (
-                        <React.Fragment key={xFormelement.queryId}>
-                            {inputAlphaTrion(xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth,
-                                xFormelement.inputLabel, Number(xFormelement.minValue), Number(xFormelement.maxValue), xFormelement.defaultValue,
-                                [InputOptionsPlaceholder], xFormelement.stepValue, xFormelement.inputHeight,
+                        </>}
+                       </Row>
+                    </>
+                );
 
-                                xFormelement.toggledInput? inputAlphaTrion(xFormelement.toggledInput.inputAlias, xFormelement.toggledInput.inputType, xFormelement.toggledInput.inputWidth,
-                                xFormelement.toggledInput.inputLabel, Number(xFormelement.toggledInput.minValue), Number(xFormelement.toggledInput.maxValue), xFormelement.toggledInput.defaultValue,
-                                [InputOptionsPlaceholder], xFormelement.toggledInput.stepValue, xFormelement.toggledInput.inputHeight, null,  xFormelement.toggledInput.newRow, xFormelement.toggledInput.inputPlaceholder, 
-                                readOnlyMode, xFormelement.toggledInput.isHinted, xFormelement.toggledInput.hintText || "", xFormelement.toggledInput.hintUrl || "",
-                                xFormelement.toggledInput.errorText, String(xFormelement.toggledInput.queryId) || crypto.randomUUID()) : null,
+            case 'accordion':
+                return (
+                    <>
+                        Accordion Display
+                        <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
+                            {xFormModel.model.map((formsection) => (
+                                <AccordionItem 
+                                    key={formsection.sectionId} 
+                                    sectionId={String(formsection.sectionId)} 
+                                    title={formsection.title}
+                                >
+                                    <Row key={formsection.sectionId}>
+                                        {renderQueries(formsection.queries)}
+                                    </Row>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                    </>
+                );
 
-                                xFormelement.newRow, xFormelement.inputPlaceholder, readOnlyMode, xFormelement.isHinted, xFormelement.hintText || "", xFormelement.hintUrl || "",
-                                xFormelement.errorText, String(xFormelement.queryId) || crypto.randomUUID()
-                            )}
+            case 'codex':
+                return (
+                    <>
+                        Codex Display
+                        <Codex brandColor={brandColor}>
+                            {xFormModel.model.map((formsection, index, array) => {
+                                const prevStepId = index > 0 ? String(array[index - 1].sectionId) : undefined;
+                                const nextStepId = index < array.length - 1 ? String(array[index + 1].sectionId) : undefined;
+                                
+                                return(
+                                    <CodexItem key={formsection.sectionId} stepId={String(formsection.sectionId)} title={formsection.title}>
+                                        <Row key={formsection.sectionId}>
+                                            {renderQueries(formsection.queries)}
+                                        </Row>
+                                        <CodexControls 
+                                            prevStepId={prevStepId} 
+                                            nextStepId={nextStepId}
+                                            onPrev={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onPrev()`)}
+                                            onNext={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onNext()`)}
+                                            onFinish={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onFinish()`)}
+                                        />
+                                    </CodexItem>
+                                )
+                            })}
+                        </Codex>
+                    </>
+                );
+
+            case 'codice':
+            default:
+                return (
+                    <>
+                        Codice/Script Display
+                        <React.Fragment key={xFormModel.uuid}>
+                            {xFormModel.model.map((formsection) => (
+                                <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
+                                    <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
+                                    <Row>
+                                        {renderQueries(formsection.queries)}
+                                    </Row>
+                                </React.Fragment>
+                            ))}
                         </React.Fragment>
-                    ))
-                    : null}
-                </Row>
-                <CodexControls prevStepId={prevStepId} nextStepId={nextStepId}
-                    onPrev={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onPrev()`)}
-                    onNext={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onNext()`)}
-                    onFinish={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onFinish()`)}
-                    />
-            </CodexItem>
-            )
-    })}
-    </Codex>
-    </> 
-    : 
-    <>Codice/Script Display
-    <React.Fragment key={xFormModel.uuid}>
-        {xFormModel.model.map( (formsection) => (
-        <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-            <SectionTitle key={formsection.sectionId} title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
-            <Row key={formsection.sectionId}>
-                    {formsection.queries ? 
-                    formsection.queries.map((xFormelement) => (
-                        <React.Fragment key={xFormelement.queryId}>
-                            {inputAlphaTrion(xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth,
-                                xFormelement.inputLabel, Number(xFormelement.minValue), Number(xFormelement.maxValue), xFormelement.defaultValue,
-                                [InputOptionsPlaceholder], xFormelement.stepValue, xFormelement.inputHeight,
+                    </>
+                );
+        }
+    };
 
-                                xFormelement.toggledInput? inputAlphaTrion(xFormelement.toggledInput.inputAlias, xFormelement.toggledInput.inputType, xFormelement.toggledInput.inputWidth,
-                                xFormelement.toggledInput.inputLabel, Number(xFormelement.toggledInput.minValue), Number(xFormelement.toggledInput.maxValue), xFormelement.toggledInput.defaultValue,
-                                [InputOptionsPlaceholder], xFormelement.toggledInput.stepValue, xFormelement.toggledInput.inputHeight, null,  xFormelement.toggledInput.newRow, xFormelement.toggledInput.inputPlaceholder, 
-                                readOnlyMode, xFormelement.toggledInput.isHinted, xFormelement.toggledInput.hintText || "", xFormelement.toggledInput.hintUrl || "",
-                                xFormelement.toggledInput.errorText, String(xFormelement.toggledInput.queryId) || crypto.randomUUID()) : null,
-
-                                xFormelement.newRow, xFormelement.inputPlaceholder, readOnlyMode, xFormelement.isHinted, xFormelement.hintText || "", xFormelement.hintUrl || "",
-                                xFormelement.errorText, String(xFormelement.queryId) || crypto.randomUUID()
-                            )}
-                        </React.Fragment>
-                    ))
-                    : null}
-                </Row>
-        
-        </React.Fragment>
-    ))}
-
-    </React.Fragment>
-    </>}
-    </Row>
-    </>
-    )
-
-}
+    return (
+        <Row>
+            {renderDisplayMode()}
+        </Row>
+    );
+};
