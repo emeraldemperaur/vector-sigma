@@ -44,13 +44,28 @@ export interface Teletraan1Props {
     readOnlyMode?: boolean;
     displayMode?: teletraan1Display;
     brandColor?: string;
+    /**
+     * * Optional callback for Codex display controls triggered before navigating to a next step.
+     * Useful for triggering form validation.
+     */
+    onNext?: () => void;
+    /**
+     * * Optional callback for Codex display controls triggered before navigating to a previous step.
+     */
+    onPrev?: () => void;
+    /**
+     * * Optional callback for Codex display control triggered when the Finish button is clicked.
+     */
+    onFinish?: () => void;
+
 }
 
 export const Teletraan1 = ({ 
     xFormModel, 
     readOnlyMode = false, 
     displayMode = 'codice', 
-    brandColor = "#000000" 
+    brandColor = "#000000",
+    onPrev, onNext, onFinish
 }: Teletraan1Props) => {
 
     const [dualToggled, setDualToggled] = useState(false);
@@ -294,9 +309,9 @@ export const Teletraan1 = ({
                                         <CodexControls 
                                             prevStepId={prevStepId} 
                                             nextStepId={nextStepId}
-                                            onPrev={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onPrev()`)}
-                                            onNext={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onNext()`)}
-                                            onFinish={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onFinish()`)}
+                                            onPrev={() => {console.log(`Teletraan-1 Codex :: ${formsection.title} :: onPrev()`); onPrev}}
+                                            onNext={() => {console.log(`Teletraan-1 Codex :: ${formsection.title} :: onNext()`); onNext}}
+                                            onFinish={() => {console.log(`Teletraan-1 Codex :: ${formsection.title} :: onFinish()`); onFinish}}
                                         />
                                     </CodexItem>
                                 )
