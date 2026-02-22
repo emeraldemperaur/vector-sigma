@@ -138,3 +138,13 @@ export interface InputOption {
    */
    optionurl?: string;
 }
+
+export const InputOptionsPlaceholder = {
+  optionid: crypto.randomUUID(),
+  text: "",
+  optionvalue: "",
+  tag: "",
+  score: 0,
+  note: "",
+  optionurl: ""
+}
