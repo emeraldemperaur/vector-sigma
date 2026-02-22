@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.28
+
+### Patch Changes
+
+- 9d3fd9c: xForm Component Update :: Teletraan1 dualDisplay, React prop fixes
+
 ## 1.4.27
 
 ### Patch Changes
