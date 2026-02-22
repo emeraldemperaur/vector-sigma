@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.26
+
+### Patch Changes
+
+- 2afb03d: xForm Component Update :: Teletraan1 Render Matrix
+
 ## 1.4.25
 
 ### Patch Changes
