@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.27
+
+### Patch Changes
+
+- 2eba22e: xForm Component Update :: Teletraan1 export fix
+
 ## 1.4.26
 
 ### Patch Changes
