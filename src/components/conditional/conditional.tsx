@@ -248,7 +248,7 @@ export const ConditionalTrigger = ({
               />
               <Select.Content>
                 {inputOptions.map((inputoption) => (
-                  <Select.Item key={inputoption.optionvalue || crypto.randomUUID()} value={inputoption.optionvalue}>
+                  <Select.Item key={String(inputoption.optionvalue) || crypto.randomUUID()} value={String(inputoption.optionvalue)}>
                     {inputoption.text}
                   </Select.Item>
                 ))}

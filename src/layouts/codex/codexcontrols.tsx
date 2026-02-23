@@ -49,6 +49,11 @@ export interface CodexControlsProps {
      * Default: "paperplane"
      */
     finishIcon?: string;
+     /**
+     * * Option to enable `onFinish` control button as `submit` button type.
+     * Default: true
+     */
+    onSubmit?: boolean;
     /**
      * * Optional callback triggered before navigating to the next step.
      * Useful for triggering form validation.
@@ -73,6 +78,7 @@ export const CodexControls = ({
     prevIcon = "doublearrowleft",
     nextIcon = "doublearrowright",
     finishIcon = "paperplane",
+    onSubmit = false,
     onNext,
     onPrev,
     onFinish
@@ -123,6 +129,7 @@ export const CodexControls = ({
                     cursor: 'pointer',
                     ...(brandColor ? { backgroundColor: 'var(--codex-brand)', color: '#fff' } : {}) 
                 }}
+                type={onSubmit && !nextStepId ? "submit" : "button"}
             >
                 {nextStepId ? (
                     <>

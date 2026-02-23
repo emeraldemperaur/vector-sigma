@@ -229,11 +229,11 @@ export const RadioGroupInput = ({
              const isChecked = String(fieldValue) === String(inputoption.optionvalue);
 
              return (
-              <Flex asChild key={inputoption.optionvalue} align="center" gap="2">
+              <Flex asChild key={String(inputoption.optionvalue)} align="center" gap="2">
                 <Text as="label" size="2" style={{ cursor: 'pointer' }}>
                   
                   <RadioGroup.Item 
-                    value={inputoption.optionvalue}
+                    value={String(inputoption.optionvalue)}
                     className={inputtype === 'radio-neumorphic' ? 'neu-radio' : ''}
                     style={{
                       ...(inputtype === 'radio-outline' ? {
