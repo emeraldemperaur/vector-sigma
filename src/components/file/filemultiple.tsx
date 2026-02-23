@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, ReactNode } from 'react';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Box, Flex, Text, Card, IconButton, Grid, Tooltip } from '@radix-ui/themes';
 import { Icon } from 'components/icons/icons';
 import { ACCEPTED_EXTENSIONS } from 'utils/vinci';
@@ -97,6 +97,11 @@ export interface FileMultipleInputProps {
    * style={{ color: "#000000" }}
    */
   style?: React.CSSProperties;
+  /**
+   * * Optional explicit Formik context. Useful when bypassing duplicate 
+   * context issues in monorepos or bundled npm packages.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
 const getFileIcon = (fileOrUrl: File | string) => {
@@ -152,16 +157,31 @@ export const FileMultiple = ({
   preview = true, 
   className,
   style, 
+  formikContext,
   ...props
 }: FileMultipleInputProps) => {
-  const [field, meta] = useField(alias);
-  const { setFieldValue, setFieldTouched } = useFormikContext();
+
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`FileMultiple '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldValue = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [objectUrls, setObjectUrls] = useState<Record<string, string>>({});
   const inputId = `${alias}FormInput`;
   const errorId = `${alias}-error`;
 
-  const currentFiles: (File | string)[] = Array.isArray(field.value) ? field.value : [];
+  const currentFiles: (File | string)[] = Array.isArray(fieldValue) ? fieldValue : [];
+  const hasError = Boolean(fieldTouched && fieldError);
 
   useEffect(() => {
     if (!preview) return;
@@ -190,7 +210,7 @@ export const FileMultiple = ({
     if (e.target.files && e.target.files.length > 0) {
       const newFiles = Array.from(e.target.files);
       setFieldValue(alias, [...currentFiles, ...newFiles]);
-      setFieldTouched(alias, true);
+      setFieldTouched(alias, true, false);
     }
     if (inputRef.current) inputRef.current.value = '';
   };
@@ -206,13 +226,11 @@ export const FileMultiple = ({
   };
 
   const isNeumorphic = inputtype === 'filemultiple-neumorphic';
-  const hasError = Boolean(meta.touched && meta.error);
 
   return (
     <Column span={width} newLine={newRow}>
       <Flex direction="column" gap="2" className={className} style={{ width: '100%', ...style }}>
         
-        {/* INPUT BOX */}
         <Box
           onClick={() => !readOnly && inputRef.current?.click()}
           p="4"
@@ -352,7 +370,7 @@ export const FileMultiple = ({
           )} 
           {hasError && (
             <Text id={errorId} size="1" color="red" style={{ display: 'block', marginTop: 2 }}>
-              {typeof meta.error === 'string' ? (errorText || meta.error) : 'Invalid file selection'}
+              {typeof fieldError === 'string' ? (errorText || fieldError) : 'Invalid file selection'}
             </Text>
           )} 
         </div>

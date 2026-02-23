@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Flex, Text, RadioGroup, Grid, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground, InputOption } from 'utils/vinci';
 import { Icon } from 'components/icons/icons';
@@ -111,6 +111,11 @@ interface RadioGroupProps {
    * style={{ color: "#000000" }}
    */
     style?: React.CSSProperties;
+    /**
+     * * Optional explicit Formik context. Useful when bypassing duplicate 
+     * context issues in monorepos or bundled npm packages.
+     */
+    formikContext?: FormikContextType<any>;
 }
 
 export const RadioGroupInput = ({
@@ -120,12 +125,26 @@ export const RadioGroupInput = ({
   style, inputOptions,
   direction = 'column',
   columns, 
-  className, ...props
+  className, 
+  formikContext,
+  ...props
 }: RadioGroupProps) => {
   
-  const { setFieldValue, setFieldTouched } = useFormikContext();
-  const [field, meta] = useField(alias);
-  const hasError = Boolean(meta.touched && meta.error);
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`RadioGroupInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldValue = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+
+  const hasError = Boolean(fieldTouched && fieldError);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   const errorId = `${alias}-error`;
@@ -195,10 +214,10 @@ export const RadioGroupInput = ({
         id={`${alias}FormInput`}
         aria-describedby={`${alias}InputLabel`}
         disabled={readOnly}
-        value={field.value}
+        value={fieldValue !== undefined && fieldValue !== null ? String(fieldValue) : undefined}
         onValueChange={(val) => {
           setFieldValue(alias, val);
-          setTimeout(() => setFieldTouched(alias, true), 0);
+          setTimeout(() => setFieldTouched(alias, true, false), 0);
         }}
       >
         <Grid 
@@ -207,7 +226,7 @@ export const RadioGroupInput = ({
           style={neuVars}
         >
           {inputOptions.map((inputoption) => {
-             const isChecked = String(field.value) === String(inputoption.optionvalue);
+             const isChecked = String(fieldValue) === String(inputoption.optionvalue);
 
              return (
               <Flex asChild key={inputoption.optionvalue} align="center" gap="2">
@@ -226,7 +245,7 @@ export const RadioGroupInput = ({
                   <span style={{ userSelect: 'none' }}>{inputoption.text}</span>
                 </Text>
               </Flex>
-            );
+             );
           })}
         </Grid>
       </RadioGroup.Root>
@@ -245,7 +264,7 @@ export const RadioGroupInput = ({
              {hasError ?
                 <>
                     <p id={errorId} className='core-input-label-error'>
-                            {errorText || `Required field`}
+                            {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
                     </p>
                 </> : null } 
      </div>

@@ -2,7 +2,7 @@ import React, { ReactNode, useState, useMemo } from "react";
 import { TextField, IconButton, Tooltip, Flex, Text } from '@radix-ui/themes';
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons';
 import { Icon } from "components/icons/icons";
-import { useField, useFormikContext } from "formik"; 
+import { FormikContextType, useFormikContext, getIn } from "formik"; 
 import { Column } from "layouts/column/column";
 import '../../styles/main.scss';
 
@@ -19,22 +19,89 @@ const safeParseUuidFormat = (typeString: string): number[] | null => {
 type startsWithUuid = `uuid${string}`;
 
 interface UUIDInputProps {
+    /**
+   * * The required unique identifier for the Input field in useFormikContext(). 
+   * Alias referenced as `name` attribute and Formik state key.
+   * * @example
+   * alias="userUUIDNumber"
+   */
     alias: string;
-    type?: startsWithUuid | string; 
+    type?: startsWithUuid | string;
+    /**
+   * * The optional input label or description for the UUIDInput field. 
+   * * @example
+   * inputLabel="PMP® Certication Number"
+   */ 
     inputLabel?: string;
+    /**
+   * * The required viewport column width for the UUIDInput field.
+   * i.e. 1 - 12
+   * * @example
+   * width={5}
+   */
     width: number;
+    /**
+   * * Option to render UUIDInput field on new row.
+   * * @example
+   * newRow
+   */
     newRow?: boolean;
     delimiter?: string;
     format?: number[];
+    /**
+     * * Option to enable a hint for UUIDInput field.
+     * * @example
+     * isHinted
+     */  
     isHinted?: boolean;
+    /**
+   * * Option to specify hint text for UUIDInput field.
+   * * @example
+   * hintText="This is a hint for a VΣ UUIDInput field"
+   */
     hintText?: string;
+    /**
+   * * Option to specify a hint url reference or resource for Input field.
+   * * @example
+   * hintUrl="https://www.mekaegwim.ca"
+   */
     hintUrl?: string;
+    /**
+   * * Option to force set the default value for UUIDInput field.
+   * * @example
+   * placeholder="Enter VΣ UUID"
+   */
     placeholder?: string;
+    /**
+   * * Option to specify the isRequired error text for the UUIDInput field.
+   * * @example
+   * errorText="UUID is required"
+   */
     errorText?: ReactNode | string | null;
+    /**
+   * * Option to specify the .scss class selector for the UUIDInput field.
+   * * @example
+   * className="teletraan-1-uuid"
+   */
     className?: string;
     inputVariant?: 'uuid' | 'uuid-outline' | 'uuid' | 'uuid-neumorphic';
+    /**
+   * * Option to disable edits for UUIDInput field.
+   * * @example
+   * readOnly
+   */
     readOnly?: boolean;
+    /**
+   * * Option to set text size for UUIDInput field.
+   * * @example
+   * readOnly
+   */
     size?: "1" | "2" | "3";
+    /**
+     * * Optional explicit Formik context. Useful when bypassing duplicate 
+     * context issues in monorepos or bundled npm packages.
+     */
+    formikContext?: FormikContextType<any>;
 }
 
 export const UUIDInput = ({
@@ -53,13 +120,26 @@ export const UUIDInput = ({
     readOnly = false, 
     inputVariant = 'uuid-outline',
     size = "2", 
-    className, 
+    className,
+    formikContext,
     ...props
 }: UUIDInputProps) => {
 
-    const { setFieldValue, setFieldTouched } = useFormikContext();
-    const [field, meta] = useField(alias);
-    const hasError = Boolean(meta.touched && meta.error);
+    const defaultFormikContext = useFormikContext<any>();
+    const activeContext = formikContext || defaultFormikContext;
+
+    if (!activeContext) {
+        console.error(`UUIDInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+        return null;
+    }
+
+    const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+    const fieldValue = getIn(values, alias);
+    const fieldTouched = getIn(touched, alias);
+    const fieldError = getIn(errors, alias);
+
+    const hasError = Boolean(fieldTouched && fieldError);
     const [copied, setCopied] = useState(false);
     const [uuidNumber, setUUIDNumber] = useState("");
     const errorId = `${alias}-error`;
@@ -95,13 +175,13 @@ export const UUIDInput = ({
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         const formatted = formatUUID(val);
-        setUUIDNumber(formatted)
-        setFieldValue(alias, uuidNumber);
+        setUUIDNumber(formatted);
+        setFieldValue(alias, formatted);
     };
 
     const handleCopy = () => {
-        if (field.value) {
-            navigator.clipboard.writeText(field.value);
+        if (fieldValue) {
+            navigator.clipboard.writeText(fieldValue);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         }
@@ -125,9 +205,9 @@ export const UUIDInput = ({
                         id={`${alias}FormInput`}
                         name={alias}
                         aria-describedby={`${alias}InputLabel`}
-                        value={field.value || ''}
+                        value={fieldValue || ''}
                         onChange={handleChange}
-                        onBlur={() => setFieldTouched(alias, true)}
+                        onBlur={() => setFieldTouched(alias, true, false)}
                         maxLength={maxTotalLength}
                         readOnly={readOnly}
                         placeholder={placeholder}
@@ -157,7 +237,7 @@ export const UUIDInput = ({
                                 color={copied ? "green" : "gray"}
                                 onClick={handleCopy}
                                 type="button"
-                                disabled={!field.value}
+                                disabled={!fieldValue}
                                 style={{ margin: 0 }}
                             >
                                 {copied ? <CheckIcon /> : <CopyIcon />}
@@ -183,7 +263,7 @@ export const UUIDInput = ({
 
                     {hasError && (
                         <Text id={errorId} size="1" color="red" style={{ display: 'block', marginTop: 2 }}>
-                            {errorText || meta.error || "Required field"}
+                            {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
                         </Text>
                     )} 
                 </div>

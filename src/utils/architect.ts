@@ -2,12 +2,13 @@ import { z } from "zod";
 
 // JSON defintion (schema) for xForm object
 const InputOptionSchema = z.object({
-  optionId: z.number().or(z.uuid()),
+  optionid: z.number().or(z.uuid()),
   text: z.string(),
-  tag: z.string().nullish(),
-  score: z.number().or(z.float64()).nullish(),
-  note: z.string().nullish(),
-  optionUrl: z.url().nullish(),
+  optionvalue: z.string(),
+  tag: z.string().optional(),
+  score: z.number().or(z.float64()).optional(),
+  note: z.string().optional(),
+  optionurl: z.url().optional(),
 });
 
 const NestedQuerySchema = z.object({
@@ -28,9 +29,9 @@ const NestedQuerySchema = z.object({
   hintText: z.string().nullish(),
   hintUrl: z.url().nullish(),
   queryResponse: z.any().nullable(),
-  inputOptions: z.array(InputOptionSchema).nullable().optional(),
+  inputOptions: z.array(InputOptionSchema).optional(),
   toggledInput: z.any().nullable().optional(),
-  toggleTrigger: z.any().nullable().optional(),
+  triggerValue: z.any().nullable().optional(),
   errorText: z.string().optional()
 });
 
@@ -55,12 +56,12 @@ const QuerySchema = z.object({
   queryResponse: z.any().nullable(),
   inputOptions: z.array(InputOptionSchema).optional(),
   toggledInput: NestedQuerySchema.nullable().optional(),
-  toggleTrigger: z.any().nullable().optional(),
+  triggerValue: z.any().nullable().optional(),
   errorText: z.string().optional()
 });
 
 const SectionSchema = z.object({
-  sectionId: z.number(),
+  sectionId: z.number().or(z.string()),
   title: z.string(),
   icon: z.string().nullable(),
   queries: z.array(QuerySchema)
@@ -69,7 +70,7 @@ const SectionSchema = z.object({
 export const xFormSchema = z.object({
   uuid: z.uuid(),
   name: z.string(),
-  logo: z.string().nullable(),
+  logo: z.url().nullable(),
   brandcolor: z.string().nullable(),
   logoPosition: z.string().nullable(), 
   model: z.array(SectionSchema),

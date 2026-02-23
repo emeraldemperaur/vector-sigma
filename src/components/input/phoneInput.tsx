@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useField, useFormikContext } from 'formik';
+import { useFormikContext, getIn } from 'formik';
 import { Column } from "layouts/column/column";
 import { TextField, Text, Tooltip, Select, Flex } from '@radix-ui/themes';
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
@@ -20,12 +20,25 @@ export const PhoneInput = ({
     inputvariant = 'input-outline',
     size = "2",
     className,
+    formikContext,
     ...props
 }: xInputFieldProps) => {
     
-    const { setFieldValue, setFieldTouched } = useFormikContext();
-    const [field, meta] = useField(alias);
-    const hasError = Boolean(meta.touched && meta.error);
+    const defaultFormikContext = useFormikContext<any>();
+    const activeContext = formikContext || defaultFormikContext;
+
+    if (!activeContext) {
+        console.error(`PhoneInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+        return null;
+    }
+
+    const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+    const fieldValue = getIn(values, alias);
+    const fieldTouched = getIn(touched, alias);
+    const fieldError = getIn(errors, alias);
+
+    const hasError = Boolean(fieldTouched && fieldError);
     const [country, setCountry] = useState<Country>('US');
     const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
     const errorId = `${alias}-error`;
@@ -88,9 +101,9 @@ export const PhoneInput = ({
                         name={alias}
                         international
                         withCountryCallingCode={false} 
-                        value={field.value || ''}
+                        value={fieldValue || ''}
                         onChange={(val?: Value) => setFieldValue(alias, val || '')} 
-                        onBlur={() => setFieldTouched(alias, true)}
+                        onBlur={() => setFieldTouched(alias, true, false)}
                         readOnly={readOnly}
                         placeholder={placeholder}
                         id={`${alias}FormInput`}
@@ -111,20 +124,22 @@ export const PhoneInput = ({
                 </TextField.Root>
 
                 <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
-                        {inputLabel}
-                    </Text>
+                    {inputLabel && (
+                        <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
+                            {inputLabel}
+                        </Text>
+                    )}
                     
                     {isHinted && (
                         <Tooltip content={hintText || "No hint available"}>
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                                <QuestionMarkCircledIcon height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                                <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
                     )} 
                     {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {errorText || meta.error || `Required field`}
+                            {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
                         </Text>
                     )} 
                 </div>

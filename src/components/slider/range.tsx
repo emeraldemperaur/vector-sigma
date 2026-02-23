@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Flex, Text, Slider, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
 import { Icon } from 'components/icons/icons';
@@ -109,6 +109,11 @@ interface RangeProps {
    * style={{ color: "#000000" }}
    */
   style?: React.CSSProperties;
+  /**
+   * * Optional explicit Formik context. Useful when bypassing duplicate 
+   * context issues in monorepos or bundled npm packages.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
 
@@ -121,21 +126,35 @@ export const RangeSlider = ({
   stepvalue = 1,
   minStepsBetweenThumbs = 0,
   className,
-  style, ...props
+  style, 
+  formikContext,
+  ...props
 }: RangeProps) => {
   
-  const { setFieldValue, setFieldTouched } = useFormikContext();
-  const [field, meta] = useField(alias);
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`RangeSlider '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldVal = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
   
   // Range Formik Logic 
   // Synopsis
   // Radix slider component requires an array. 
-  // If field.value is [20, 80] pass [20, 80].
-  // If field.value is 50 we pass [50].
-  // If field.value is undefined, default to [min] or [min, max].
-  const isRange = Array.isArray(field.value);
-  const fieldValue = isRange ? field.value : [field.value || minvalue];
-  const hasError = Boolean(meta.touched && meta.error);
+  // If field value is [20, 80] pass [20, 80].
+  // If field value is 50 we pass [50].
+  // If field value is undefined, default to [min] or [min, max].
+  const isRange = Array.isArray(fieldVal);
+  const sliderValue = isRange ? fieldVal : [fieldVal || minvalue];
+  const hasError = Boolean(fieldTouched && fieldError);
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   const errorId = `${alias}-error`;
@@ -164,7 +183,7 @@ export const RangeSlider = ({
     >
       <Flex justify="between" align="center">
         <Text size="2" color="gray" style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {fieldValue.join(' - ')}
+          {sliderValue.join(' - ')}
         </Text>
       </Flex>
 
@@ -208,14 +227,14 @@ export const RangeSlider = ({
         max={maxvalue} 
         step={stepvalue}
         minStepsBetweenThumbs={minStepsBetweenThumbs}
-        value={fieldValue}
+        value={sliderValue}
         onValueChange={(val) => {
           // LOGIC SYNOPSIS:
           // If Range, set value as array.
           // If Slider, set value as first value.
           setFieldValue(alias, isRange ? val : val[0]);
         }}
-        onValueCommit={() => setFieldTouched(alias, true)}
+        onValueCommit={() => setFieldTouched(alias, true, false)}
         className={inputtype === 'range-neumorphic' ? 'neu-slider' : inputtype === 'range-outline' ? 'outline-slider' : ''}
         style={neuVars}
       />
@@ -234,7 +253,7 @@ export const RangeSlider = ({
                  {hasError ?
                         <>
                         <p id={errorId} className='core-input-label-error'>
-                            {errorText || `Required field`}
+                            {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
                         </p>
                         </> : null } 
       </div>

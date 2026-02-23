@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Box, Flex, Text, Switch, Checkbox, Select, Card, Tooltip } from '@radix-ui/themes';
 import { InputOption } from "utils/vinci";
 import { Column } from "layouts/column/column";
@@ -121,6 +121,11 @@ export interface ConditionalProps {
    * style={{ color: "#000000" }}
    */
   style?: React.CSSProperties;
+  /**
+   * * Optional explicit Formik context. Useful when bypassing duplicate 
+   * context issues in monorepos or bundled npm packages.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
 const animationStyles = {
@@ -178,23 +183,38 @@ export const ConditionalTrigger = ({
   inputOptions = [],
   children, newRow, isHinted, hintText, hintUrl, errorText,
   style,
-  className, ...props
+  className, 
+  formikContext,
+  ...props
 }: ConditionalProps) => {
-  const [field, meta, helpers] = useField(alias);
-  const { setTouched } = useFormikContext();
+
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`ConditionalTrigger '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldValue = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+
   const inputId = `${alias}FormInput` || crypto.randomUUID();
   const errorId = `${alias}-error`;
 
   // Trigger (Equality) Logic :: If current Field value === trigger value
-  const isOpen = field.value === triggerValue;
+  const isOpen = fieldValue === triggerValue;
 
   const handleChange = (val: any) => {
-    helpers.setValue(val);
-    setTouched({ [alias]: true });
+    setFieldValue(alias, val);
+    setFieldTouched(alias, true, false);
   };
 
   const isNeumorphic = inputtype.includes('neumorphic');
-  const hasError = meta.touched && meta.error;
+  const hasError = Boolean(fieldTouched && fieldError);
 
   const renderTrigger = () => {
     switch (true) {
@@ -204,7 +224,7 @@ export const ConditionalTrigger = ({
             <Checkbox 
               name={alias}
               disabled={readOnly}
-              checked={field.value === true} 
+              checked={fieldValue === true} 
               onCheckedChange={(checked) => handleChange(!!checked)} 
               id={inputId}
             />
@@ -217,7 +237,7 @@ export const ConditionalTrigger = ({
             <Select.Root
               name={alias}
               disabled={readOnly}
-              value={field.value} 
+              value={fieldValue} 
               defaultValue={placeholder || ""}
               onValueChange={handleChange}
             >
@@ -245,7 +265,7 @@ export const ConditionalTrigger = ({
               id={inputId}
               name={alias}
               disabled={readOnly}
-              checked={field.value === true} 
+              checked={fieldValue === true} 
               onCheckedChange={(checked) => handleChange(!!checked)} 
               variant={isNeumorphic ? 'soft' : 'surface'}
             />
@@ -304,7 +324,7 @@ export const ConditionalTrigger = ({
              {hasError ?
                   <>
                   <p id={errorId} className='core-input-label-error'>
-                      {typeof meta.error === 'string' ? <>{errorText || "Required field"}</> 
+                      {typeof fieldError === 'string' ? <>{errorText || "Required field"}</> 
                       : 'Invalid file selection'}
                   </p>
                   </> : null }       

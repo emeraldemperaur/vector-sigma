@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { TextField, Flex, Text, Tooltip } from '@radix-ui/themes';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
@@ -87,6 +87,11 @@ interface DatePickerProps {
    * className="teletraan-1-datepicker"
    */
     className?: string;
+    /**
+     * * Optional explicit Formik context. Useful when bypassing duplicate 
+     * context issues in monorepos or bundled npm packages.
+     */
+    formikContext?: FormikContextType<any>;
 }
 
 export const DatePicker = ({
@@ -98,12 +103,26 @@ export const DatePicker = ({
     placeholder = "Select date",
     isHinted, hintText, hintUrl, errorText,
     readOnly,
-    className
+    className,
+    formikContext
 }: DatePickerProps) => {
-    const { setFieldValue, setFieldTouched } = useFormikContext();
-    const [field, meta] = useField(alias);
+
+    const defaultFormikContext = useFormikContext<any>();
+    const activeContext = formikContext || defaultFormikContext;
+
+    if (!activeContext) {
+        console.error(`DatePicker '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+        return null;
+    }
+
+    const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+    const fieldValue = getIn(values, alias);
+    const fieldTouched = getIn(touched, alias);
+    const fieldError = getIn(errors, alias);
+
     const inputId = `${alias}FormInput` || crypto.randomUUID();
-    const hasError = Boolean(meta.touched && meta.error);
+    const hasError = Boolean(fieldTouched && fieldError);
     const containerRef = useRef<HTMLDivElement>(null);
     const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
     
@@ -188,10 +207,10 @@ export const DatePicker = ({
 
                 <ReactDatePicker
                     id={`${alias}DatePicker`}
-                    selected={(field.value && new Date(field.value)) || null}
+                    selected={(fieldValue && new Date(fieldValue)) || null}
                     onChange={(val: Date | null) => {
                         setFieldValue(alias, val);
-                        setFieldTouched(alias, true);
+                        setFieldTouched(alias, true, false);
                     }}
                     disabled={readOnly}
                     placeholderText={placeholder}
@@ -218,7 +237,7 @@ export const DatePicker = ({
                             </a>
                         </Tooltip>
                     )}
-                    {hasError && <Text size="1" color="red" style={{ display: 'block' }}>{errorText || meta.error}</Text>}
+                    {hasError && <Text size="1" color="red" style={{ display: 'block' }}>{errorText || fieldError}</Text>}
                 </div>
             </Flex>
         </Column>

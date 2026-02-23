@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, ReactNode } from 'react';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Box, Flex, Text, IconButton, Avatar, Tooltip } from '@radix-ui/themes';
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
@@ -105,6 +105,11 @@ export interface AvatarProps {
    * accept="image/*"
    */
   accept?: string;
+  /**
+   * * Optional explicit Formik context. Useful when bypassing duplicate 
+   * context issues in monorepos or bundled npm packages.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
 const getStyles = (inputtype: AvatarDesign, shape: AvatarShape, hasError: boolean) => {
@@ -154,24 +159,39 @@ export const AvatarInput = ({
   shape = 'circle',
   size = 120, newRow, isHinted, hintText, hintUrl, errorText,
   style, className,
-  accept = 'image/*', ...props
+  accept = 'image/*',
+  formikContext,
+  ...props
 }: AvatarProps) => {
-  const [field, meta, helpers] = useField(alias);
-  const { setTouched } = useFormikContext();
+
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`AvatarInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldValue = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const inputId = `${alias}FormInput` || crypto.randomUUID();
   const errorId = `${alias}-error`;
 
-  const hasError = meta.touched && meta.error;
+  const hasError = Boolean(fieldTouched && fieldError);
 
   useEffect(() => {
     let objectUrl: string | null = null;
-    if (field.value instanceof File) {
-        objectUrl = URL.createObjectURL(field.value);
+    if (fieldValue instanceof File) {
+        objectUrl = URL.createObjectURL(fieldValue);
         setPreviewUrl(objectUrl);
-    } else if (typeof field.value === 'string' && field.value) {
-        setPreviewUrl(field.value);
+    } else if (typeof fieldValue === 'string' && fieldValue) {
+        setPreviewUrl(fieldValue);
     } else {
         setPreviewUrl(null);
     }
@@ -181,20 +201,20 @@ export const AvatarInput = ({
         URL.revokeObjectURL(objectUrl);
         }
     };
-}, [field.value]);
+}, [fieldValue]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
     if (file) {
-      helpers.setValue(file);
+      setFieldValue(alias, file);
     }
-    setTouched({ [alias]: true });
+    setFieldTouched(alias, true, false);
     if (inputRef.current) inputRef.current.value = '';
   };
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
-    helpers.setValue(null);
+    setFieldValue(alias, null);
   };
 
   const containerStyles = getStyles(inputtype, shape, !!hasError);

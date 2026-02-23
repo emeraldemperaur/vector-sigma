@@ -1,9 +1,9 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { Popover, Flex, Text, Checkbox, ScrollArea, Box, Tooltip, Select } from '@radix-ui/themes';
+import { Popover, Flex, Text, Checkbox, ScrollArea, Box, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground, InputOption } from "utils/vinci";
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import '../../styles/main.scss';
 
 export type MultipleSelectDesign = 'multiselect' | 'multiselect-material' | 'multiselect-outline' | 'multiselect-neumorphic';
@@ -102,6 +102,11 @@ interface MultipleSelectProps {
    * style={{ color: "#000000" }}
    */
     style?: React.CSSProperties;
+    /**
+     * * Optional explicit Formik context. Useful when bypassing duplicate 
+     * context issues in monorepos or bundled npm packages.
+     */
+    formikContext?: FormikContextType<any>;
 }
 
 export const MultipleSelect = ({
@@ -109,13 +114,27 @@ export const MultipleSelect = ({
   alias, readOnly, width, inputLabel,
   placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
   style, inputOptions,
-  className, ...props
+  className, 
+  formikContext,
+  ...props
 }: MultipleSelectProps) => {
   
-  const { setFieldValue, setFieldTouched } = useFormikContext();
-  const [field, meta] = useField(alias);
-  const selectedValues = (Array.isArray(field.value) ? field.value : []) as string[];
-  const hasError = Boolean(meta.touched && meta.error);
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`MultipleSelect '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldValue = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+
+  const selectedValues = (Array.isArray(fieldValue) ? fieldValue : []) as string[];
+  const hasError = Boolean(fieldTouched && fieldError);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   const [isOpen, setIsOpen] = useState(false);
@@ -127,7 +146,7 @@ export const MultipleSelect = ({
       : [...selectedValues, value]; // Add Selected Values
     
     setFieldValue(alias, newValues);
-    setTimeout(() => setFieldTouched(alias, true), 0);
+    setTimeout(() => setFieldTouched(alias, true, false), 0);
   };
 
   const displayLabel = selectedValues.length > 0
@@ -209,7 +228,12 @@ export const MultipleSelect = ({
     <Column span={width} newLine={newRow}>
     <Flex direction="column" gap="2" style={{ width: '100%' }}>
       <input type="hidden" name={alias} value={JSON.stringify(selectedValues)}/>
-      <Popover.Root onOpenChange={setIsOpen}>
+      <Popover.Root onOpenChange={(open) => {
+          setIsOpen(open);
+          if(!open) {
+              setFieldTouched(alias, true, false);
+          }
+      }}>
         <Popover.Trigger>
           <button
             id={`${alias}FormInput`}
@@ -218,6 +242,7 @@ export const MultipleSelect = ({
             className={className}
             style={{ ...activeTrigger, ...style }}
             aria-describedby={`${alias}InputLabel`}
+            disabled={readOnly}
           >
             <span style={{ 
               overflow: 'hidden', 
@@ -253,10 +278,12 @@ export const MultipleSelect = ({
                       key={inputoption.optionid} 
                       align="center" 
                       gap="2"
-                      onClick={() => handleToggle(inputoption.optionvalue)}
+                      onClick={() => {
+                          if(!readOnly) handleToggle(inputoption.optionvalue);
+                      }}
                       style={{ 
                         padding: '8px', 
-                        cursor: 'pointer', 
+                        cursor: readOnly ? 'default' : 'pointer', 
                         borderRadius: '4px',
                         backgroundColor: isSelected ? 'var(--accent-a3)' : 'transparent',
                         transition: 'background-color 0.1s'
@@ -293,7 +320,7 @@ export const MultipleSelect = ({
                        {hasError ?
                               <>
                               <p id={errorId} className='core-input-label-error'>
-                                  {errorText || `Required field`}
+                                  {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
                               </p>
                               </> : null } 
        </div>

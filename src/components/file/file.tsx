@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Flex, Text, IconButton, Box, AspectRatio, Badge, Tooltip } from '@radix-ui/themes';
 import { ACCEPTED_FORMATS, adjustColor, formatBytes, getNearestParentBackground } from 'utils/vinci';
 import { Icon } from 'components/icons/icons';
@@ -91,6 +91,11 @@ export interface FileInputProps {
    * style={{ color: "#000000" }}
    */
   style?: React.CSSProperties;
+  /**
+   * * Optional explicit Formik context. Useful when bypassing duplicate 
+   * context issues in monorepos or bundled npm packages.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
 const getFileIcon = (type: string, name: string) => {
@@ -108,14 +113,27 @@ export const File = ({
   newRow, isHinted, hintText, hintUrl, errorText,
   preview = false,
   className,
-  style, ...props
+  style, 
+  formikContext,
+  ...props
 }: FileInputProps) => {
 
-  const { setFieldValue, setFieldTouched } = useFormikContext();
-  const [field, meta] = useField(alias);
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`File '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldValue = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
   
-  const selectedFile: File | null = field.value;
-  const hasError = Boolean(meta.touched && meta.error);
+  const selectedFile: File | null = fieldValue;
+  const hasError = Boolean(fieldTouched && fieldError);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -127,7 +145,7 @@ export const File = ({
     const file = event.currentTarget.files?.[0];
     if (file) {
       setFieldValue(alias, file);
-      setFieldTouched(alias, true);
+      setFieldTouched(alias, true, false);
     }
   };
 
@@ -232,7 +250,7 @@ export const File = ({
       >
         
         {!selectedFile ? (
-          // --- EMPTY STATE ---
+          // --- EMPTY STATE RENDER ---
           <Flex align="center" gap="3" style={{ width: '100%', color: 'var(--gray-10)' }}>
             <Box style={{ padding: 8, borderRadius: '50%', backgroundColor: 'var(--gray-3)' }}>
               <Icon name='upload' width="18" height="18" />
@@ -243,7 +261,7 @@ export const File = ({
             </Flex>
           </Flex>
         ) : (
-          // --- SELECTED STATE ---
+          // --- SELECTED STATE RENDER ---
           <Flex align="center" gap="4" style={{ width: '100%' }}>
             
             {preview && previewUrl ? (
@@ -298,7 +316,7 @@ export const File = ({
                 {hasError ?
                   <>
                   <p id={errorId} className='core-input-label-error'>
-                      {errorText || "Required field"}
+                      {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
                   </p>
                   </> : null } 
         </div>
