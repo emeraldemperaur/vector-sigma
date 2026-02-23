@@ -1,5 +1,12 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.29
+
+### Patch Changes
+
+- a5ce6d9: xForm Component Update :: Teletraan1 Codex Props eventHandler(s) update
+- 8a9bc98: xForm Component Update :: Teletraan1 render matrix refactor, Input Component formikContext prop
+
 ## 1.4.28
 
 ### Patch Changes
