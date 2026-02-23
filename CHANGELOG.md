@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.30
+
+### Patch Changes
+
+- 4bddb30: xForm Component Update :: Teletraan1 xForm Type definition recursion fix
+
 ## 1.4.29
 
 ### Patch Changes
