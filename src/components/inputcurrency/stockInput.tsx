@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Flex, Text, Badge, Tooltip } from '@radix-ui/themes';
 import { IMaskInput } from 'react-imask';
 import { Icon } from "components/icons/icons";
@@ -92,6 +92,11 @@ type StockInputProps = {
    * className="teletraan-1-stockinput"
    */
     className?: string;
+    /**
+     * * Optional explicit Formik context. Useful when bypassing duplicate 
+     * context issues in monorepos or bundled npm packages.
+     */
+    formikContext?: FormikContextType<any>;
 };
 
 export const StockInput = ({
@@ -102,12 +107,26 @@ export const StockInput = ({
     placeholder, newRow, isHinted, hintText, hintUrl, errorText,
     readOnly=false,
     inputvariant = 'input-outline',
-    className,...props
+    className,
+    formikContext,
+    ...props
 }: StockInputProps) => {
 
-    const { setFieldValue, setFieldTouched } = useFormikContext();
-    const [priceField, meta] = useField(alias);
-    const hasError = Boolean(meta.touched && meta.error);
+    const defaultFormikContext = useFormikContext<any>();
+    const activeContext = formikContext || defaultFormikContext;
+
+    if (!activeContext) {
+        console.error(`StockInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+        return null;
+    }
+
+    const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+    const fieldValue = getIn(values, alias);
+    const fieldTouched = getIn(touched, alias);
+    const fieldError = getIn(errors, alias);
+
+    const hasError = Boolean(fieldTouched && fieldError);
     const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
     const isOutline = inputvariant === 'input-outline';
     const errorId = `${alias}-error`;
@@ -167,10 +186,10 @@ export const StockInput = ({
                             normalizeZeros={true}
                             radix="."
                             mapToRadix={['.']}
-                            value={priceField.value !== undefined && priceField.value !== null ? String(priceField.value) : ''}
+                            value={fieldValue !== undefined && fieldValue !== null ? String(fieldValue) : ''}
                             unmask={true}
                             onAccept={(val) => setFieldValue(alias, val)}
-                            onBlur={() => setFieldTouched(alias, true)}
+                            onBlur={() => setFieldTouched(alias, true, false)}
                             placeholder={placeholder || "0.00"}
                             style={{
                                 border: 'none',
@@ -191,12 +210,14 @@ export const StockInput = ({
                 </Flex>
                 
                 <div>
-                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
-                        {inputLabel}
-                    </Text>
+                    {inputLabel && (
+                        <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
+                            {inputLabel}
+                        </Text>
+                    )}
                     &nbsp;
                     {isHinted && (
-                        <Tooltip content={hintText || "No hint available"}>
+                        <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
@@ -204,7 +225,7 @@ export const StockInput = ({
                     )} 
                     {hasError && (
                         <p id={errorId} className='core-input-label-error'>
-                            {errorText || `Required field`}
+                            {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
                         </p>
                     )} 
                 </div>

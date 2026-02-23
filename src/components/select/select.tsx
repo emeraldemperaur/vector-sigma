@@ -3,11 +3,10 @@ import { Select, Flex, Text, Tooltip, Separator } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground, InputOption } from "utils/vinci";
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import '../../styles/main.scss';
 
 export type OptionSelectDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outline' | 'dropdown-neumorphic';
-
 
 export interface SelectProps {
   /**
@@ -109,6 +108,11 @@ export interface SelectProps {
    * style={{ color: "#000000" }}
    */
   style?: React.CSSProperties;
+  /**
+   * * Optional explicit Formik context. Useful when bypassing duplicate 
+   * context issues in monorepos or bundled npm packages.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
 export const OptionSelect = ({
@@ -125,14 +129,27 @@ export const OptionSelect = ({
   hintText,
   hintUrl,
   errorText,
+  formikContext,
   ...props
 }: SelectProps) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   
-  const { setFieldValue, setFieldTouched } = useFormikContext();
-  const [field, meta] = useField(alias);
-  const hasError = Boolean(meta.touched && meta.error);
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`OptionSelect '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldValue = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+
+  const hasError = Boolean(fieldTouched && fieldError);
   const errorId = `${alias}-error`;
 
   useEffect(() => {
@@ -231,18 +248,18 @@ export const OptionSelect = ({
         <Select.Root
           name={alias}
           disabled={readOnly}
-          value={field.value || ""} 
+          value={fieldValue || ""} 
           onValueChange={(val) => {
             const finalVal = val === "__RESET__" ? "" : val;
             
             setFieldValue(alias, finalVal);
-            setTimeout(() => setFieldTouched(alias, true), 0);
+            setTimeout(() => setFieldTouched(alias, true, false), 0);
             
             if (props.onValueChange) props.onValueChange(finalVal);
           }}
           onOpenChange={(isOpen) => {
             if (!isOpen) {
-               setFieldTouched(alias, true);
+               setFieldTouched(alias, true, false);
             }
           }}
         >
@@ -297,7 +314,7 @@ export const OptionSelect = ({
 
          <div>
               <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>{inputLabel}</Text>
-              &nbsp;    
+              &nbsp;   
               {isHinted ?
                 <>
                 <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
@@ -306,12 +323,13 @@ export const OptionSelect = ({
                     </a> 
                 </Tooltip>
                 </> : null} 
-              {hasError ?
+              {hasError && (
                 <>
                 <p id={errorId} className='core-input-label-error'>
-                    {errorText || meta.error || "Required field"}
+                    {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
                 </p>
-                </> : null } 
+                </> 
+              )} 
         </div>
       </Flex>
     </Column>

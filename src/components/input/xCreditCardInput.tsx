@@ -8,13 +8,12 @@ import { FaCcDiscover } from '@react-icons/all-files/fa/FaCcDiscover';
 import { FaCcDinersClub } from '@react-icons/all-files/fa/FaCcDinersClub';
 import { FaCcJcb } from '@react-icons/all-files/fa/FaCcJcb';
 import { FaCreditCard } from '@react-icons/all-files/fa/FaCreditCard';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import cardValidator from "card-validator";
 import { IMaskInput } from 'react-imask';
 import { Icon } from "components/icons/icons";
 import { xInputFieldProps } from "./input";
 import '../../styles/main.scss';
-
 
 export const CreditCardInput = ({
     alias,
@@ -23,13 +22,27 @@ export const CreditCardInput = ({
     placeholder, newRow, isHinted, hintText, hintUrl, errorText,
     readOnly=false,
     inputvariant = 'input-outline',
-    className,...props
+    className,
+    formikContext,
+    ...props
 }: xInputFieldProps) => {
 
-    const { setFieldValue, setFieldTouched } = useFormikContext();
-    const [field, meta] = useField(alias);
-    const hasError = Boolean(meta.touched && meta.error);
-    const cardInfo = cardValidator.number(field.value);
+    const defaultFormikContext = useFormikContext<any>();
+    const activeContext = formikContext || defaultFormikContext;
+
+    if (!activeContext) {
+        console.error(`CreditCardInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+        return null;
+    }
+
+    const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+    const fieldValue = getIn(values, alias);
+    const fieldTouched = getIn(touched, alias);
+    const fieldError = getIn(errors, alias);
+
+    const hasError = Boolean(fieldTouched && fieldError);
+    const cardInfo = cardValidator.number(fieldValue);
     const cardType = cardInfo.card?.type; 
     const maskPattern = cardType === 'american-express' ? '0000 000000 00000' : '0000 0000 0000 0000';
     const errorId = `${alias}-error`;
@@ -69,10 +82,10 @@ export const CreditCardInput = ({
                         aria-describedby={`${alias}InputLabel`}
                         mask={maskPattern}
                         readOnly={readOnly}
-                        value={field.value}
+                        value={fieldValue || ''}
                         unmask={true} 
                         onAccept={(val: string) => setFieldValue(alias, val)}
-                        onBlur={() => setFieldTouched(alias, true)}
+                        onBlur={() => setFieldTouched(alias, true, false)}
                         placeholder={placeholder || '0000 0000 0000 0000'} 
                         inputMode="numeric" 
                         autoComplete="cc-number"
@@ -95,12 +108,14 @@ export const CreditCardInput = ({
                 </Flex>
 
                 <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
-                        {inputLabel}
-                    </Text>
+                    {inputLabel && (
+                        <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
+                            {inputLabel}
+                        </Text>
+                    )}
                     &nbsp;
                     {isHinted && (
-                        <Tooltip content={hintText || "No hint available"}>
+                        <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
@@ -108,7 +123,7 @@ export const CreditCardInput = ({
                     )} 
                      {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {errorText || `Required field`}
+                            {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
                         </Text>
                     )} 
                 </div>

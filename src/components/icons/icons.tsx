@@ -25,7 +25,13 @@ import { SunIcon, MoonIcon, GearIcon, PersonIcon, QuestionMarkCircledIcon,
     EyeNoneIcon,
     ChevronUpIcon,
     ChevronLeftIcon,
-    ChevronRightIcon} from '@radix-ui/react-icons';
+    ChevronRightIcon,
+    FaceIcon,
+    FontFamilyIcon,
+    VideoIcon,
+    ShuffleIcon,
+    LoopIcon,
+    MixIcon} from '@radix-ui/react-icons';
 import { ChevronDownIcon } from "@radix-ui/themes";
 
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -137,6 +143,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   zoomout: ZoomOutIcon,
   mixerhorizontal: MixerHorizontalIcon,
   mixervertical: MixerVerticalIcon,
+  mix: MixIcon,
   archive: ArchiveIcon,
   crumpledpaper: CrumpledPaperIcon,
   stopwatch: StopwatchIcon,
@@ -148,7 +155,12 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   mobile: MobileIcon,
   enterfullscreen: EnterFullScreenIcon,
   exitfullscreen: ExitFullScreenIcon,
-  copy: CopyIcon
+  copy: CopyIcon,
+  face: FaceIcon,
+  fontfamily: FontFamilyIcon,
+  video: VideoIcon,
+  shuffle: ShuffleIcon,
+  loop: LoopIcon
 };
 
 interface DynamicIconProps extends ComponentProps<typeof SunIcon> {

@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { useField, useFormikContext } from 'formik';
-import { Flex, Text, Slider, Tooltip } from '@radix-ui/themes';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
+import { Flex, Text, Slider as RadixSlider, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
@@ -103,6 +103,11 @@ interface SliderProps {
      * style={{ color: "#000000" }}
      */
     style?: React.CSSProperties;
+    /**
+     * * Optional explicit Formik context. Useful when bypassing duplicate 
+     * context issues in monorepos or bundled npm packages.
+     */
+    formikContext?: FormikContextType<any>;
 }
 
 
@@ -114,13 +119,27 @@ export const SliderInput = ({
   maxvalue = 100,
   stepvalue = 1,
   className,
-  style, ...props
+  style, 
+  formikContext,
+  ...props
 }: SliderProps) => {
   
-  const { setFieldValue, setFieldTouched } = useFormikContext();
-  const [field, meta] = useField(alias);
-  const fieldValue = Array.isArray(field.value) ? field.value : [field.value || minvalue];
-  const hasError = Boolean(meta.touched && meta.error);
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`SliderInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldVal = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+
+  const fieldValue = Array.isArray(fieldVal) ? fieldVal : [fieldVal || minvalue];
+  const hasError = Boolean(fieldTouched && fieldError);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   const errorId = `${alias}-error`;
@@ -211,7 +230,7 @@ export const SliderInput = ({
         }
       `}} />
 
-      <Slider 
+      <RadixSlider 
         name={alias}
         id={`${alias}FormInput`} 
         disabled={readOnly}
@@ -224,7 +243,7 @@ export const SliderInput = ({
           setFieldValue(alias, val[0]);
         }}
         onValueCommit={() => {
-          setFieldTouched(alias, true);
+          setFieldTouched(alias, true, false);
         }}
         
         className={ inputtype === 'slider-neumorphic' ? 'neu-slider' : inputtype === 'slider-outline' ? 'outline-slider' : ''}
@@ -245,7 +264,7 @@ export const SliderInput = ({
                  {hasError ?
                         <>
                         <p id={errorId} className='core-input-label-error'>
-                            {errorText || `Required field`}
+                            {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
                         </p>
                         </> : null } 
       </div>

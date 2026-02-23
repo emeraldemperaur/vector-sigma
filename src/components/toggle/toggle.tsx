@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import * as TogglePrimitive from '@radix-ui/react-toggle';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik'; // Removed useField, added getIn
 import { Button, Text, Tooltip } from '@radix-ui/themes'; 
 import type { ButtonProps } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground } from "utils/vinci";
@@ -11,7 +11,7 @@ import '../../styles/main.scss';
 export type ToggleDesign = 'toggle' | 'toggle-material' | 'toggle-outline' | 'toggle-neumorphic';
 
 interface ToggleProps extends ButtonProps {
-  /**
+   /**
      * * The required unique identifier for the Toggle input field in useFormikContext(). 
      * Alias referenced as `name` attribute and Formik state key.
      * * @example
@@ -19,70 +19,76 @@ interface ToggleProps extends ButtonProps {
      */
   alias: string;
   /**
-     * * The design variation of the Toggle input field. 
-     * Default: 'slider-outline' 
-     * Variants: 'slider', 'slider-outline', 'slider-material', 'slider-neumorphic'.
-     * * @example
-     * inputtype="slider-neumorphic"
-     */
+    * * The design variation of the Toggle input field. 
+    * Default: 'slider-outline' 
+    * Variants: 'slider', 'slider-outline', 'slider-material', 'slider-neumorphic'.
+    * * @example
+    * inputtype="slider-neumorphic"
+    */
   inputtype?: ToggleDesign & {};
   /**
-     * * The optional input label or description for the Toggle input field. 
-     * * @example
-     * inputLabel="Enable VΣ AI Insights"
-     */
+    * * The optional input label or description for the Toggle input field. 
+    * * @example
+    * inputLabel="Enable VΣ AI Insights"
+    */
   inputLabel?: string;
   /**
-     * * The required viewport column width for the Toggle input field.
-     * i.e. 1 - 12
-     * * @example
-     * width={5}
-     */ 
+    * * The required viewport column width for the Toggle input field.
+    * i.e. 1 - 12
+    * * @example
+    * width={5}
+    */ 
   width: number;
   /**
-     * * Option to render Toggle input field on new row.
-     * * @example
-     * newRow
-     */
+    * * Option to render Toggle input field on new row.
+    * * @example
+    * newRow
+    */
   newRow?: boolean;
   /**
-     * * Option to disable edits for Toggle input field.
-     * * @example
-     * readOnly
-     */
+    * * Option to disable edits for Toggle input field.
+    * * @example
+    * readOnly
+    */
   readOnly?: boolean;
   /**
-       * * Option to enable a hint for Toggle input field.
-       * * @example
-       * isHinted
-       */
+    * * Option to enable a hint for Toggle input field.
+    * * @example
+    * isHinted
+    */
+
   isHinted?: boolean;
   /**
-     * * Option to specify hint text for Toggle input field.
-     * * @example
-     * hintText="This is a hint for a VΣ Toggle input"
-     */
+    * * Option to specify hint text for Toggle input field.
+    * * @example
+    * hintText="This is a hint for a VΣ Toggle input"
+    */
   hintText?: string;
   /**
-     * * Option to specify a hint url reference or resource for Toggle input field.
-     * * @example
-     * hintUrl="https://www.mekaegwim.ca"
-     */ 
+    * * Option to specify a hint url reference or resource for Toggle input field.
+    * * @example
+    * hintUrl="https://www.mekaegwim.ca"
+    */ 
   hintUrl?: string;
   /**
-     * * Option to specify an Icon name for Toggle input field.
-     * e.g. `sun`, `moon`
-     * Defaults to `stack` icon if `name` not provided
-     * * @example
-     * icon="star"
-     */ 
+    * * Option to specify an Icon name for Toggle input field.
+    * e.g. `sun`, `moon`
+    * Defaults to `stack` icon if `name` not provided
+    * * @example
+    * icon="star"
+    */ 
   icon?: string;
   /**
-     * * Option to specify the isRequired error text for the Toggle input field.
-     * * @example
-     * errorText="A toggled selection is required"
-     */
+    * * Option to specify the isRequired error text for the Toggle input field.
+    * * @example
+    * errorText="A toggled selection is required"
+    */
   errorText?: ReactNode | string | null;
+  /**
+   * * Optional explicit Formik context. Useful when bypassing duplicate 
+   * context issues in monorepos or bundled npm packages.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
 export const Toggle = ({
@@ -96,14 +102,28 @@ export const Toggle = ({
   newRow,
   isHinted,
   hintText,
-  hintUrl, errorText,
-  icon = 'stack',
+  hintUrl, 
+  errorText,
+  icon = 'layers',
+  formikContext,
   ...props
 }: ToggleProps) => {
   
-  const { setFieldValue, setFieldTouched } = useFormikContext();
-  const [field, meta] = useField(alias);
-  const hasError = Boolean(meta.touched && meta.error);
+  const defaultFormikContext = useFormikContext<any>();
+  
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`xForm Toggle '${alias}' must be used within a Formik context provider or receive a formikContext prop.`);
+      return null; 
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+  const fieldValue = getIn(values, alias) || false;
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+  const hasError = Boolean(fieldTouched && fieldError);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({
       '--neu-bg': '#ecf0f3',
@@ -141,11 +161,11 @@ export const Toggle = ({
   const handleToggle = (val: boolean) => {
     if (!readOnly) {
         setFieldValue(alias, val);
-        setFieldTouched(alias, true);
+        setFieldTouched(alias, true, false);
     }
   };
 
-  const iconColor = field.value && !readOnly ? 'var(--accent-9)' : 'var(--gray-8)';
+  const iconColor = fieldValue && !readOnly ? 'var(--accent-9)' : 'var(--gray-8)';
 
   return (
     <Column span={width} newLine={newRow}>
@@ -156,7 +176,7 @@ export const Toggle = ({
                 <div 
                     className="neu-toggle-wrapper"
                     style={{ ...neuVars, opacity: readOnly ? 0.6 : 1, pointerEvents: readOnly ? 'none' : 'auto' }}
-                    onClick={() => handleToggle(!field.value)}
+                    onClick={() => handleToggle(!fieldValue)}
                 >
                     <style dangerouslySetInnerHTML={{__html: `
                         .neu-toggle-wrapper {
@@ -200,7 +220,7 @@ export const Toggle = ({
                         id={`${alias}FormInput`}
                         className="neu-toggle-state" 
                         type="checkbox" 
-                        checked={!!field.value} 
+                        checked={!!fieldValue} 
                         readOnly 
                     />
                     <div className="neu-indicator"></div>
@@ -215,12 +235,12 @@ export const Toggle = ({
                         opacity: readOnly ? 0.5 : 1, 
                         cursor: 'pointer'
                     }}
-                    onClick={() => handleToggle(!field.value)}
+                    onClick={() => handleToggle(!fieldValue)}
                 />
             </div>
         ) : (
             <TogglePrimitive.Root
-                pressed={field.value}
+                pressed={fieldValue}
                 onPressedChange={handleToggle}
                 name={alias}
                 disabled={readOnly}
@@ -282,7 +302,7 @@ export const Toggle = ({
 
             {hasError && (
                 <Text size="1" color="red" style={{ display: 'block', marginTop: 2 }}>
-                    {errorText || `Required field`}
+                    {errorText || fieldError || `Required field`}
                 </Text>
             )}
         </div>

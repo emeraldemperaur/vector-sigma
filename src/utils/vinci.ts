@@ -146,5 +146,5 @@ export const InputOptionsPlaceholder = {
   tag: "",
   score: 0,
   note: "",
-  optionurl: ""
+  optionUrl: ""
 }

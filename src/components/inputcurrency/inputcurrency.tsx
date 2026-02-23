@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect } from "react";
 import { CURRENCIES, SupportedCurrency, CurrencyOption } from '../../utils/currencyconfig'; 
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Flex, Text, Select, Tooltip } from '@radix-ui/themes';
 import { IMaskInput } from 'react-imask';
 import { FlagIcon } from "components/icons/flagicon";
@@ -112,6 +112,11 @@ type CurrencyInputProps = {
    * className="teletraan-1-currencyinput"
    */
     className?: string;
+    /**
+     * * Optional explicit Formik context. Useful when bypassing duplicate 
+     * context issues in monorepos or bundled npm packages.
+     */
+    formikContext?: FormikContextType<any>;
 };
 
 export const CurrencyInput = ({
@@ -124,25 +129,37 @@ export const CurrencyInput = ({
     readOnly = false, 
     inputvariant = 'input-outline',
     className, 
+    formikContext,
     ...props
 }: CurrencyInputProps) => {
 
-    const { setFieldValue, setFieldTouched } = useFormikContext(); 
-    const [amountField, amountMeta] = useField(alias);
+    const defaultFormikContext = useFormikContext<any>();
+    const activeContext = formikContext || defaultFormikContext;
+
+    if (!activeContext) {
+        console.error(`CurrencyInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+        return null;
+    }
+
+    const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
     const currencyAlias = `${alias}Currency`; 
-    const [currencyField, , currencyHelpers] = useField(currencyAlias);
+    const amountFieldValue = getIn(values, alias);
+    const amountFieldTouched = getIn(touched, alias);
+    const amountFieldError = getIn(errors, alias);
+    const currencyFieldValue = getIn(values, currencyAlias);
 
     useEffect(() => {
         if (inputtype !== "currency" && CURRENCIES[inputtype as SupportedCurrency]) {
-             currencyHelpers.setValue(inputtype);
+             setFieldValue(currencyAlias, inputtype);
         } 
-        else if (!currencyField.value) {
-             currencyHelpers.setValue(defaultvalue);
+        else if (!currencyFieldValue) {
+             setFieldValue(currencyAlias, defaultvalue);
         }
-    }, [inputtype, defaultvalue]);
+    }, [inputtype, defaultvalue, currencyFieldValue, currencyAlias, setFieldValue]);
 
-    const hasError = Boolean(amountMeta.touched && amountMeta.error);
-    const currentCode = (currencyField.value as SupportedCurrency) || "USD";
+    const hasError = Boolean(amountFieldTouched && amountFieldError);
+    const currentCode = (currencyFieldValue as SupportedCurrency) || "USD";
     const activeCurrency = CURRENCIES[currentCode] || CURRENCIES.USD;
 
     const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
@@ -218,10 +235,10 @@ export const CurrencyInput = ({
                             radix: ".",
                             mapToRadix: ['.'],
                         } as any)}
-                        value={amountField.value !== undefined && amountField.value !== null ? String(amountField.value) : ''}
+                        value={amountFieldValue !== undefined && amountFieldValue !== null ? String(amountFieldValue) : ''}
                         unmask={true}
                         onAccept={(val: string) => setFieldValue(alias, val)}
-                        onBlur={() => setFieldTouched(alias, true)} 
+                        onBlur={() => setFieldTouched(alias, true, false)} 
                         readOnly={readOnly}
                         placeholder={placeholder || '0.00'}
                         style={{
@@ -248,7 +265,7 @@ export const CurrencyInput = ({
                     </Text>
                     &nbsp;
                     {isHinted && (
-                        <Tooltip content={hintText || "No hint available"}>
+                        <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
@@ -256,7 +273,7 @@ export const CurrencyInput = ({
                     )} 
                     {hasError && (
                         <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                            {errorText || amountMeta.error || `Required field`}
+                            {errorText || (typeof amountFieldError === 'string' ? amountFieldError : `Required field`)}
                         </Text>
                     )} 
                 </div>

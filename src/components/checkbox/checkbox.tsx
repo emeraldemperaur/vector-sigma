@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Flex, Text, Checkbox as RadixCheckbox, Grid, Tooltip } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground, InputOption } from 'utils/vinci';
 import { Icon } from 'components/icons/icons';
@@ -109,6 +109,11 @@ export interface CheckboxGroup {
    * style={{ color: "#000000" }}
    */
   style?: React.CSSProperties;
+  /**
+   * * Optional explicit Formik context. Useful when bypassing duplicate 
+   * context issues in monorepos or bundled npm packages.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
 export const CheckboxGroupInput = ({
@@ -119,13 +124,28 @@ export const CheckboxGroupInput = ({
   newRow, isHinted, hintText, hintUrl, errorText,
   direction = 'row',
   columns, 
-  className, ...props
+  className, 
+  formikContext,
+  ...props
 }: CheckboxGroup) => {
   
-  const { setFieldValue, setFieldTouched } = useFormikContext();
-  const [field, meta] = useField(alias);
-  const currentValues = (Array.isArray(field.value) ? field.value : []) as string[];
-  const hasError = Boolean(meta.touched && meta.error);
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
+
+  if (!activeContext) {
+      console.error(`CheckboxGroupInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldValue = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+
+  const currentValues = (Array.isArray(fieldValue) ? fieldValue : []) as string[];
+  const hasError = Boolean(fieldTouched && fieldError);
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   const inputId = `${alias}FormInput` || crypto.randomUUID();

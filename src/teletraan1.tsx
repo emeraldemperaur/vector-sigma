@@ -22,7 +22,7 @@ import { SliderInput } from 'components/slider/slider';
 import { RangeSlider } from 'components/slider/range';
 import { Toggle } from 'components/toggle/toggle';
 import { ConditionalTrigger } from 'components/conditional/conditional';
-import { xForm } from 'utils/architect';
+import { xForm, xFormQuery, xFormSection } from 'utils/architect';
 import { Row } from 'layouts/row/row';
 import { Accordion, AccordionItem } from 'layouts/accordion/accordion';
 import { Codex, CodexItem } from 'layouts/codex/codex';
@@ -40,17 +40,63 @@ import {
 export type teletraan1Display = 'accordion' | 'codice' | 'codex' | 'dual';
 
 export interface Teletraan1Props {
+    /**
+     * * The required xFormModel {} schema object that will be rendered as an xForm. 
+     * Renders all form sections and queries with the input and validation specified.
+     * * @example
+     * xFormModel={xFormJSONPrototype}
+     */
     xFormModel: xForm;
+    /**
+     * * Option to render xForm as readonly (inputs disabled). 
+     * * @example
+     * readOnlyMode
+     */
     readOnlyMode?: boolean;
+    /**
+     * * Option to specify the xForm display mode. 
+     * Default: 'codice'
+     * * @example
+     * displayMode="codex"
+     */
     displayMode?: teletraan1Display;
+    /**
+     * * Option to specify the xForm primary color. 
+     * Default: '#000000'
+     * * @example
+     * brandColor="#800020"
+     */
     brandColor?: string;
+     /**
+     * * Optional callback for Codex display controls triggered before navigating to a previous step.
+     * Useful for triggering logic on clicking to previous step.
+     * * @example
+     * onPrev={console.log("Teletraan-1 Codex :: onPrev()")}
+     */
+    onPrev?: () => void;
+    /**
+     * * Optional callback for Codex display controls triggered before navigating to a next step.
+     * Useful for handling form validation.
+     * * @example
+     * onNext={console.log("Teletraan-1 Codex :: onNext()")}
+     */
+    onNext?: () => void;
+    /**
+     * * Optional callback for Codex display control triggered when the Finish button is clicked.
+     * Useful for handling application logic on finish/submit step.
+     * * @example
+     * onFinish={console.log("Teletraan-1 Codex :: onFinish()")}
+     */
+    onFinish?: () => void;
+
 }
 
 export const Teletraan1 = ({ 
     xFormModel, 
     readOnlyMode = false, 
     displayMode = 'codice', 
-    brandColor = "#000000" 
+    brandColor = "#000000",
+    onPrev, onNext, onFinish
 }: Teletraan1Props) => {
 
     const [dualToggled, setDualToggled] = useState(false);
@@ -62,8 +108,8 @@ export const Teletraan1 = ({
 
     const inputAlphaTrion = (
         inputAlias: string, inputType: string, inputWidth: number, inputLabel: string, 
-        inputMinValue: number | string, inputMaxValue: number | string, defaultValue: any, inputOptions: InputOption[],
-        stepValue?: number | string, inputHeight?: number | string, toggledInput?: React.ReactNode,
+        inputMinValue: number | string, inputMaxValue: number | string, defaultValue: any, inputOptions?: InputOption[],
+        stepValue?: number | string, inputHeight?: number | string, toggledInput?: React.ReactNode, triggerValue?: any,
         newRow?: boolean, inputPlaceholder?: string, readOnly?: boolean, isHinted?: boolean, 
         hintText?: string, hintUrl?: string, errorText?: string, inputUID?: string
     ) => {
@@ -80,7 +126,7 @@ export const Teletraan1 = ({
             case buttonInputType.includes(normalizedType):
                 return <ButtonInput alias={inputAlias} width={inputWidth} readOnly={readOnly} newRow={newRow} key={inputUID}>{defaultValue}</ButtonInput>
             case checkboxInputType.includes(normalizedType):
-                return <CheckboxGroupInput alias={inputAlias} width={inputWidth} inputLabel={inputLabel} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <CheckboxGroupInput alias={inputAlias} width={inputWidth} inputLabel={inputLabel} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
             case conditionalInputType.includes(normalizedType):
                 return <ConditionalTrigger alias={inputAlias} width={inputWidth} inputLabel={inputLabel} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} triggerValue={defaultValue} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} children={toggledInput}/>
             case datePickerInputType.includes(normalizedType):
@@ -90,7 +136,7 @@ export const Teletraan1 = ({
             case dateTimePickerInputType.includes(normalizedType):
                 return <DateRangePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
             case dropdownInputType.includes(normalizedType):
-                return <Dropdown alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} />
+                return <Dropdown alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} />
             case fileInputType.includes(normalizedType):
                 return <File alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} preview/>
             case fileMultipleInputType.includes(normalizedType):
@@ -110,11 +156,11 @@ export const Teletraan1 = ({
             case stockInputType.includes(normalizedType):
                 return <StockInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} defaultvalue={defaultValue} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
             case radioInputType.includes(normalizedType):
-                return <RadioGroupInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <RadioGroupInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
             case selectInputType.includes(normalizedType):
-                return <OptionSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <OptionSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
             case selectMultipleInputType.includes(normalizedType):
-                return <MultipleSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <MultipleSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
             case sliderInputType.includes(normalizedType):
                 return <SliderInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
             case rangeSliderInputType.includes(normalizedType):
@@ -126,25 +172,26 @@ export const Teletraan1 = ({
         }
     };
 
-    const renderQueries = (queries: any[]) => {
+    const renderQueries = (queries: xFormQuery[]) => {
         if (!queries) return null;
-        return queries.map((xFormelement) => (
+        return queries.map((xFormelement: xFormQuery) => (
             <React.Fragment key={xFormelement.queryId}>
                 {inputAlphaTrion(
-                    xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth,
-                    xFormelement.inputLabel, Number(xFormelement.minValue), Number(xFormelement.maxValue), xFormelement.defaultValue,
-                    [InputOptionsPlaceholder], xFormelement.stepValue, xFormelement.inputHeight,
+                    xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth, xFormelement.inputLabel,
+                    String(xFormelement.minValue), String(xFormelement.maxValue), xFormelement.defaultValue, xFormelement.inputOptions, 
+                    xFormelement.stepValue, xFormelement.inputHeight, 
+                    // Conditional ToggledInput (React Node) recursive handling
                     xFormelement.toggledInput ? inputAlphaTrion(
-                        xFormelement.toggledInput.inputAlias, xFormelement.toggledInput.inputType, xFormelement.toggledInput.inputWidth,
-                        xFormelement.toggledInput.inputLabel, Number(xFormelement.toggledInput.minValue), Number(xFormelement.toggledInput.maxValue), xFormelement.toggledInput.defaultValue,
-                        [InputOptionsPlaceholder], xFormelement.toggledInput.stepValue, xFormelement.toggledInput.inputHeight, null,  
-                        xFormelement.toggledInput.newRow, xFormelement.toggledInput.inputPlaceholder, 
-                        readOnlyMode, xFormelement.toggledInput.isHinted, xFormelement.toggledInput.hintText || "", xFormelement.toggledInput.hintUrl || "",
-                        xFormelement.toggledInput.errorText, String(xFormelement.toggledInput.queryId) || crypto.randomUUID()
-                    ) : null,
-                    xFormelement.newRow, xFormelement.inputPlaceholder, readOnlyMode, xFormelement.isHinted, xFormelement.hintText || "", xFormelement.hintUrl || "",
-                    xFormelement.errorText, String(xFormelement.queryId) || crypto.randomUUID()
-                )}
+                    xFormelement.toggledInput.inputAlias, xFormelement.toggledInput.inputType, xFormelement.toggledInput.inputWidth, 
+                    xFormelement.toggledInput.inputLabel, String(xFormelement.toggledInput.minValue), String(xFormelement.toggledInput.maxValue), 
+                    xFormelement.toggledInput.defaultValue, xFormelement.toggledInput.inputOptions, xFormelement.toggledInput.stepValue, xFormelement.toggledInput.inputHeight, null, 
+                    null, xFormelement.toggledInput.newRow, 
+                    xFormelement.toggledInput.inputPlaceholder, readOnlyMode, xFormelement.toggledInput.isHinted, xFormelement.toggledInput.hintText || "", 
+                    xFormelement.toggledInput.hintUrl || "", xFormelement.toggledInput.errorText, String(xFormelement.toggledInput.queryId) || crypto.randomUUID()) : null,
+
+                    xFormelement.triggerValue, xFormelement.newRow, 
+                    xFormelement.inputPlaceholder, readOnlyMode, xFormelement.isHinted, xFormelement.hintText || "", 
+                    xFormelement.hintUrl || "", xFormelement.errorText, String(xFormelement.queryId) || crypto.randomUUID())}
             </React.Fragment>
         ));
     };
@@ -210,7 +257,7 @@ export const Teletraan1 = ({
                                             <div className="neu-indicator"></div>
                                         </div>
                                         <Icon 
-                                            name="stack"
+                                            name="layers"
                                             height="20" 
                                             width="20" 
                                             color={brandColor}
@@ -226,7 +273,7 @@ export const Teletraan1 = ({
                         <>
                         Accordion Display
                         <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
-                            {xFormModel.model.map((formsection) => (
+                            {xFormModel.model.map((formsection: xFormSection) => (
                                 <AccordionItem 
                                     key={formsection.sectionId} 
                                     sectionId={String(formsection.sectionId)} 
@@ -243,7 +290,7 @@ export const Teletraan1 = ({
                         <>
                         Codice Display
                         <React.Fragment key={xFormModel.uuid}>
-                            {xFormModel.model.map((formsection) => (
+                            {xFormModel.model.map((formsection: xFormSection) => (
                                 <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
                                     <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
                                     <Row>
@@ -262,7 +309,7 @@ export const Teletraan1 = ({
                     <>
                         Accordion Display
                         <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
-                            {xFormModel.model.map((formsection) => (
+                            {xFormModel.model.map((formsection: xFormSection) => (
                                 <AccordionItem 
                                     key={formsection.sectionId} 
                                     sectionId={String(formsection.sectionId)} 
@@ -282,7 +329,7 @@ export const Teletraan1 = ({
                     <>
                         Codex Display
                         <Codex brandColor={brandColor}>
-                            {xFormModel.model.map((formsection, index, array) => {
+                            {xFormModel.model.map((formsection: xFormSection, index: number, array: xFormSection[]) => {
                                 const prevStepId = index > 0 ? String(array[index - 1].sectionId) : undefined;
                                 const nextStepId = index < array.length - 1 ? String(array[index + 1].sectionId) : undefined;
                                 
@@ -294,9 +341,12 @@ export const Teletraan1 = ({
                                         <CodexControls 
                                             prevStepId={prevStepId} 
                                             nextStepId={nextStepId}
-                                            onPrev={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onPrev()`)}
-                                            onNext={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onNext()`)}
-                                            onFinish={() => console.log(`Teletraan-1 Codex :: ${formsection.title} :: onFinish()`)}
+                                            onPrev={() => {console.log(`Teletraan-1 Codex :: ${formsection.title} :: onPrev()`); 
+                                            onPrev ? () => onPrev : null}}
+                                            onNext={() => {console.log(`Teletraan-1 Codex :: ${formsection.title} :: onNext()`); 
+                                            onNext ? () => onNext : null}}
+                                            onFinish={() => {console.log(`Teletraan-1 Codex :: ${formsection.title} :: onFinish()`); 
+                                            onFinish ? () => onFinish : null}}
                                         />
                                     </CodexItem>
                                 )
@@ -311,7 +361,7 @@ export const Teletraan1 = ({
                     <>
                         Codice/Script Display
                         <React.Fragment key={xFormModel.uuid}>
-                            {xFormModel.model.map((formsection) => (
+                            {xFormModel.model.map((formsection: xFormSection) => (
                                 <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
                                     <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
                                     <Row>

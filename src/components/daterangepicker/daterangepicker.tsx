@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { TextField, Flex, Text, Tooltip } from '@radix-ui/themes';
-import { useField, useFormikContext } from 'formik';
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
@@ -87,6 +87,11 @@ interface DateRangePickerProps {
    * className="teletraan-1-daterangepicker"
    */
     className?: string;
+    /**
+     * * Optional explicit Formik context. Useful when bypassing duplicate 
+     * context issues in monorepos or bundled npm packages.
+     */
+    formikContext?: FormikContextType<any>;
 }
 
 export const DateRangePicker = ({
@@ -98,14 +103,29 @@ export const DateRangePicker = ({
     placeholder = "Select date range",
     isHinted, hintText, hintUrl, errorText,
     readOnly,
-    className
+    className,
+    formikContext
 }: DateRangePickerProps) => {
-    const { setFieldValue, setFieldTouched } = useFormikContext();
-    const [field, meta] = useField(alias);
-    const hasError = Boolean(meta.touched && meta.error);
+
+    const defaultFormikContext = useFormikContext<any>();
+    const activeContext = formikContext || defaultFormikContext;
+
+    if (!activeContext) {
+        console.error(`DateRangePicker '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+        return null;
+    }
+
+    const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+    const fieldValue = getIn(values, alias);
+    const fieldTouched = getIn(touched, alias);
+    const fieldError = getIn(errors, alias);
+
+    const hasError = Boolean(fieldTouched && fieldError);
     const inputId = `${alias}FormInput` || crypto.randomUUID();
+    
     const getDates = (): [Date | null, Date | null] => {
-        const val = field.value;
+        const val = fieldValue;
         if (!val) return [null, null];
         if (typeof val === 'object' && 'from' in val) {
             return [
@@ -235,7 +255,7 @@ export const DateRangePicker = ({
                         const [start, end] = dates;
                         setFieldValue(alias, { from: start, to: end });
                         if (start && end) {
-                            setFieldTouched(alias, true);
+                            setFieldTouched(alias, true, false);
                         }
                     }}
                     disabled={readOnly}
@@ -267,7 +287,7 @@ export const DateRangePicker = ({
                     
                     {hasError && (
                         <Text size="1" color="red" style={{ display: 'block' }}>
-                            {errorText || (typeof meta.error === 'string' ? meta.error : "Required field")}
+                            {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
                         </Text>
                     )}
                 </div>
