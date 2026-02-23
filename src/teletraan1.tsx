@@ -22,7 +22,6 @@ import { SliderInput } from 'components/slider/slider';
 import { RangeSlider } from 'components/slider/range';
 import { Toggle } from 'components/toggle/toggle';
 import { ConditionalTrigger } from 'components/conditional/conditional';
-import { xForm, xFormQuery, xFormSection } from 'utils/architect';
 import { Row } from 'layouts/row/row';
 import { Accordion, AccordionItem } from 'layouts/accordion/accordion';
 import { Codex, CodexItem } from 'layouts/codex/codex';
@@ -36,6 +35,7 @@ import {
     rangeSliderInputType, selectInputType, selectMultipleInputType, sliderInputType, 
     stockInputType, textInputType, toggleInputType 
 } from "utils/voltaire";
+import { XFormType, XFormQuery } from 'utils/voltron';
 
 export type teletraan1Display = 'accordion' | 'codice' | 'codex' | 'dual';
 
@@ -46,7 +46,7 @@ export interface Teletraan1Props {
      * * @example
      * xFormModel={xFormJSONPrototype}
      */
-    xFormModel: xForm;
+    xFormModel: XFormType;
     /**
      * * Option to render xForm as readonly (inputs disabled). 
      * * @example
@@ -172,9 +172,9 @@ export const Teletraan1 = ({
         }
     };
 
-    const renderQueries = (queries: xFormQuery[]) => {
+    const renderQueries = (queries: XFormQuery[]) => {
         if (!queries) return null;
-        return queries.map((xFormelement: xFormQuery) => (
+        return queries.map((xFormelement) => (
             <React.Fragment key={xFormelement.queryId}>
                 {inputAlphaTrion(
                     xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth, xFormelement.inputLabel,
@@ -273,7 +273,7 @@ export const Teletraan1 = ({
                         <>
                         Accordion Display
                         <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
-                            {xFormModel.model.map((formsection: xFormSection) => (
+                            {xFormModel.model.map((formsection) => (
                                 <AccordionItem 
                                     key={formsection.sectionId} 
                                     sectionId={String(formsection.sectionId)} 
@@ -290,7 +290,7 @@ export const Teletraan1 = ({
                         <>
                         Codice Display
                         <React.Fragment key={xFormModel.uuid}>
-                            {xFormModel.model.map((formsection: xFormSection) => (
+                            {xFormModel.model.map((formsection) => (
                                 <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
                                     <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
                                     <Row>
@@ -309,7 +309,7 @@ export const Teletraan1 = ({
                     <>
                         Accordion Display
                         <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
-                            {xFormModel.model.map((formsection: xFormSection) => (
+                            {xFormModel.model.map((formsection) => (
                                 <AccordionItem 
                                     key={formsection.sectionId} 
                                     sectionId={String(formsection.sectionId)} 
@@ -329,7 +329,7 @@ export const Teletraan1 = ({
                     <>
                         Codex Display
                         <Codex brandColor={brandColor}>
-                            {xFormModel.model.map((formsection: xFormSection, index: number, array: xFormSection[]) => {
+                            {xFormModel.model.map((formsection, index: number, array) => {
                                 const prevStepId = index > 0 ? String(array[index - 1].sectionId) : undefined;
                                 const nextStepId = index < array.length - 1 ? String(array[index + 1].sectionId) : undefined;
                                 
@@ -361,7 +361,7 @@ export const Teletraan1 = ({
                     <>
                         Codice/Script Display
                         <React.Fragment key={xFormModel.uuid}>
-                            {xFormModel.model.map((formsection: xFormSection) => (
+                            {xFormModel.model.map((formsection) => (
                                 <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
                                     <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
                                     <Row>

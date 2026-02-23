@@ -216,7 +216,7 @@ export const CheckboxGroupInput = ({
           return (
             <Text 
               as="label" 
-              key={inputoption.optionvalue || crypto.randomUUID()} 
+              key={String(inputoption.optionvalue) || crypto.randomUUID()} 
               size="2" 
               style={{ 
                 display: 'flex', 
@@ -230,9 +230,9 @@ export const CheckboxGroupInput = ({
                 id={`${alias}FormInput${inputoption.optionid}`}
                 aria-describedby={`${alias}InputLabel${inputoption.optionid}`}
                 disabled={readOnly}
-                value={inputoption.optionvalue}
+                value={String(inputoption.optionvalue)}
                 checked={isChecked}
-                onCheckedChange={(checked) => handleCheckedChange(checked as boolean, inputoption.optionvalue)}
+                onCheckedChange={(checked) => handleCheckedChange(checked as boolean, String(inputoption.optionvalue))}
                 
                 variant={inputtype === 'checkbox-outline' ? 'soft' : 'surface'}
                 className={inputtype === 'checkbox-neumorphic' ? 'neu-checkbox' : ''}

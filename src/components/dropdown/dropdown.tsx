@@ -281,7 +281,7 @@ export const Dropdown = ({
             {inputoption.optionurl ?            
             <Select.Item 
               id={String(inputoption.optionid) || ''}
-              value={inputoption.optionvalue}
+              value={String(inputoption.optionvalue)}
               className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}>
               <a onClick={(e) => { e.stopPropagation(); openLink(inputoption.optionurl || "#"); }} style={{textDecoration: 'none', color: 'inherit'}}>
                 {inputoption.text}
@@ -290,7 +290,7 @@ export const Dropdown = ({
             : 
             <Select.Item 
               id={String(inputoption.optionid) || ''}
-              value={inputoption.optionvalue}
+              value={String(inputoption.optionvalue)}
               className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
             >
               {inputoption.text}

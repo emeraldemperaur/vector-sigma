@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useFormikContext, getIn } from 'formik';
 import { Column } from "layouts/column/column";
 import { TextField, Text, Tooltip, Select, Flex } from '@radix-ui/themes';
-import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 import type { Country, Value } from 'react-phone-number-input'; 
 import Input, { getCountries, getCountryCallingCode } from 'react-phone-number-input/input';
 import en from 'react-phone-number-input/locale/en.json';

@@ -151,7 +151,7 @@ export const MultipleSelect = ({
 
   const displayLabel = selectedValues.length > 0
     ? inputOptions
-        .filter(inputoption => selectedValues.includes(inputoption.optionvalue))
+        .filter(inputoption => selectedValues.includes(String(inputoption.optionvalue)))
         .map(inputoption => inputoption.text)
         .join(', ')
     : placeholder;
@@ -279,7 +279,7 @@ export const MultipleSelect = ({
                       align="center" 
                       gap="2"
                       onClick={() => {
-                          if(!readOnly) handleToggle(inputoption.optionvalue);
+                          if(!readOnly) handleToggle(String(inputoption.optionvalue));
                       }}
                       style={{ 
                         padding: '8px', 

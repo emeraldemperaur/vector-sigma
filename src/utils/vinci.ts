@@ -112,7 +112,7 @@ export interface InputOption {
    * * @example
    * optionvalue="VGTRX-1000"
    */
-   optionvalue: string;
+   optionvalue: string | number | boolean;
    /**
    * * The optional tag for the Input Option item. 
    * * @example
