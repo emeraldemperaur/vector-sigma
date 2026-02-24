@@ -1,3 +1,5 @@
+import { XFormQuery, XFormType } from "./voltron";
+
 export const avatarInputType = ["avatar", "avatarinput", "avatar-input", "input-avatar", "inputavatar"];
 export const buttonInputType = ["button", "buttoninput", "button-input", "input-button", "inputbutton"];
 export const checkboxInputType = ["checkbox", "checkboxes", "checkboxinput", "chechbox-input", "input-checkbox", "inputcheckbox"];
@@ -22,3 +24,23 @@ export const rangeSliderInputType = ["range", "rangeslider", "rangeinput", "rang
 export const toggleInputType = ["toggle", "switch", "toggleinput", "toggle-input", "input-toggle", "inputtoggle"];
 export const sectionTitleOutputType = ["title", "xtitle", "sectiontitle", "titlesection"];
 export const conditionalInputType = ["conditional", "conditionaltoggle", "conditionalcheckbox", "conditionalselect", "conditional-toggle", "conditional-select", "conditional-checkbox"];
+
+// --- Helper to extract Formik initial values from the clean schema ---
+ export const generateInitialValues = (schema: XFormType) => {
+    const initials: Record<string, any> = {};
+    
+    const traverseQueries = (queries: XFormQuery[]) => {
+      queries.forEach(query => {
+        // Assign defaultValue if exists or assign empty string/null
+        initials[query.inputAlias] = query.defaultValue ?? "";
+        
+        // Nested/toggled input, recursive value extract
+        if (query.toggledInput) {
+          traverseQueries([query.toggledInput]);
+        }
+      });
+    };
+
+    schema.model.forEach(section => traverseQueries(section.queries));
+    return initials;
+  };

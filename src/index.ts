@@ -38,3 +38,4 @@ export * from './layouts/codex/codexcontrols';
 export * from './utils/architect';
 export * from './utils/uuidparser';
 export * from './utils/currencyconfig';
+export * from './utils/minerva';
