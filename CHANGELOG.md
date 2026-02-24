@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.31
+
+### Patch Changes
+
+- eb34aa1: xForm Component :: Teletraan1 normalizeXForm() helper function
+
 ## 1.4.30
 
 ### Patch Changes
