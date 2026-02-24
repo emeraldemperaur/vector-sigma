@@ -25,7 +25,8 @@
         "moduleResolution": "node"
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "lib", "build", "dist", "scripts", "acceptance-tests", "webpack", 
-    "jest", "**/*.test.ts", "**/*.test.tsx", "jest.setup.ts"],
-    "types": ["typePatches", "node"]
+    "exclude": ["node_modules", "lib", "build", "dist", "scripts", "acceptance-tests", "webpack"],
+    //"exclude": ["node_modules", "lib", "build", "dist", "scripts", "acceptance-tests", "webpack", 
+    // "**/*.test.ts", "**/*.test.tsx", "jest.setup.ts"],
+    "types": ["typePatches", "node", "jest"]
 }
