@@ -71,11 +71,11 @@ export interface CheckboxGroup {
    * * Required  inputOptions{} for the Checkbox Group input field.
    * * @example
    * inputOptions={
-            [
-              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
-              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
-              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
-              ]}
+   * [
+   * {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+   * {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+   * {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+   * ]}
   */
   inputOptions: InputOption[];
   /**
@@ -148,7 +148,9 @@ export const CheckboxGroupInput = ({
   
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
-  const inputId = `${alias}FormInput` || crypto.randomUUID();
+  
+  // FIXED: Stable ID to prevent re-render jumps
+  const inputId = `${alias}FormInput`;
   const errorId = `${alias}-error`;
 
   const handleCheckedChange = (checked: boolean, value: string) => {
@@ -159,7 +161,8 @@ export const CheckboxGroupInput = ({
       newValues = newValues.filter((v) => String(v) !== String(value));
     }
     setFieldValue(alias, newValues);
-    setTimeout(() => setFieldTouched(alias, true), 0);
+    // Use timeout to ensure Formik state is committed before triggering touch
+    setTimeout(() => setFieldTouched(alias, true, false), 0);
   };
 
   useEffect(() => {
@@ -191,18 +194,13 @@ export const CheckboxGroupInput = ({
             border: none;
             box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
             border-radius: 4px;
-            width: 20px;
-            height: 20px;
-            transition: all 0.2s ease;
+            width: 20px; height: 20px; transition: all 0.2s ease;
           }
-          /* Checked State: Pressed In */
           .neu-checkbox[data-state='checked'] .rt-CheckboxButton {
             box-shadow: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light);
-            background-color: var(--neu-bg); /* Keep bg same, let icon show color */
+            background-color: var(--neu-bg); 
           }
-          .neu-checkbox .rt-CheckboxIndicator {
-            color: var(--neu-check-color);
-          }
+          .neu-checkbox .rt-CheckboxIndicator { color: var(--neu-check-color); }
         `}} />
       )}
 
@@ -211,12 +209,17 @@ export const CheckboxGroupInput = ({
         gap="3"
         style={neuVars} 
       >
-        {inputOptions.map((inputoption) => {
-          const isChecked = currentValues.some(val => String(val) === String(inputoption.optionvalue));
+        {inputOptions.map((inputoption, idx) => {
+          const optionVal = String(inputoption.optionvalue);
+          const isChecked = currentValues.some(val => String(val) === optionVal);
+          
+          const itemKey = `${alias}-chk-${inputoption.optionid || idx}`;
+          const itemId = `${alias}FormInput${inputoption.optionid || idx}`;
+
           return (
             <Text 
               as="label" 
-              key={String(inputoption.optionvalue) || crypto.randomUUID()} 
+              key={itemKey} 
               size="2" 
               style={{ 
                 display: 'flex', 
@@ -227,16 +230,13 @@ export const CheckboxGroupInput = ({
             >
               <RadixCheckbox 
                 name={alias}
-                id={`${alias}FormInput${inputoption.optionid}`}
-                aria-describedby={`${alias}InputLabel${inputoption.optionid}`}
+                id={itemId}
                 disabled={readOnly}
-                value={String(inputoption.optionvalue)}
+                value={optionVal}
                 checked={isChecked}
-                onCheckedChange={(checked) => handleCheckedChange(checked as boolean, String(inputoption.optionvalue))}
-                
+                onCheckedChange={(checked) => handleCheckedChange(checked as boolean, optionVal)}
                 variant={inputtype === 'checkbox-outline' ? 'soft' : 'surface'}
                 className={inputtype === 'checkbox-neumorphic' ? 'neu-checkbox' : ''}
-                
                 style={{
                    ...(inputtype === 'checkbox-outline' ? { 
                       border: isChecked ? '2px solid var(--accent-9)' : '2px solid var(--gray-8)',
@@ -251,22 +251,20 @@ export const CheckboxGroupInput = ({
       </Grid>
 
       <div>
-                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>{inputLabel}</Text>
-                      &nbsp;
-                      {isHinted ?
-                              <>
-                              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                                  <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                                  <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                                  </a> 
-                              </Tooltip>
-                              </> : null} 
-                       {hasError ?
-                              <>
-                              <p id={errorId} className='core-input-label-error'>
-                                  {errorText || "Required field"}
-                              </p>
-                              </> : null } 
+          <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>{inputLabel}</Text>
+          &nbsp;
+          {isHinted && (
+            <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                  <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                </a> 
+            </Tooltip>
+          )} 
+          {hasError && (
+            <p id={errorId} className='core-input-label-error'>
+                {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
+            </p>
+          )} 
        </div>
     </Flex>
     </Column>

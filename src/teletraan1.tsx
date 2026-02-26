@@ -178,7 +178,7 @@ export const Teletraan1 = ({
             case rangeSliderInputType.includes(normalizedType):
                 return <RangeSlider {...layoutProps} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} />
             case toggleInputType.includes(normalizedType):
-                return <Toggle {...layoutProps} icon={defaultValue}/>
+                return <Toggle {...layoutProps} icon="layers"/>
             default:
                 return <Input {...layoutProps} placeholder={inputPlaceholder} />
         }
@@ -286,7 +286,7 @@ export const Teletraan1 = ({
                     <React.Fragment key={xFormModel.uuid}>
                         {xFormModel.model.map((formsection) => (
                             <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-                                <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
+                                <SectionTitle backgroundColor={brandColor} title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
                                 <Row>{renderQueries(formsection.queries)}</Row>
                             </React.Fragment>
                         ))}

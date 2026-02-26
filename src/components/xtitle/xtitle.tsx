@@ -116,7 +116,7 @@ export const SectionTitle = ({
     };
 
     return (
-        <Column span={width} newLine={newRow}>
+        <Column span={width} newLine={newRow} style={{marginBottom: '23px', marginTop: '23px'}}>
             <Flex 
                 direction="column" 
                 gap="2" 
@@ -124,7 +124,8 @@ export const SectionTitle = ({
                 style={{ 
                     width: '100%', 
                     boxSizing: 'border-box',
-                    marginBottom: 'var(--space-2)',
+                    marginTop: '23px',
+                    marginBottom: '23px',
                     textAlign: align,
                     backgroundColor: backgroundColor || 'transparent',
                     padding: backgroundColor ? 'var(--space-3) var(--space-4)' : '0',
