@@ -120,80 +120,93 @@ export const Teletraan1 = ({
 
         const normalizedType = inputType.toLocaleLowerCase();
 
+        const layoutProps = {
+            alias: inputAlias,
+            width: inputWidth,
+            inputLabel: inputLabel,
+            key: inputUID,
+            newRow: newRow,
+            readOnly: readOnly,
+            isHinted: isHinted,
+            hintText: hintText,
+            hintUrl: hintUrl,
+            errorText: errorText
+        };
+
         switch(true){
             case avatarInputType.includes(normalizedType):
-                return <AvatarInput alias={inputAlias} width={inputWidth} inputLabel={inputLabel} key={inputUID} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} errorText={errorText}/>
+                return <AvatarInput {...layoutProps} />
             case buttonInputType.includes(normalizedType):
-                return <ButtonInput alias={inputAlias} width={inputWidth} readOnly={readOnly} newRow={newRow} key={inputUID}>{defaultValue}</ButtonInput>
+                return <ButtonInput {...layoutProps}>{defaultValue}</ButtonInput>
             case checkboxInputType.includes(normalizedType):
-                return <CheckboxGroupInput alias={inputAlias} width={inputWidth} inputLabel={inputLabel} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <CheckboxGroupInput {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case conditionalInputType.includes(normalizedType):
-                return <ConditionalTrigger alias={inputAlias} width={inputWidth} inputLabel={inputLabel} inputOptions={inputOptions} newRow={newRow} readOnly={readOnly} isHinted={isHinted} triggerValue={defaultValue} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} children={toggledInput}/>
+                return <ConditionalTrigger {...layoutProps} inputOptions={inputOptions} triggerValue={defaultValue} children={toggledInput}/>
             case datePickerInputType.includes(normalizedType):
-                return <DatePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <DatePicker {...layoutProps} placeholder={inputPlaceholder} />
             case dateRangePickerInputType.includes(normalizedType):
-                return <DateRangePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
             case dateTimePickerInputType.includes(normalizedType):
-                return <DateRangePicker alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <DateRangePicker {...layoutProps} />
             case dropdownInputType.includes(normalizedType):
-                return <Dropdown alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} />
+                return <Dropdown {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case fileInputType.includes(normalizedType):
-                return <File alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} preview/>
+                return <File {...layoutProps} preview/>
             case fileMultipleInputType.includes(normalizedType):
-                return <FileMultiple alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} preview/>
+                return <FileMultiple {...layoutProps} placeholder={inputPlaceholder} preview/>
             case imageOutputType.includes(normalizedType):
-                return <ImageOutput id={inputAlias} src={defaultValue} alt={inputPlaceholder} width={inputWidth} height={inputHeight as number}/>
+                return <ImageOutput id={inputAlias} src={defaultValue} alt={inputPlaceholder} width={inputWidth} height={inputHeight as number} key={inputUID}/>
             case textInputType.includes(normalizedType):
-                return <Input alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <Input {...layoutProps} placeholder={inputPlaceholder} />
             case passwordInputType.includes(normalizedType):
-                return <PasswordInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <PasswordInput {...layoutProps} placeholder={inputPlaceholder} />
             case phoneInputType.includes(normalizedType):
-                return <PhoneInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <PhoneInput {...layoutProps} placeholder={inputPlaceholder} />
             case creditCardInputType.includes(normalizedType):
-                return <CreditCardInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <CreditCardInput {...layoutProps} placeholder={inputPlaceholder} />
             case currencyInputType.includes(normalizedType):
-                return <CurrencyInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <CurrencyInput {...layoutProps} placeholder={inputPlaceholder} />
             case stockInputType.includes(normalizedType):
-                return <StockInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} defaultvalue={defaultValue} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <StockInput {...layoutProps} placeholder={inputPlaceholder} defaultvalue={defaultValue} />
             case radioInputType.includes(normalizedType):
-                return <RadioGroupInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <RadioGroupInput {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case selectInputType.includes(normalizedType):
-                return <OptionSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <OptionSelect {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case selectMultipleInputType.includes(normalizedType):
-                return <MultipleSelect alias={inputAlias} inputLabel={inputLabel} width={inputWidth} inputOptions={inputOptions || [InputOptionsPlaceholder]} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <MultipleSelect {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case sliderInputType.includes(normalizedType):
-                return <SliderInput alias={inputAlias} inputLabel={inputLabel} width={inputWidth} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <SliderInput {...layoutProps} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} />
             case rangeSliderInputType.includes(normalizedType):
-                return <RangeSlider alias={inputAlias} inputLabel={inputLabel} width={inputWidth} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <RangeSlider {...layoutProps} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} />
             case toggleInputType.includes(normalizedType):
-                return <Toggle alias={inputAlias} inputLabel={inputLabel} width={inputWidth} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText} icon={defaultValue}/>
+                return <Toggle {...layoutProps} icon={defaultValue}/>
             default:
-                return <Input alias={inputAlias} inputLabel={inputLabel} width={inputWidth} placeholder={inputPlaceholder} newRow={newRow} readOnly={readOnly} isHinted={isHinted} hintText={hintText} hintUrl={hintUrl} key={inputUID} errorText={errorText}/>
+                return <Input {...layoutProps} placeholder={inputPlaceholder} />
         }
     };
 
     const renderQueries = (queries: XFormQuery[]) => {
         if (!queries) return null;
-        return queries.map((xFormelement) => (
-            <React.Fragment key={xFormelement.queryId}>
-                {inputAlphaTrion(
-                    xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth, xFormelement.inputLabel,
-                    String(xFormelement.minValue), String(xFormelement.maxValue), xFormelement.defaultValue, xFormelement.inputOptions, 
-                    xFormelement.stepValue, xFormelement.inputHeight, 
-                    // Conditional ToggledInput (React Node) recursive handling
-                    xFormelement.toggledInput ? inputAlphaTrion(
-                    xFormelement.toggledInput.inputAlias, xFormelement.toggledInput.inputType, xFormelement.toggledInput.inputWidth, 
-                    xFormelement.toggledInput.inputLabel, String(xFormelement.toggledInput.minValue), String(xFormelement.toggledInput.maxValue), 
-                    xFormelement.toggledInput.defaultValue, xFormelement.toggledInput.inputOptions, xFormelement.toggledInput.stepValue, xFormelement.toggledInput.inputHeight, null, 
-                    null, xFormelement.toggledInput.newRow, 
-                    xFormelement.toggledInput.inputPlaceholder, readOnlyMode, xFormelement.toggledInput.isHinted, xFormelement.toggledInput.hintText || "", 
-                    xFormelement.toggledInput.hintUrl || "", xFormelement.toggledInput.errorText, String(xFormelement.toggledInput.queryId) || crypto.randomUUID()) : null,
+        return queries.map((xFormelement) => {
+            const childInput = xFormelement.toggledInput ? inputAlphaTrion(
+                xFormelement.toggledInput.inputAlias, xFormelement.toggledInput.inputType, xFormelement.toggledInput.inputWidth, 
+                xFormelement.toggledInput.inputLabel, String(xFormelement.toggledInput.minValue), String(xFormelement.toggledInput.maxValue), 
+                xFormelement.toggledInput.defaultValue, xFormelement.toggledInput.inputOptions, xFormelement.toggledInput.stepValue, 
+                xFormelement.toggledInput.inputHeight, null, 
+                null, xFormelement.toggledInput.newRow, 
+                xFormelement.toggledInput.inputPlaceholder, readOnlyMode, xFormelement.toggledInput.isHinted, xFormelement.toggledInput.hintText || "", 
+                xFormelement.toggledInput.hintUrl || "", xFormelement.toggledInput.errorText, String(xFormelement.toggledInput.queryId) || crypto.randomUUID()
+            ) : null;
 
-                    xFormelement.triggerValue, xFormelement.newRow, 
-                    xFormelement.inputPlaceholder, readOnlyMode, xFormelement.isHinted, xFormelement.hintText || "", 
-                    xFormelement.hintUrl || "", xFormelement.errorText, String(xFormelement.queryId) || crypto.randomUUID())}
-            </React.Fragment>
-        ));
+            return inputAlphaTrion(
+                xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth, xFormelement.inputLabel,
+                String(xFormelement.minValue), String(xFormelement.maxValue), xFormelement.defaultValue, xFormelement.inputOptions, 
+                xFormelement.stepValue, xFormelement.inputHeight, 
+                childInput,
+                xFormelement.triggerValue, xFormelement.newRow, 
+                xFormelement.inputPlaceholder, readOnlyMode, xFormelement.isHinted, xFormelement.hintText || "", 
+                xFormelement.hintUrl || "", xFormelement.errorText, String(xFormelement.queryId) || crypto.randomUUID()
+            );
+        });
     };
 
     const renderDisplayMode = () => {
@@ -201,183 +214,90 @@ export const Teletraan1 = ({
             case 'dual':
                 return (
                     <>
-                        Dual Display
-                        <Row>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <div 
-                                            className="neu-toggle-wrapper"
-                                            style={{ ...neuVars, opacity: readOnlyMode ? 0.6 : 1, pointerEvents: readOnlyMode ? 'none' : 'auto' }}
-                                            onClick={() => setDualToggled(!dualToggled)}
-                                        >
-                                            <style dangerouslySetInnerHTML={{__html: `
-                                                .neu-toggle-wrapper {
-                                                    isolation: isolate;
-                                                    position: relative;
-                                                    height: 30px;
-                                                    width: 60px;
-                                                    border-radius: 15px;
-                                                    overflow: hidden;
-                                                    cursor: pointer;
-                                                    background: var(--neu-bg);
-                                                    box-shadow:
-                                                        -8px -4px 8px 0px var(--neu-shadow-light),
-                                                        8px 4px 12px 0px var(--neu-shadow-dark),
-                                                        4px 4px 4px 0px var(--neu-shadow-dark) inset,
-                                                        -4px -4px 4px 0px var(--neu-shadow-light) inset;
-                                                }
-                                                
-                                                .neu-toggle-state {
-                                                    display: none;
-                                                }
-                        
-                                                .neu-indicator {
-                                                    height: 100%;
-                                                    width: 200%;
-                                                    background: var(--neu-bg);
-                                                    border-radius: 15px;
-                                                    transform: translate3d(-75%, 0, 0);
-                                                    transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
-                                                    box-shadow:
-                                                        -8px -4px 8px 0px var(--neu-shadow-light),
-                                                        8px 4px 12px 0px var(--neu-shadow-dark);
-                                                }
-                        
-                                                .neu-toggle-state:checked ~ .neu-indicator {
-                                                    transform: translate3d(25%, 0, 0);
-                                                }
-                                            `}} />
-                        
-                                            <input 
-                                                id={`teletraan1DualToggle`}
-                                                className="neu-toggle-state" 
-                                                type="checkbox" 
-                                                checked={dualToggled} 
-                                                readOnly 
-                                            />
-                                            <div className="neu-indicator"></div>
-                                        </div>
-                                        <Icon 
-                                            name="layers"
-                                            height="20" 
-                                            width="20" 
-                                            color={brandColor}
-                                            style={{ 
-                                                transition: 'color 0.3s ease',
-                                                opacity: readOnlyMode ? 0.5 : 1, 
-                                                cursor: 'pointer'
-                                            }}
-                                            onClick={() => setDualToggled(!dualToggled)}
-                                        />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                            <span>Dual Display</span>
+                            <div 
+                                className="neu-toggle-wrapper"
+                                style={{ ...neuVars, opacity: readOnlyMode ? 0.6 : 1, pointerEvents: readOnlyMode ? 'none' : 'auto' }}
+                                onClick={() => setDualToggled(!dualToggled)}
+                            >
+                                <style dangerouslySetInnerHTML={{__html: `
+                                    .neu-toggle-wrapper { isolation: isolate; position: relative; height: 30px; width: 60px; border-radius: 15px; overflow: hidden; cursor: pointer; background: var(--neu-bg); box-shadow: -8px -4px 8px 0px var(--neu-shadow-light), 8px 4px 12px 0px var(--neu-shadow-dark), 4px 4px 4px 0px var(--neu-shadow-dark) inset, -4px -4px 4px 0px var(--neu-shadow-light) inset; }
+                                    .neu-toggle-state { display: none; }
+                                    .neu-indicator { height: 100%; width: 200%; background: var(--neu-bg); border-radius: 15px; transform: translate3d(-75%, 0, 0); transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35); box-shadow: -8px -4px 8px 0px var(--neu-shadow-light), 8px 4px 12px 0px var(--neu-shadow-dark); }
+                                    .neu-toggle-state:checked ~ .neu-indicator { transform: translate3d(25%, 0, 0); }
+                                `}} />
+                                <input className="neu-toggle-state" type="checkbox" checked={dualToggled} readOnly />
+                                <div className="neu-indicator"></div>
                             </div>
+                            <Icon name="layers" height="20" width="20" color={brandColor} style={{ opacity: readOnlyMode ? 0.5 : 1, cursor: 'pointer' }} onClick={() => setDualToggled(!dualToggled)} />
+                        </div>
                         {dualToggled ? 
-                        <>
-                        Accordion Display
-                        <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
-                            {xFormModel.model.map((formsection) => (
-                                <AccordionItem 
-                                    key={formsection.sectionId} 
-                                    sectionId={String(formsection.sectionId)} 
-                                    title={formsection.title}
-                                >
-                                    <Row key={formsection.sectionId}>
-                                        {renderQueries(formsection.queries)}
-                                    </Row>
-                                </AccordionItem>
-                            ))}
-                        </Accordion>
-                        </>
+                            <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
+                                {xFormModel.model.map((formsection) => (
+                                    <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title}>
+                                        <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
                         : 
-                        <>
-                        Codice Display
-                        <React.Fragment key={xFormModel.uuid}>
-                            {xFormModel.model.map((formsection) => (
+                            xFormModel.model.map((formsection) => (
                                 <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
                                     <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
-                                    <Row>
-                                        {renderQueries(formsection.queries)}
-                                    </Row>
+                                    <Row>{renderQueries(formsection.queries)}</Row>
                                 </React.Fragment>
-                            ))}
-                        </React.Fragment>
-                        </>}
-                       </Row>
+                            ))
+                        }
                     </>
                 );
 
             case 'accordion':
                 return (
-                    <>
-                        Accordion Display
-                        <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
-                            {xFormModel.model.map((formsection) => (
-                                <AccordionItem 
-                                    key={formsection.sectionId} 
-                                    sectionId={String(formsection.sectionId)} 
-                                    title={formsection.title}
-                                >
-                                    <Row key={formsection.sectionId}>
-                                        {renderQueries(formsection.queries)}
-                                    </Row>
-                                </AccordionItem>
-                            ))}
-                        </Accordion>
-                    </>
+                    <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
+                        {xFormModel.model.map((formsection) => (
+                            <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title}>
+                                <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
                 );
 
             case 'codex':
                 return (
-                    <>
-                        Codex Display
-                        <Codex brandColor={brandColor}>
-                            {xFormModel.model.map((formsection, index: number, array) => {
-                                const prevStepId = index > 0 ? String(array[index - 1].sectionId) : undefined;
-                                const nextStepId = index < array.length - 1 ? String(array[index + 1].sectionId) : undefined;
-                                
-                                return(
-                                    <CodexItem key={formsection.sectionId} stepId={String(formsection.sectionId)} title={formsection.title}>
-                                        <Row key={formsection.sectionId}>
-                                            {renderQueries(formsection.queries)}
-                                        </Row>
-                                        <CodexControls 
-                                            prevStepId={prevStepId} 
-                                            nextStepId={nextStepId}
-                                            onPrev={() => {console.log(`Teletraan-1 Codex :: ${formsection.title} :: onPrev()`); 
-                                            onPrev ? () => onPrev : null}}
-                                            onNext={() => {console.log(`Teletraan-1 Codex :: ${formsection.title} :: onNext()`); 
-                                            onNext ? () => onNext : null}}
-                                            onFinish={() => {console.log(`Teletraan-1 Codex :: ${formsection.title} :: onFinish()`); 
-                                            onFinish ? () => onFinish : null}}
-                                        />
-                                    </CodexItem>
-                                )
-                            })}
-                        </Codex>
-                    </>
+                    <Codex brandColor={brandColor}>
+                        {xFormModel.model.map((formsection, index, array) => (
+                            <CodexItem key={formsection.sectionId} stepId={String(formsection.sectionId)} title={formsection.title}>
+                                <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
+                                <CodexControls 
+                                    prevStepId={index > 0 ? String(array[index - 1].sectionId) : undefined} 
+                                    nextStepId={index < array.length - 1 ? String(array[index + 1].sectionId) : undefined}
+                                    onPrev={onPrev}
+                                    onNext={onNext}
+                                    onFinish={onFinish}
+                                />
+                            </CodexItem>
+                        ))}
+                    </Codex>
                 );
 
             case 'codice':
             default:
                 return (
-                    <>
-                        Codice/Script Display
-                        <React.Fragment key={xFormModel.uuid}>
-                            {xFormModel.model.map((formsection) => (
-                                <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-                                    <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
-                                    <Row>
-                                        {renderQueries(formsection.queries)}
-                                    </Row>
-                                </React.Fragment>
-                            ))}
-                        </React.Fragment>
-                    </>
+                    <React.Fragment key={xFormModel.uuid}>
+                        {xFormModel.model.map((formsection) => (
+                            <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
+                                <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
+                                <Row>{renderQueries(formsection.queries)}</Row>
+                            </React.Fragment>
+                        ))}
+                    </React.Fragment>
                 );
         }
     };
 
     return (
-        <Row>
+        <>
             {renderDisplayMode()}
-        </Row>
+        </>
     );
 };

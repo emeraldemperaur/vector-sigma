@@ -148,6 +148,7 @@ export const OptionSelect = ({
   const fieldValue = getIn(values, alias);
   const fieldTouched = getIn(touched, alias);
   const fieldError = getIn(errors, alias);
+   const RESET_ID = `__RESET__${alias}`;
 
   const hasError = Boolean(fieldTouched && fieldError);
   const errorId = `${alias}-error`;
@@ -250,7 +251,7 @@ export const OptionSelect = ({
           disabled={readOnly}
           value={fieldValue || ""} 
           onValueChange={(val) => {
-            const finalVal = val === "__RESET__" ? "" : val;
+            const finalVal = val === RESET_ID ? "" : val;
             
             setFieldValue(alias, finalVal);
             setTimeout(() => setFieldTouched(alias, true, false), 0);
@@ -275,7 +276,7 @@ export const OptionSelect = ({
 
           <Select.Content position="popper" sideOffset={5} style={activeContentStyle}>
             <Select.Item 
-              value="__RESET__" 
+              value={RESET_ID}
               className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
               style={{ color: 'var(--gray-10)', fontStyle: 'italic' }}
             >

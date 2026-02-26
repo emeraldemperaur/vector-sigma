@@ -89,11 +89,11 @@ export interface xDropDownProps {
    * * Required  inputOptions{} for the Dropdown input field.
    * * @example
    * inputOptions={
-            [
-              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
-              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
-              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
-              ]}
+   * [
+   * {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+   * {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+   * {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+   * ]}
   */
   inputOptions: InputOption[];
   /**
@@ -122,11 +122,14 @@ export const Dropdown = ({
   style, newRow, isHinted, hintText,
   hintUrl, errorText, className,
   formikContext,
+  onValueChange,
   ...props
 }: xDropDownProps) => {
   
   const defaultFormikContext = useFormikContext<any>();
   const activeContext = formikContext || defaultFormikContext;
+
+  const RESET_ID = `__RESET__${alias}`;
 
   if (!activeContext) {
       console.error(`Dropdown '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
@@ -142,7 +145,7 @@ export const Dropdown = ({
   const hasError = Boolean(fieldTouched && fieldError);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
-  const inputId = `${alias}FormInput` || crypto.randomUUID();
+  const inputId = `${alias}FormInput`;
   const errorId = `${alias}-error`;
 
   useEffect(() => {
@@ -178,7 +181,6 @@ export const Dropdown = ({
     boxShadow: '0 5px 15px rgba(0,0,0,0.2)', 
   };
 
-  // OUTLINE
   const outlineTrigger: React.CSSProperties = {
     backgroundColor: 'transparent',
     border: '2px solid var(--gray-7)',
@@ -192,7 +194,6 @@ export const Dropdown = ({
     boxShadow: 'none',
   };
 
-  // NEUMORPHIC
   const neumorphicTrigger: React.CSSProperties = {
     backgroundColor: 'var(--neu-bg)',
     color: 'var(--neu-text)',
@@ -224,104 +225,98 @@ export const Dropdown = ({
     { ...neumorphicContent, ...neuVars };
 
   return (
-    <>
     <Column span={width} newLine={newRow}>
-    <Flex direction="column" gap="2" style={{ width: '100%' }}>
-      {inputtype === 'dropdown-neumorphic' && (
-        <style dangerouslySetInnerHTML={{__html: `
-          .neu-select-trigger[data-state='open'] {
-            box-shadow: inset 6px 6px 12px var(--neu-shadow-dark), 
-                        inset -6px -6px 12px var(--neu-shadow-light) !important;
-          }
-          .neu-select-item:hover {
-            background-color: rgba(0,0,0,0.05) !important;
-            cursor: pointer;
-          }
-        `}} />
-      )}
-      <Select.Root
-        name={alias}
-        disabled={readOnly}
-        value={fieldValue || ""} 
-        onValueChange={(val) => {
-          const finalVal = val === "__RESET__" ? "" : val;
-          setFieldValue(alias, finalVal);
-          setTimeout(() => setFieldTouched(alias, true, false), 0);
-          if (props.onValueChange) props.onValueChange(finalVal);
-        }}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-             setFieldTouched(alias, true, false);
-          }
-        }}
-      >
-        <Select.Trigger 
-          id={`${alias}FormInput`}
-          ref={triggerRef}
-          variant="ghost" 
-          placeholder={placeholder || "Select an option"}
-          className={`${inputtype === 'dropdown-neumorphic' ? 'neu-select-trigger' : ''} ${className || ''}`}
-          style={{ ...activeTriggerStyle, ...style }}
-          {...props} 
-        />
-
-        <Select.Content position="popper" sideOffset={5} style={activeContentStyle}>
-          <Select.Item 
-            value="__RESET__" 
-            className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
-            style={{ color: 'var(--gray-10)', fontStyle: 'italic' }}
-          >
-             {placeholder || "Select an option"}
-          </Select.Item>
-          
-          <Separator size="4" style={{ margin: '4px 0', opacity: 0.5 }} />
-
-          {inputOptions.map((inputoption) => (
-            <React.Fragment key={inputoption.optionid || crypto.randomUUID()}>
-            {inputoption.optionurl ?            
-            <Select.Item 
-              id={String(inputoption.optionid) || ''}
-              value={String(inputoption.optionvalue) || `__empty_${inputoption.optionid}`}
-              className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}>
-              <a onClick={(e) => { e.stopPropagation(); openLink(inputoption.optionurl || "#"); }} style={{textDecoration: 'none', color: 'inherit'}}>
-                {inputoption.text}
-              </a>
-            </Select.Item>
-            : 
-            <Select.Item 
-              id={String(inputoption.optionid) || ''}
-              value={String(inputoption.optionvalue) || `__empty_${inputoption.optionid}`}
-              className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
-            >
-              {inputoption.text}
-            </Select.Item>
+      <Flex direction="column" gap="2" style={{ width: '100%' }}>
+        {inputtype === 'dropdown-neumorphic' && (
+          <style dangerouslySetInnerHTML={{__html: `
+            .neu-select-trigger[data-state='open'] {
+              box-shadow: inset 6px 6px 12px var(--neu-shadow-dark), 
+                          inset -6px -6px 12px var(--neu-shadow-light) !important;
             }
-            </React.Fragment>
-            
-          ))}
-        </Select.Content>
-      </Select.Root>
+            .neu-select-item:hover {
+              background-color: rgba(0,0,0,0.05) !important;
+              cursor: pointer;
+            }
+          `}} />
+        )}
+        <Select.Root
+          name={alias}
+          disabled={readOnly}
+          value={fieldValue || ""} 
+          onValueChange={(val) => {
+            const finalVal = val === RESET_ID ? "" : val;
+            setFieldValue(alias, finalVal);
+            setTimeout(() => setFieldTouched(alias, true, false), 0);
+            if (onValueChange) onValueChange(finalVal);
+          }}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+               setFieldTouched(alias, true, false);
+            }
+          }}
+        >
+          <Select.Trigger 
+            id={inputId}
+            ref={triggerRef}
+            variant="ghost" 
+            placeholder={placeholder || "Select an option"}
+            className={`${inputtype === 'dropdown-neumorphic' ? 'neu-select-trigger' : ''} ${className || ''}`}
+            style={{ ...activeTriggerStyle, ...style }}
+          />
 
-       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>{inputLabel}</Text>
-            &nbsp;   
-            {isHinted ?
-              <>
-              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                  <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                  <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                  </a> 
-              </Tooltip>
-              </> : null} 
-            {hasError ?
-              <>
-              <p id={errorId} className='core-input-label-error'>
-                  {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
-              </p>
-              </> : null } 
-      </div>
-    </Flex>
+          <Select.Content position="popper" sideOffset={5} style={activeContentStyle}>
+            <Select.Item 
+              value={RESET_ID} 
+              className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
+              style={{ color: 'var(--gray-10)', fontStyle: 'italic' }}
+            >
+               {placeholder || "Select an option"}
+            </Select.Item>
+            
+            <Separator size="4" style={{ margin: '4px 0', opacity: 0.5 }} />
+
+            {inputOptions.map((inputoption, idx) => (
+              <React.Fragment key={`${alias}-opt-${inputoption.optionid || idx}`}>
+              {inputoption.optionurl ?            
+              <Select.Item 
+                id={String(inputoption.optionid) || `${alias}-item-${idx}`}
+                value={String(inputoption.optionvalue) || `__empty_${idx}`}
+                className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}>
+                <a onClick={(e) => { e.stopPropagation(); openLink(inputoption.optionurl || "#"); }} style={{textDecoration: 'none', color: 'inherit'}}>
+                  {inputoption.text}
+                </a>
+              </Select.Item>
+              : 
+              <Select.Item 
+                id={String(inputoption.optionid) || `${alias}-item-${idx}`}
+                value={String(inputoption.optionvalue) || `__empty_${idx}`}
+                className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
+              >
+                {inputoption.text}
+              </Select.Item>
+              }
+              </React.Fragment>
+            ))}
+          </Select.Content>
+        </Select.Root>
+
+         <div>
+              <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>{inputLabel}</Text>
+              &nbsp;   
+              {isHinted ? (
+                <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                    <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                      <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                    </a> 
+                </Tooltip>
+              ) : null} 
+              {hasError ? (
+                <p id={errorId} className='core-input-label-error'>
+                    {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
+                </p>
+              ) : null } 
+        </div>
+      </Flex>
     </Column>
-    </>
   );
 };
