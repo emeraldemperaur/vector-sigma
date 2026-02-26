@@ -73,12 +73,12 @@ interface RadioGroupProps {
    * * Required  inputOptions{} for the Radio Group input field.
    * * @example
    * inputOptions={
-            [
-              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
-              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
-              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
-              ]}
-    */
+   * [
+   * {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+   * {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+   * {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+   * ]}
+     */
     inputOptions: InputOption[];
     /**
    * * Option to specify CSS layout direction for the Radio Group input field.
@@ -112,9 +112,9 @@ interface RadioGroupProps {
    */
     style?: React.CSSProperties;
     /**
-     * * Optional explicit Formik context. Useful when bypassing duplicate 
-     * context issues in monorepos or bundled npm packages.
-     */
+      * * Optional explicit Formik context. Useful when bypassing duplicate 
+      * context issues in monorepos or bundled npm packages.
+      */
     formikContext?: FormikContextType<any>;
 }
 
@@ -174,37 +174,29 @@ export const RadioGroupInput = ({
 
       {inputtype === 'radio-neumorphic' && (
         <style dangerouslySetInnerHTML={{__html: `
-          /* Target the specific Radio Item button class */
           .neu-radio .rt-RadioGroupItem { 
             background-color: var(--neu-bg);
             border: none;
-            /* Circular Shadows */
             box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
             width: 20px;
             height: 20px;
             transition: all 0.2s ease;
           }
-          
-          /* Checked State: Inset Shadow (Pressed In) */
           .neu-radio .rt-RadioGroupItem[data-state='checked'] {
             box-shadow: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light);
             background-color: var(--neu-bg); 
           }
-
-          /* The Inner Dot Indicator */
           .neu-radio .rt-RadioGroupIndicator {
              background-color: var(--neu-check-color);
              width: 50%;
              height: 50%;
              border-radius: 50%;
           }
-          
-          /* Hover Effect */
           .neu-radio .rt-RadioGroupItem:hover {
             transform: scale(1.05);
           }
           .neu-radio .rt-RadioGroupItem[data-state='checked']:hover {
-            transform: none; /* Don't scale if pressed in */
+            transform: none;
           }
         `}} />
       )}
@@ -214,7 +206,8 @@ export const RadioGroupInput = ({
         id={`${alias}FormInput`}
         aria-describedby={`${alias}InputLabel`}
         disabled={readOnly}
-        value={fieldValue !== undefined && fieldValue !== null ? String(fieldValue) : undefined}
+        // FIX: Falling back to "" ensures the component remains controlled at all times
+        value={fieldValue !== undefined && fieldValue !== null ? String(fieldValue) : ""}
         onValueChange={(val) => {
           setFieldValue(alias, val);
           setTimeout(() => setFieldTouched(alias, true, false), 0);
@@ -225,15 +218,15 @@ export const RadioGroupInput = ({
           gap="3"
           style={neuVars}
         >
-          {inputOptions.map((inputoption) => {
-             const isChecked = String(fieldValue) === String(inputoption.optionvalue);
+          {inputOptions.map((inputoption, idx) => {
+             const optionValue = String(inputoption.optionvalue);
+             const isChecked = String(fieldValue) === optionValue;
 
              return (
-              <Flex asChild key={String(inputoption.optionvalue)} align="center" gap="2">
+              <Flex asChild key={`${alias}-radio-${idx}`} align="center" gap="2">
                 <Text as="label" size="2" style={{ cursor: 'pointer' }}>
-                  
                   <RadioGroup.Item 
-                    value={String(inputoption.optionvalue)}
+                    value={optionValue}
                     className={inputtype === 'radio-neumorphic' ? 'neu-radio' : ''}
                     style={{
                       ...(inputtype === 'radio-outline' ? {
@@ -253,21 +246,19 @@ export const RadioGroupInput = ({
       <div>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>{inputLabel}</Text>
             &nbsp;
-            {isHinted ?
-                <>
-                    <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                                  <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                                  <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                                  </a> 
-                              </Tooltip>
-                </> : null} 
-             {hasError ?
-                <>
-                    <p id={errorId} className='core-input-label-error'>
-                            {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
-                    </p>
-                </> : null } 
-     </div>
+            {isHinted && (
+                <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                    <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                        <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                    </a> 
+                </Tooltip>
+            )} 
+             {hasError && (
+                <p id={errorId} className='core-input-label-error'>
+                    {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
+                </p>
+             )} 
+      </div>
     </Flex>
     </Column>
   );
