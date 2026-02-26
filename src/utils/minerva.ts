@@ -1,19 +1,18 @@
 import { XFormType, XFormQuery } from "./voltron";
 
 /**
- * Utility to convert any string to camelCase (e.g., "USER NAME" -> "userName", "user_profile" -> "userProfile")
+ * Utility to convert string to camelCase (e.g., "USER NAME" -> "userName", "user_profile" -> "userProfile")
  * Safely handles ALL CAPS, snake_case, spaces, and existing camelCase.
- * @param str - String to convert to camelCase format
  */
 const toCamelCase = (str: string): string => {
   if (!str) return "";
   
   const words = str
-    .replace(/([a-z])([A-Z])/g, '$1 $2') // 1. Split existing camelCase with a space
-    .replace(/[^a-zA-Z0-9]+/g, ' ')      // 2. Replace non-alphanumeric characters with spaces
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Split existing camelCase with a space
+    .replace(/[^a-zA-Z0-9]+/g, ' ')      // Replace non-alphanumeric characters with spaces
     .trim()
-    .toLowerCase()                       // 3. Lowercase everything
-    .split(/\s+/);                       // 4. Split into an array of words
+    .toLowerCase()                       // Lowercase everything
+    .split(/\s+/);                       // Split into an array of words
     
   if (words.length === 0 || words[0] === '') return "";
   
@@ -24,9 +23,8 @@ const toCamelCase = (str: string): string => {
 };
 
 /**
- * Utility to convert a string to kebab-case (e.g., "Profile Section" -> "profile-section")
+ * Utility to convert string to kebab-case (e.g., "Profile Section" -> "profile-section")
  * Ensures code-friendly standard strings.
- * @param str - String to convert to kebab-case format
  */
 const toKebabCase = (str: string): string => {
   if (!str) return "";
@@ -39,22 +37,21 @@ const toKebabCase = (str: string): string => {
 
 /**
  * Normalizes and sanitizes an XFormType object.
- * - Standardizes Section IDs (Consecutive numbers or code-friendly strings).
+ * - Standardizes Section IDs.
  * - Enforces globally consecutive Query IDs.
  * - Ensures unique, Formik-friendly camelCase Input Aliases.
- * - Auto-fills empty inputAliases with unique 'undefinedElement[N]' placeholder.
- * @param xform - xForm object {} to normalize `sectionId`, `queryId` and `inputAlias` attributes for `<Teletraan1/>` component
+ * - Prevents empty string values in Input Options (Fixes Radix UI crashes).
  */
-export const normalizeXForm = (xform: XFormType): XFormType => {
+export const normalizeXForm = (form: XFormType): XFormType => {
   // Deep clone the object to prevent mutating the original data reference
-  const normalizedForm: XFormType = JSON.parse(JSON.stringify(xform));
+  const normalizedForm: XFormType = JSON.parse(JSON.stringify(form));
 
   if (!normalizedForm.model || normalizedForm.model.length === 0) {
     return normalizedForm;
   }
 
   // ==========================================
-  // 1. SECTION ID NORMALIZATION
+  //  SECTION ID NORMALIZATION
   // ==========================================
   const firstSectionId = normalizedForm.model[0].sectionId;
   const isFirstSectionNumbered = !isNaN(Number(firstSectionId)) && String(firstSectionId).trim() !== '';
@@ -63,69 +60,67 @@ export const normalizeXForm = (xform: XFormType): XFormType => {
 
   normalizedForm.model.forEach((section) => {
     if (isFirstSectionNumbered) {
-      // If the first section was a number, make all subsequent sections consecutive numbers
       section.sectionId = String(sectionCounter++);
     } else {
-      // Otherwise, sanitize to a code-friendly string
       section.sectionId = toKebabCase(section.sectionId) || `section-${sectionCounter++}`;
     }
   });
 
 
   // ==========================================
-  // 2. QUERY ID & ALIAS NORMALIZATION
+  //  QUERY ID, ALIAS, & OPTIONS NORMALIZATION
   // ==========================================
   const aliasTracker: Record<string, number> = {};
   let undefinedCounter = 1;
   
-  // Set the global query counter based on the very first query's ID (defaults to 1)
   let globalQueryId = 1;
   const firstQuery = normalizedForm.model[0]?.queries?.[0];
   if (firstQuery && typeof firstQuery.queryId === 'number' && !isNaN(firstQuery.queryId)) {
       globalQueryId = firstQuery.queryId;
   }
 
-  // Recursive function to process flat queries AND nested conditional queries
   const processQuery = (query: XFormQuery) => {
     
-    // A. Assign consecutive ordered queryId
     query.queryId = globalQueryId++;
 
-    // B. Sanitize inputAlias to camelCase
     let baseAlias = toCamelCase(query.inputAlias);
     
-    // C. Handle completely empty/invalid strings
     if (!baseAlias) {
-      // Ensure we don't collide with a user who manually typed "undefinedElement1"
       let potentialAlias = `undefinedElement${undefinedCounter}`;
       while (aliasTracker[potentialAlias]) {
         undefinedCounter++;
         potentialAlias = `undefinedElement${undefinedCounter}`;
       }
       query.inputAlias = potentialAlias;
-      aliasTracker[potentialAlias] = 1; // Mark this generated alias as used
+      aliasTracker[potentialAlias] = 1; 
       undefinedCounter++;
     } 
-    // D. Enforce global uniqueness across all sections for standard aliases
     else {
       if (aliasTracker[baseAlias]) {
-        // Duplicate found: Increment the count and attach it (e.g., "userProfile2")
         aliasTracker[baseAlias]++;
         query.inputAlias = `${baseAlias}${aliasTracker[baseAlias]}`;
       } else {
-        // First instance: Record it as 1
         aliasTracker[baseAlias] = 1;
         query.inputAlias = baseAlias;
       }
     }
 
-    // E. Recursively process toggledInput if the query contains conditional logic
+    if (query.inputOptions && Array.isArray(query.inputOptions)) {
+      query.inputOptions.forEach((option) => {
+        if (
+          option.optionvalue == null || 
+          (typeof option.optionvalue === 'string' && option.optionvalue.trim() === '')
+        ) {
+          option.optionvalue = `__empty_${option.optionid}`;
+        }
+      });
+    }
+
     if (query.toggledInput) {
       processQuery(query.toggledInput);
     }
   };
 
-  // Run the processor over all queries in all sections
   normalizedForm.model.forEach((section) => {
     if (section.queries && Array.isArray(section.queries)) {
       section.queries.forEach((query) => {

@@ -288,7 +288,7 @@ export const OptionSelect = ({
                 {inputoption.optionurl ? (
                   <Select.Item 
                     id={String(inputoption.optionid) || ''}
-                    value={String(inputoption.optionvalue)}
+                    value={String(inputoption.optionvalue) || `__empty_${inputoption.optionid}`}
                     className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
                   >
                     <a 
@@ -301,7 +301,7 @@ export const OptionSelect = ({
                 ) : (
                   <Select.Item 
                     id={String(inputoption.optionid) || ''}
-                    value={String(inputoption.optionvalue)}
+                    value={String(inputoption.optionvalue) || `__empty_${inputoption.optionid}`}
                     className={inputtype === 'dropdown-neumorphic' ? 'neu-select-item' : ''}
                   >
                     {inputoption.text}
