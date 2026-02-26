@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.32
+
+### Patch Changes
+
+- 234cdb8: xForm Component :: Dropdown, OptionSelect Radix Select.Item placeholder value fix
+
 ## 1.4.31
 
 ### Patch Changes
