@@ -141,10 +141,10 @@ export interface InputOption {
 
 export const InputOptionsPlaceholder = {
   optionid: crypto.randomUUID(),
-  text: "",
-  optionvalue: "",
-  tag: "",
+  text: "loremipsum",
+  optionvalue: "__RESET__",
+  tag: "DEBUG",
   score: 0,
-  note: "",
+  note: "None",
   optionUrl: ""
 }
