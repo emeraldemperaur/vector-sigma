@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.33
+
+### Patch Changes
+
+- 90a47c4: xForm Component :: Teletraan1 Nested Rows Layout, OptionSelect unique reset key fix
+
 ## 1.4.32
 
 ### Patch Changes
