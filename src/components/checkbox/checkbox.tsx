@@ -207,6 +207,8 @@ export const CheckboxGroupInput = ({
         gap="3"
         style={neuVars} 
         id={inputId}
+        aria-labelledby={`${alias}InputLabel`}
+        role="group"
       >
         {inputOptions.map((inputoption, idx) => {
           const optionVal = String(inputoption.optionvalue);
@@ -250,7 +252,7 @@ export const CheckboxGroupInput = ({
       </Grid>
 
       <div>
-          <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>{inputLabel}</Text>
+          <Text id={`${alias}InputLabel`} as="div" size="2" weight="bold">{inputLabel}</Text>
           &nbsp;
           {isHinted && (
             <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
