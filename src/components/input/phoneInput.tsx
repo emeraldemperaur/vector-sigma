@@ -48,6 +48,7 @@ export const PhoneInput = ({
                 <TextField.Root 
                     id={`${alias}PhoneInput`} 
                     size={size} 
+                    autoComplete="off"
                     variant="surface" 
                     color={hasError ? "red" : undefined}
                     className={`${variantClass} ${className || ''}`}

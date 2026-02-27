@@ -263,7 +263,6 @@ export const CurrencyInput = ({
                     <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
                         {inputLabel}
                     </Text>
-                    &nbsp;
                     {isHinted && (
                         <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>

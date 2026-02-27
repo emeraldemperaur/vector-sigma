@@ -244,7 +244,6 @@ export const RadioGroupInput = ({
 
       <div>
             <Text id={`${alias}InputLabel`} as="div" size="2" weight="bold">{inputLabel}</Text>
-            &nbsp;
             {isHinted && (
                 <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                     <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">

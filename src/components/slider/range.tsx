@@ -227,7 +227,7 @@ export const RangeSlider = ({
             <Text id={labelId} as="div" size="2" weight="bold" style={{ display: 'inline' }}>
                {inputLabel}
             </Text>
-                &nbsp;
+                
                 {isHinted && (
                         <>
                         <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">

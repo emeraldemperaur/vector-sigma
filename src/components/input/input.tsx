@@ -174,6 +174,7 @@ export const Input = ({
                     id={`${alias}FormInput`} 
                     aria-describedby={`${alias}InputLabel`}
                     readOnly={readOnly} 
+                    autoComplete="off"
                     placeholder={placeholder} 
                     className={`${variantClass} ${className || ''}`}
                     style={style}
