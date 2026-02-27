@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.37
+
+### Patch Changes
+
+- dfda5e6: xForm Components :: Teletraan1 dualmode brandcolor fix
+
 ## 1.4.36
 
 ### Patch Changes
