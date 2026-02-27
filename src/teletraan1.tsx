@@ -141,7 +141,7 @@ export const Teletraan1 = ({
             case checkboxInputType.includes(normalizedType):
                 return <CheckboxGroupInput {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case conditionalInputType.includes(normalizedType):
-                return <ConditionalTrigger {...layoutProps} inputOptions={inputOptions} triggerValue={defaultValue} children={toggledInput}/>
+                return <ConditionalTrigger {...layoutProps} inputOptions={inputOptions} triggerValue={triggerValue} children={toggledInput}/>
             case datePickerInputType.includes(normalizedType):
                 return <DatePicker {...layoutProps} placeholder={inputPlaceholder} />
             case dateRangePickerInputType.includes(normalizedType):
@@ -214,8 +214,8 @@ export const Teletraan1 = ({
             case 'dual':
                 return (
                     <>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-                            <span>Dual Display</span>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '20px' }}>
+                            <span style={{ fontWeight: 600 }}>Dual Display</span>
                             <div 
                                 className="neu-toggle-wrapper"
                                 style={{ ...neuVars, opacity: readOnlyMode ? 0.6 : 1, pointerEvents: readOnlyMode ? 'none' : 'auto' }}
@@ -235,7 +235,7 @@ export const Teletraan1 = ({
                         {dualToggled ? 
                             <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
                                 {xFormModel.model.map((formsection) => (
-                                    <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title}>
+                                    <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}>
                                         <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
                                     </AccordionItem>
                                 ))}
@@ -243,7 +243,7 @@ export const Teletraan1 = ({
                         : 
                             xFormModel.model.map((formsection) => (
                                 <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-                                    <SectionTitle title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
+                                    <SectionTitle title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}/>
                                     <Row>{renderQueries(formsection.queries)}</Row>
                                 </React.Fragment>
                             ))
@@ -255,7 +255,7 @@ export const Teletraan1 = ({
                 return (
                     <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
                         {xFormModel.model.map((formsection) => (
-                            <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title}>
+                            <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}>
                                 <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
                             </AccordionItem>
                         ))}
@@ -266,7 +266,8 @@ export const Teletraan1 = ({
                 return (
                     <Codex brandColor={brandColor}>
                         {xFormModel.model.map((formsection, index, array) => (
-                            <CodexItem key={formsection.sectionId} stepId={String(formsection.sectionId)} title={formsection.title}>
+                            <CodexItem key={formsection.sectionId} stepId={String(formsection.sectionId)} title={formsection.title}
+                            icon={<Icon name={formsection.icon || "fontfamily"}/>}>
                                 <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
                                 <CodexControls 
                                     prevStepId={index > 0 ? String(array[index - 1].sectionId) : undefined} 

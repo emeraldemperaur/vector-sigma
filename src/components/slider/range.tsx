@@ -145,12 +145,6 @@ export const RangeSlider = ({
   const fieldTouched = getIn(touched, alias);
   const fieldError = getIn(errors, alias);
   
-  // Range Formik Logic 
-  // Synopsis
-  // Radix slider component requires an array. 
-  // If field value is [20, 80] pass [20, 80].
-  // If field value is 50 we pass [50].
-  // If field value is undefined, default to [min] or [min, max].
   const isRange = Array.isArray(fieldVal);
   const sliderValue = isRange ? fieldVal : [fieldVal || minvalue];
   const hasError = Boolean(fieldTouched && fieldError);
@@ -158,6 +152,7 @@ export const RangeSlider = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   const errorId = `${alias}-error`;
+  const labelId = `${alias}InputLabel`;
 
   useEffect(() => {
     if (inputtype === 'range-neumorphic' && containerRef.current) {
@@ -195,13 +190,9 @@ export const RangeSlider = ({
           box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light);
           border-radius: 99px;
         }
-        .neu-slider .rt-SliderRange {
-          background-color: var(--neu-accent);
-          border-radius: 99px;
-        }
+        .neu-slider .rt-SliderRange { background-color: var(--neu-accent); border-radius: 99px; }
         .neu-slider .rt-SliderThumb {
-          background-color: var(--neu-bg);
-          border: 2px solid var(--neu-bg);
+          background-color: var(--neu-bg); border: 2px solid var(--neu-bg);
           width: 24px; height: 24px;
           box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
         }
@@ -209,29 +200,22 @@ export const RangeSlider = ({
         .neu-slider .rt-SliderThumb:active { transform: scale(0.95); cursor: grabbing; }
 
         /* Outline */
-        .outline-slider .rt-SliderTrack {
-           height: 4px; background-color: transparent; border: 1px solid var(--gray-8);
-        }
+        .outline-slider .rt-SliderTrack { height: 4px; background-color: transparent; border: 1px solid var(--gray-8); }
         .outline-slider .rt-SliderRange { background-color: var(--accent-9); }
-        .outline-slider .rt-SliderThumb {
-           background-color: white; border: 2px solid var(--accent-9); box-shadow: none;
-        }
+        .outline-slider .rt-SliderThumb { background-color: white; border: 2px solid var(--accent-9); box-shadow: none; }
       `}} />
 
       <Slider 
         name={alias}
         id={`${alias}FormInput`} 
         disabled={readOnly}
-        aria-describedby={`${alias}InputLabel`}
+        aria-labelledby={labelId}
         min={minvalue} 
         max={maxvalue} 
         step={stepvalue}
         minStepsBetweenThumbs={minStepsBetweenThumbs}
         value={sliderValue}
         onValueChange={(val) => {
-          // LOGIC SYNOPSIS:
-          // If Range, set value as array.
-          // If Slider, set value as first value.
           setFieldValue(alias, isRange ? val : val[0]);
         }}
         onValueCommit={() => setFieldTouched(alias, true, false)}
@@ -240,22 +224,26 @@ export const RangeSlider = ({
       />
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>{inputLabel}</Text>
+            <Text id={labelId} as="div" size="2" weight="bold" style={{ display: 'inline' }}>
+               {inputLabel}
+            </Text>
                 &nbsp;
-                {isHinted ?
+                {isHinted && (
                         <>
                         <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                             <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a> 
                         </Tooltip>
-                        </> : null} 
-                 {hasError ?
+                        </>
+                )} 
+                 {hasError && (
                         <>
                         <p id={errorId} className='core-input-label-error'>
                             {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
                         </p>
-                        </> : null } 
+                        </>
+                 )} 
       </div>
     </Flex>
     </Column>

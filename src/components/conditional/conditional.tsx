@@ -3,6 +3,8 @@ import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Box, Flex, Text, Switch, Checkbox, Select, Card, Tooltip } from '@radix-ui/themes';
 import { InputOption } from "utils/vinci";
 import { Column } from "layouts/column/column";
+// IMPORTANT: Import your layout Row if available, or we will use a CSS grid below
+// import { Row } from "layouts/row/row"; 
 import { Icon } from "components/icons/icons";
 import '../../styles/main.scss';
 
@@ -96,11 +98,11 @@ export interface ConditionalProps {
    * * Required  inputOptions{} for the Conditional Trigger input field.
    * * @example
    * inputOptions={
-            [
-              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
-              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
-              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
-              ]}
+   * [
+   * {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
+   * {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
+   * {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
+   * ]}
   */   
   inputOptions?: InputOption[]; 
    /**
@@ -202,7 +204,7 @@ export const ConditionalTrigger = ({
   const fieldTouched = getIn(touched, alias);
   const fieldError = getIn(errors, alias);
 
-  const inputId = `${alias}FormInput` || crypto.randomUUID();
+  const inputId = `${alias}FormInput`;
   const errorId = `${alias}-error`;
 
   // Trigger (Equality) Logic :: If current Field value === trigger value
@@ -217,8 +219,7 @@ export const ConditionalTrigger = ({
   const hasError = Boolean(fieldTouched && fieldError);
 
   const renderTrigger = () => {
-    switch (true) {
-      case inputtype.includes('conditionalcheckbox'):
+    if (inputtype.includes('conditionalcheckbox') || inputtype.includes('conditional-checkbox')) {
         return (
           <Flex align="center" gap="2" style={{ cursor: 'pointer' }}>
             <Checkbox 
@@ -230,25 +231,25 @@ export const ConditionalTrigger = ({
             />
           </Flex>
         );
-
-      case inputtype.includes('conditionalselect'):
+    } 
+    else if (inputtype.includes('conditionalselect') || inputtype.includes('conditional-select')) {
         return (
           <Flex direction="column" gap="1" style={{ width: '100%' }}>
             <Select.Root
               name={alias}
               disabled={readOnly}
-              value={fieldValue} 
-              defaultValue={placeholder || ""}
+              value={fieldValue !== undefined ? String(fieldValue) : undefined} 
               onValueChange={handleChange}
             >
               <Select.Trigger 
                 id={inputId}
                 variant={isNeumorphic ? 'soft' : 'surface'} 
                 style={{ width: '100%' }}
+                placeholder={placeholder || "Select"}
               />
               <Select.Content>
-                {inputOptions.map((inputoption) => (
-                  <Select.Item key={String(inputoption.optionvalue) || crypto.randomUUID()} value={String(inputoption.optionvalue)}>
+                {inputOptions.map((inputoption, idx) => (
+                  <Select.Item key={`${alias}-opt-${inputoption.optionid || idx}`} value={String(inputoption.optionvalue)}>
                     {inputoption.text}
                   </Select.Item>
                 ))}
@@ -256,9 +257,8 @@ export const ConditionalTrigger = ({
             </Select.Root>
           </Flex>
         );
-
-      case inputtype.includes('conditionaltoggle'):
-      default:
+    } 
+    else {
         return (
           <Flex justify="between" align="center" style={{ width: '100%' }}>
             <Switch 
@@ -300,34 +300,33 @@ export const ConditionalTrigger = ({
            <Box 
              style={{ 
                paddingTop: '8px',
-               borderTop: isOpen && !isNeumorphic ? '1px dashed var(--gray-6)' : 'none'
+               borderTop: isOpen && !isNeumorphic ? '1px dashed var(--gray-6)' : 'none',
              }}
            >
-             {children}
+             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '16px', width: '100%' }}>
+               {children}
+             </div>
            </Box>
         </div>
       </div>
 
-      <div>
+      <div style={{ marginTop: '8px' }}>
             <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId} style={{ cursor: 'pointer' }}>
                 {inputLabel}
             </Text>
             &nbsp;
-            {isHinted ?
-                  <>
+            {isHinted && (
                   <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                       <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                       </a> 
                   </Tooltip>
-                  </> : null} 
-             {hasError ?
-                  <>
+            )} 
+             {hasError && (
                   <p id={errorId} className='core-input-label-error'>
-                      {typeof fieldError === 'string' ? <>{errorText || "Required field"}</> 
-                      : 'Invalid file selection'}
+                      {typeof fieldError === 'string' ? <>{errorText || "Required field"}</> : 'Invalid selection'}
                   </p>
-                  </> : null }       
+             )}      
         </div>
 
     </Box>

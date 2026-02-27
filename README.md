@@ -95,7 +95,7 @@ const App = () => {
 </li>
 
 <li><strong>🧩Exported UI Components</strong></br>
-<p align="justify">Explicitly exported reusable form UI components with material, outline and neumorphic design variants from package entry point <code>src/index.ts</code> to enable developer-friendly use as lightweight component library.</p>
+<p align="justify">Explicitly exported reusable form UI components with material, outline and neumorphic design variants from package entry point <code>src/index.ts</code> to enable developer-friendly use as lightweight ARIA compliant component library.</p>
 <p><em>Container, Row, Column, Theme, Accordion, AccordionItem, Codex, CodexItem, CodexControls, AvatarInput, ButtonInput, CheckboxGroupInput, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, CreditCardInput, CurrencyInput, StockInput, RadioGroupInput, OptionSelect, MultipleSelect, RangeSlider, SliderInput, Toggle, SectionTitle, Teletraan1 (Render Matrix)</em></p>
 
 ```javascript

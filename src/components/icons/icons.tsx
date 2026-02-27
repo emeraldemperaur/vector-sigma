@@ -31,7 +31,8 @@ import { SunIcon, MoonIcon, GearIcon, PersonIcon, QuestionMarkCircledIcon,
     VideoIcon,
     ShuffleIcon,
     LoopIcon,
-    MixIcon} from '@radix-ui/react-icons';
+    MixIcon,
+    HeadingIcon} from '@radix-ui/react-icons';
 import { ChevronDownIcon } from "@radix-ui/themes";
 
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -160,7 +161,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   fontfamily: FontFamilyIcon,
   video: VideoIcon,
   shuffle: ShuffleIcon,
-  loop: LoopIcon
+  loop: LoopIcon,
+  heading: HeadingIcon,
 };
 
 interface DynamicIconProps extends ComponentProps<typeof SunIcon> {
