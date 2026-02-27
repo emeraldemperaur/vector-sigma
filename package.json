@@ -88,7 +88,9 @@
     "react-phone-number-input": "^3.4.14"
   },
   "overrides": {
-    "minimatch": "^10.2.1"
+    "minimatch": "^10.2.1",
+    "glob": "^10.4.0",
+    "whatwg-encoding": "npm:@exodus/bytes@latest"
   },
   "publishConfig": {
     "access": "public"

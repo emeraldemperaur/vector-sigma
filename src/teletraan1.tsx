@@ -242,7 +242,7 @@ export const Teletraan1 = ({
                         : 
                             xFormModel.model.map((formsection) => (
                                 <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-                                    <SectionTitle backgroundColor={brandColor} title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}/>
+                                    <SectionTitle withSeparator={false} backgroundColor={brandColor} titleColor='#FFFFFF' title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}/>
                                     <Row>{renderQueries(formsection.queries)}</Row>
                                 </React.Fragment>
                             ))
@@ -286,7 +286,7 @@ export const Teletraan1 = ({
                     <React.Fragment key={xFormModel.uuid}>
                         {xFormModel.model.map((formsection) => (
                             <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-                                <SectionTitle backgroundColor={brandColor} title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
+                                <SectionTitle withSeparator={false} backgroundColor={brandColor} titleColor='#FFFFFF' title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
                                 <Row>{renderQueries(formsection.queries)}</Row>
                             </React.Fragment>
                         ))}
