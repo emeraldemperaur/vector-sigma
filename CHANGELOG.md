@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.36
+
+### Patch Changes
+
+- f4d1b70: xForm Components :: ARIA compliance update
+
 ## 1.4.35
 
 ### Patch Changes
