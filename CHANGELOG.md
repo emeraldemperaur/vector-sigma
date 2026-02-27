@@ -1,5 +1,14 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.38
+
+### Patch Changes
+
+- bfe496b: Clean Build Fix
+- 03ed188: build error fix
+- 1b04ca1: xForm Component :: SectionTitle style fix
+- e2868f5: Sync package-lock with package.json
+
 ## 1.4.37
 
 ### Patch Changes
