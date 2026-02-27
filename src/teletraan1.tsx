@@ -139,7 +139,7 @@ export const Teletraan1 = ({
             case buttonInputType.includes(normalizedType):
                 return <ButtonInput {...layoutProps}>{defaultValue}</ButtonInput>
             case checkboxInputType.includes(normalizedType):
-                return <CheckboxGroupInput {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
+                return <CheckboxGroupInput {...layoutProps} direction='row' inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case conditionalInputType.includes(normalizedType):
                 return <ConditionalTrigger {...layoutProps} inputOptions={inputOptions} triggerValue={triggerValue} children={toggledInput}/>
             case datePickerInputType.includes(normalizedType):
@@ -215,7 +215,6 @@ export const Teletraan1 = ({
                 return (
                     <>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '20px' }}>
-                            <span style={{ fontWeight: 600 }}>Dual Display</span>
                             <div 
                                 className="neu-toggle-wrapper"
                                 style={{ ...neuVars, opacity: readOnlyMode ? 0.6 : 1, pointerEvents: readOnlyMode ? 'none' : 'auto' }}

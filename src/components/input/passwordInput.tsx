@@ -58,6 +58,7 @@ export const PasswordInput = ({
                     placeholder={placeholder} 
                     color={hasError ? "red" : undefined}
                     className={`${variantClass} ${className || ''}`}
+                    autoComplete="off"
                     {...inputField} 
                     {...props} 
                 >
