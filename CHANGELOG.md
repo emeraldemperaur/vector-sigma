@@ -1,5 +1,12 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.34
+
+### Patch Changes
+
+- efcd82f: xForm Components :: ARIA compliance update
+- c193130: xForm Components :: InputGroup Components triage fixes 26.02
+
 ## 1.4.33
 
 ### Patch Changes
