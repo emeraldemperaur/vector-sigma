@@ -78,7 +78,7 @@ export const CodexControls = ({
     prevIcon = "doublearrowleft",
     nextIcon = "doublearrowright",
     finishIcon = "paperplane",
-    onSubmit = false,
+    onSubmit = true,
     onNext,
     onPrev,
     onFinish

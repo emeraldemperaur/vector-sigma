@@ -282,7 +282,7 @@ export const Codex = ({
                         </Flex>
                     </Box>
 
-                    <Box style={{ position: 'relative' }}>
+                    <Box style={{ position: 'relative', marginTop: '33px', marginBottom: '33px' }}>
                         {children}
                     </Box>
 

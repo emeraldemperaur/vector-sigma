@@ -149,7 +149,6 @@ export const CheckboxGroupInput = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
   
-  // FIXED: Stable ID to prevent re-render jumps
   const inputId = `${alias}FormInput`;
   const errorId = `${alias}-error`;
 
@@ -161,7 +160,6 @@ export const CheckboxGroupInput = ({
       newValues = newValues.filter((v) => String(v) !== String(value));
     }
     setFieldValue(alias, newValues);
-    // Use timeout to ensure Formik state is committed before triggering touch
     setTimeout(() => setFieldTouched(alias, true, false), 0);
   };
 
@@ -180,7 +178,7 @@ export const CheckboxGroupInput = ({
   return (
     <Column span={width} newLine={newRow}>
     <Flex 
-      direction="column" 
+      direction="row" 
       gap="2" 
       width="100%" 
       ref={containerRef} 
@@ -208,6 +206,7 @@ export const CheckboxGroupInput = ({
         columns={columns || (direction === 'row' ? 'repeat(auto-fit, minmax(100px, 1fr))' : '1')} 
         gap="3"
         style={neuVars} 
+        id={inputId}
       >
         {inputOptions.map((inputoption, idx) => {
           const optionVal = String(inputoption.optionvalue);

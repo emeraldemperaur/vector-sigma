@@ -142,6 +142,7 @@ export const SliderInput = ({
   const hasError = Boolean(fieldTouched && fieldError);
   const containerRef = useRef<HTMLDivElement>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+  const labelId = `${alias}InputLabel`;
   const errorId = `${alias}-error`;
 
   useEffect(() => {
@@ -234,7 +235,7 @@ export const SliderInput = ({
         name={alias}
         id={`${alias}FormInput`} 
         disabled={readOnly}
-        aria-describedby={`${alias}InputLabel`}
+        aria-labelledby={labelId}
         min={minvalue} 
         max={maxvalue} 
         step={stepvalue}
@@ -251,7 +252,7 @@ export const SliderInput = ({
       />
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>{inputLabel}</Text>
+            <Text id={labelId} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>{inputLabel}</Text>
                 &nbsp;
                 {isHinted ?
                         <>

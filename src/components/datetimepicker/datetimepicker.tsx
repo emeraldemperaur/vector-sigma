@@ -120,8 +120,9 @@ export const DateTimePicker = ({
     const fieldValue = getIn(values, alias);
     const fieldTouched = getIn(touched, alias);
     const fieldError = getIn(errors, alias);
-
-    const inputId = `${alias}FormInput` || crypto.randomUUID();
+    const inputId = `${alias}FormInput`;
+    const labelId = `${alias}InputLabel`;
+    
     const hasError = Boolean(fieldTouched && fieldError);
     const errorId = `${alias}-error`;
     const containerRef = useRef<HTMLDivElement>(null);
@@ -259,6 +260,7 @@ export const DateTimePicker = ({
                     dateFormat="MMM d, yyyy h:mm aa"
                     disabled={readOnly}
                     placeholderText={placeholder}
+                    aria-labelledby={labelId}
                     customInput={
                         <TextField.Root 
                             id={inputId}
@@ -272,7 +274,7 @@ export const DateTimePicker = ({
                     }
                 />
                 <div>
-                    {inputLabel && <Text size="2" weight="bold" as="label" htmlFor={inputId}>{inputLabel}</Text>}
+                    {inputLabel && <Text id={labelId} size="2" weight="bold" as="div" style={{ display: 'inline' }}>{inputLabel}</Text>}
                     
                     {isHinted && (
                         <Tooltip content={hintText || "No hint"} align="start">

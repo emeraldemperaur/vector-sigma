@@ -307,7 +307,7 @@ export const AccordionItem = ({
             </RadixAccordion.Header>
 
             <RadixAccordion.Content className="v-accordion-content" style={{ overflow: 'hidden' }}>
-                <div style={{ padding: '0 16px 16px 16px' }}>
+                <div style={{ padding: '24px 16px 24px 16px' }}>
                     <Text size="2" color="gray" as="div">
                         {children}
                     </Text>

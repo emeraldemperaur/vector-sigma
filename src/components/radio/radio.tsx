@@ -204,9 +204,8 @@ export const RadioGroupInput = ({
       <RadioGroup.Root 
         name={alias}
         id={`${alias}FormInput`}
-        aria-describedby={`${alias}InputLabel`}
+        aria-labelledby={`${alias}InputLabel`}
         disabled={readOnly}
-        // FIX: Falling back to "" ensures the component remains controlled at all times
         value={fieldValue !== undefined && fieldValue !== null ? String(fieldValue) : ""}
         onValueChange={(val) => {
           setFieldValue(alias, val);
@@ -244,7 +243,7 @@ export const RadioGroupInput = ({
       </RadioGroup.Root>
 
       <div>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>{inputLabel}</Text>
+            <Text id={`${alias}InputLabel`} as="div" size="2" weight="bold">{inputLabel}</Text>
             &nbsp;
             {isHinted && (
                 <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">

@@ -120,8 +120,8 @@ export const DatePicker = ({
     const fieldValue = getIn(values, alias);
     const fieldTouched = getIn(touched, alias);
     const fieldError = getIn(errors, alias);
-
-    const inputId = `${alias}FormInput` || crypto.randomUUID();
+    const inputId = `${alias}FormInput`;
+    const labelId = `${alias}InputLabel`;
     const hasError = Boolean(fieldTouched && fieldError);
     const containerRef = useRef<HTMLDivElement>(null);
     const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
@@ -215,6 +215,7 @@ export const DatePicker = ({
                     disabled={readOnly}
                     placeholderText={placeholder}
                     dateFormat="MMM d, yyyy"
+                    aria-labelledby={labelId}
                     customInput={
                         <TextField.Root 
                             id={inputId}
@@ -229,7 +230,7 @@ export const DatePicker = ({
                 />
 
                 <div>
-                    {inputLabel && <Text size="2" weight="bold" as="label" htmlFor={inputId}>{inputLabel}</Text>}
+                    {inputLabel && <Text id={labelId} size="2" weight="bold" as="div" style={{ display: 'inline' }}>{inputLabel}</Text>}
                     {isHinted && (
                         <Tooltip content={hintText || "No hint"} align="start">
                             <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 6 }}>
