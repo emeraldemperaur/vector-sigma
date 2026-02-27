@@ -252,7 +252,7 @@ export const SliderInput = ({
       />
 
       <div>
-            <Text id={labelId} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>{inputLabel}</Text>
+            <Text id={labelId} as="div" size="2" weight="bold">{inputLabel}</Text>
                 &nbsp;
                 {isHinted ?
                         <>
