@@ -54,10 +54,13 @@ export const PhoneInput = ({
                     className={`${variantClass} ${className || ''}`}
                     {...props}
                 >
-                    <TextField.Slot id={crypto.randomUUID()} style={{ padding: 0 }}>
+                    <TextField.Slot style={{ padding: 0 }}>
                         <Select.Root 
                             value={country} 
-                            onValueChange={(value) => setCountry(value as Country)}
+                            onValueChange={(value) => {
+                                setCountry(value as Country);
+                                setFieldValue(alias, '');
+                            }}
                             name={`${alias}Country`}
                         >
                             <Select.Trigger 
@@ -82,7 +85,7 @@ export const PhoneInput = ({
                             
                             <Select.Content position="popper" style={{ minWidth: '240px', maxHeight: '300px' }}>
                                 {getCountries().map((c) => (
-                                    <Select.Item id={crypto.randomUUID()} key={c} value={c}>
+                                    <Select.Item key={c} value={c}>
                                         <Flex align="center" gap="2">
                                             <FlagIcon country={c} />
                                             <Text>{en[c]}</Text>
@@ -97,6 +100,7 @@ export const PhoneInput = ({
                     </TextField.Slot>
 
                     <Input
+                        type="tel" 
                         country={country}
                         name={alias}
                         international

@@ -2,7 +2,7 @@ import { XFormQuery, XFormType } from "./voltron";
 
 export const avatarInputType = ["avatar", "avatarinput", "avatar-input", "input-avatar", "inputavatar"];
 export const buttonInputType = ["button", "buttoninput", "button-input", "input-button", "inputbutton"];
-export const checkboxInputType = ["checkbox", "checkboxes", "checkboxinput", "chechbox-input", "input-checkbox", "inputcheckbox"];
+export const checkboxInputType = ["checkbox", "checkboxes", "checkboxinput", "chechbox-input", "input-checkbox", "inputcheckbox", "checkboxgroup-input"];
 export const datePickerInputType = ["datepicker", "datepickerinput", "datepicker-input", "input-datepicker", "inputdatepicker"];
 export const dateRangePickerInputType = ["daterangepicker", "daterangepickerinput", "daterangepicker-input", "input-daterangepicker", "inputdaterangepicker"];
 export const dateTimePickerInputType = ["datetimepicker", "datetimepickerinput", "datetimepicker-input", "input-datetimepicker", "inputdatetimepicker"];

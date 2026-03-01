@@ -3,8 +3,7 @@ import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Box, Flex, Text, Switch, Checkbox, Select, Card, Tooltip } from '@radix-ui/themes';
 import { InputOption } from "utils/vinci";
 import { Column } from "layouts/column/column";
-// IMPORTANT: Import your layout Row if available, or we will use a CSS grid below
-// import { Row } from "layouts/row/row"; 
+import { Row } from "layouts/row/row"; 
 import { Icon } from "components/icons/icons";
 import '../../styles/main.scss';
 
@@ -12,7 +11,7 @@ export type ToggleTriggerDesign = 'conditionaltoggle' | 'conditionaltoggle-outli
 export type CheckboxTriggerDesign = 'conditionalcheckbox' | 'conditionalcheckbox-outline' | 'conditionalcheckbox-material' | 'conditionalcheckbox-neumorphic';
 export type SelectTriggerDesign = 'conditionalselect' | 'conditionalselect-outline' | 'conditionalselect-material' | 'conditionalselect-neumorphic';
 
-export type TriggerType = 'conditionaltoggle' | 'conditionalcheckbox' | 'conditionalselect';
+export type TriggerType = 'conditionaltoggle' | 'conditionalcheckbox' | 'conditionalselect' | 'conditional-toggle' | 'conditional-checkbox' | 'conditional-select';
 
 export interface ConditionalProps {
   /**
@@ -207,7 +206,6 @@ export const ConditionalTrigger = ({
   const inputId = `${alias}FormInput`;
   const errorId = `${alias}-error`;
 
-  // Trigger (Equality) Logic :: If current Field value === trigger value
   const isOpen = fieldValue === triggerValue;
 
   const handleChange = (val: any) => {
@@ -300,12 +298,14 @@ export const ConditionalTrigger = ({
            <Box 
              style={{ 
                paddingTop: '8px',
+               paddingLeft: '4px',
+               paddingRight: '4px',
                borderTop: isOpen && !isNeumorphic ? '1px dashed var(--gray-6)' : 'none',
              }}
            >
-             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '16px', width: '100%' }}>
+             <Row>
                {children}
-             </div>
+             </Row>
            </Box>
         </div>
       </div>
