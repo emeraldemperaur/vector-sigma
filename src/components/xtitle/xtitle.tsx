@@ -124,8 +124,8 @@ export const SectionTitle = ({
                 style={{ 
                     width: '100%', 
                     boxSizing: 'border-box',
-                    marginTop: '23px',
-                    marginBottom: '23px',
+                    marginTop: '33px',
+                    marginBottom: '33px',
                     textAlign: align,
                     backgroundColor: backgroundColor || 'transparent',
                     padding: backgroundColor ? 'var(--space-3) var(--space-4)' : '0',

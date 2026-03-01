@@ -178,7 +178,7 @@ export const CheckboxGroupInput = ({
   return (
     <Column span={width} newLine={newRow}>
     <Flex 
-      direction="row" 
+      direction="column"
       gap="2" 
       width="100%" 
       ref={containerRef} 
@@ -203,6 +203,7 @@ export const CheckboxGroupInput = ({
       )}
 
       <Grid 
+        width="100%" 
         columns={columns || (direction === 'row' ? 'repeat(auto-fit, minmax(100px, 1fr))' : '1')} 
         gap="3"
         style={neuVars} 
@@ -251,19 +252,19 @@ export const CheckboxGroupInput = ({
         })}
       </Grid>
 
-      <div>
+      <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
           <Text id={`${alias}InputLabel`} as="div" size="2" weight="bold">{inputLabel}</Text>
           {isHinted && (
             <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
+                <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                   <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                 </a> 
             </Tooltip>
           )} 
           {hasError && (
-            <p id={errorId} className='core-input-label-error'>
+            <Text id={errorId} size="1" color="red" className='core-input-label-error'>
                 {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
-            </p>
+            </Text>
           )} 
        </div>
     </Flex>

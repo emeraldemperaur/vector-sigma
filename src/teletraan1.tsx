@@ -142,7 +142,7 @@ export const Teletraan1 = ({
                 return <CheckboxGroupInput {...layoutProps} direction='row' inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case conditionalInputType.includes(normalizedType):
                 return <ConditionalTrigger {...layoutProps} inputOptions={inputOptions} 
-                inputtype={inputType !== "conditionaltoggle" || "conditionalcheckbox" || "conditionalselect" ? "conditionaltoggle" : inputType} 
+                inputtype={inputType as any} 
                 triggerValue={triggerValue} children={toggledInput}/>
             case datePickerInputType.includes(normalizedType):
                 return <DatePicker {...layoutProps} placeholder={inputPlaceholder} />
