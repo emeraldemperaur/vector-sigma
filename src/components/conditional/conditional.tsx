@@ -136,9 +136,10 @@ const animationStyles = {
     width: '100%',
   },
   inner: {
-    overflow: 'inherit',
+    overflow: 'hidden',
     minHeight: 0,
-    width: '100%',
+    margin: '0 -16px',
+    padding: '0 16px',
   }
 };
 
@@ -300,9 +301,8 @@ export const ConditionalTrigger = ({
         <div style={animationStyles.inner}>
            <Box 
              style={{ 
-               paddingTop: '8px',
-               paddingLeft: '4px',
-               paddingRight: '4px',
+               paddingTop: '12px',
+               paddingBottom: '8px', 
                borderTop: isOpen && !isNeumorphic ? '1px dashed var(--gray-6)' : 'none',
              }}
            >

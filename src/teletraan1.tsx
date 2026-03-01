@@ -170,7 +170,7 @@ export const Teletraan1 = ({
             case stockInputType.includes(normalizedType):
                 return <StockInput {...layoutProps} placeholder={inputPlaceholder} defaultvalue={defaultValue} />
             case radioInputType.includes(normalizedType):
-                return <RadioGroupInput {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
+                return <RadioGroupInput {...layoutProps} direction="row" inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case selectInputType.includes(normalizedType):
                 return <OptionSelect {...layoutProps} placeholder={inputPlaceholder} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case selectMultipleInputType.includes(normalizedType):
