@@ -65,6 +65,7 @@ export const QuerySchema: z.ZodType<XFormQuery> = z.lazy(() =>
 export const SectionSchema = z.object({
   sectionId: z.string(),
   title: z.string(),
+  subtitle: z.string().optional(),
   icon: z.string().optional(),
   queries: z.array(QuerySchema),
 });
