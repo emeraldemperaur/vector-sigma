@@ -12,10 +12,13 @@ import { xInputFieldProps } from "./input";
 import '../../styles/main.scss';
 
 const BespokeRadixPhoneInput = forwardRef<HTMLInputElement, any>((props, ref) => {
-    const { radixProps, countrySelectUI, ...inputProps } = props;
+    const { radixProps, countrySelectUI, placeholder, ...inputProps } = props;
 
     return (
         <TextField.Root 
+            {...inputProps} 
+            ref={ref} 
+            value={inputProps.value || ''}  
             id={radixProps.id} 
             size={radixProps.size} 
             variant="surface" 
@@ -23,32 +26,14 @@ const BespokeRadixPhoneInput = forwardRef<HTMLInputElement, any>((props, ref) =>
             className={radixProps.className}
             autoComplete="off"
             style={{ width: '100%' }}
+            placeholder={radixProps.placeholder || placeholder || "Phone Number"}
         >
             <TextField.Slot style={{ padding: 0 }}>
                 {countrySelectUI}
             </TextField.Slot>
-            <input 
-                ref={ref} 
-                {...inputProps} 
-                aria-describedby={radixProps.ariaDescribedBy}
-                style={{
-                    flex: 1,
-                    border: 'none',
-                    outline: 'none',
-                    backgroundColor: 'transparent',
-                    height: '100%',
-                    paddingLeft: '12px',
-                    color: 'var(--gray-12)',
-                    fontFamily: 'var(--default-font-family)',
-                    fontSize: 'var(--font-size-2)',
-                    width: '100%'
-                }}
-            />
         </TextField.Root>
     );
 });
-
-
 
 export const PhoneInput = ({
     alias,
@@ -78,13 +63,13 @@ export const PhoneInput = ({
     const fieldError = getIn(errors, alias);
 
     const hasError = Boolean(fieldTouched && fieldError);
-    const [country, setCountry] = useState<Country>('US');
+    const [country, setCountry] = useState<Country>('CA');
     const variantClass = inputvariant !== 'input-outline' ? `input-${inputvariant}` : '';
     const errorId = `${alias}-error`;
 
     const countrySelectUI = (
         <Select.Root 
-            value={country} 
+            value={country || 'CA'} 
             onValueChange={(value) => {
                 setCountry(value as Country);
                 setFieldValue(alias, ''); 
@@ -105,8 +90,8 @@ export const PhoneInput = ({
                 }} 
             >
                 <Flex align="center" gap="2">
-                    <FlagIcon country={country} />
-                    <Text weight="bold">+{getCountryCallingCode(country)}</Text>
+                    <FlagIcon country={country || 'CA'} />
+                    <Text weight="bold">+{getCountryCallingCode(country || 'CA')}</Text>
                     <Icon name="caret-down" style={{ width: "12px", opacity: 0.5 }}/>
                 </Flex>
             </Select.Trigger>
@@ -132,8 +117,6 @@ export const PhoneInput = ({
             <Flex direction="column" gap="2" style={{ width: '100%' }}>
                 <PhoneInputMain
                     style={{ width: '100%' }} 
-                    international
-                    withCountryCallingCode={false} 
                     country={country}
                     name={alias}
                     value={fieldValue || ''}
@@ -148,7 +131,8 @@ export const PhoneInput = ({
                         size: size,
                         color: hasError ? "red" : undefined,
                         className: `${variantClass} ${className || ''}`,
-                        ariaDescribedBy: `${alias}InputLabel`
+                        ariaDescribedBy: `${alias}InputLabel`,
+                        placeholder: placeholder
                     }}
                     countrySelectUI={countrySelectUI}
                 />

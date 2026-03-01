@@ -112,7 +112,7 @@ interface MultipleSelectProps {
 export const MultipleSelect = ({
   inputtype = 'multiselect-outline',
   alias, readOnly, width, inputLabel,
-  placeholder = '', newRow, isHinted, hintText, hintUrl, errorText,
+  placeholder = 'Select...', newRow, isHinted, hintText, hintUrl, errorText,
   style, inputOptions,
   className, 
   formikContext,

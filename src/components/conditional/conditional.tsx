@@ -136,7 +136,7 @@ const animationStyles = {
     width: '100%',
   },
   inner: {
-    overflow: 'hidden',
+    overflow: 'inherit',
     minHeight: 0,
     width: '100%',
   }
@@ -239,7 +239,7 @@ export const ConditionalTrigger = ({
             <Select.Root
               name={alias}
               disabled={readOnly}
-              value={fieldValue !== undefined ? String(fieldValue) : undefined} 
+              value={fieldValue ? String(fieldValue) : ""}
               onValueChange={handleChange}
             >
               <Select.Trigger 

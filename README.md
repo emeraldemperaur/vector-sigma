@@ -60,7 +60,7 @@ return xForm.transform({
 ```
 #### Stateful Implementation
 <p align="justify">
-<code>useVectorSigma</code> hook method utilizes React lazy initialization in tandem with <code>useRef</code> to guarantee VectorSigma class is created exactly once when the VΣ component mounts, and safely persists across DOM re-renders.
+<code>useVectorSigma</code> hook method utilizes <code>React</code> lazy initialization in tandem with <code>useRef</code> to guarantee VectorSigma class object is created in a singleton-ish fashion when the VΣ component mounts, and safely persists across DOM re-renders.
 </p>
 
 ```javascript
@@ -124,9 +124,9 @@ export const VΣRegistrationForm = () => {
 
 ### Screenshots
 
-#### Automation Workflow Use Case
+#### Automation Workflow (N8N Webhook Trigger Node) Use Case
 
-#### Web Application Use Case
+#### Web Application (User Onboarding Data Pipeline) Use Case
 
 ### Design Tenets
 <ul>
