@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.46
+
+### Patch Changes
+
+- 607edb1: xForm Components :: Teletraan1, CountrySelect added
+
 ## 1.4.45
 
 ### Patch Changes
