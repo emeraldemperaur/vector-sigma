@@ -35,7 +35,7 @@ export * from './layouts/row/row';
 export * from './layouts/accordion/accordion';
 export * from './layouts/codex/codex';
 export * from './layouts/codex/codexcontrols';
-export * from './utils/architect';
+export * from './utils/voltron';
 export * from './utils/uuidparser';
 export * from './utils/currencyconfig';
 export * from './utils/minerva';

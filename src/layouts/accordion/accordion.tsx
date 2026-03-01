@@ -96,6 +96,12 @@ export interface AccordionItemProps {
      */
     title: ReactNode | string;
     /**
+     * * The subheader or trigger text for this accordion section.
+     * * @example
+     * subtitle="Get in touch to learn more"
+     */
+    subtitle?: ReactNode | string;
+    /**
      * * The content revealed when the section is opened.
      */
     children: ReactNode;
@@ -274,6 +280,7 @@ export const Accordion = ({
 export const AccordionItem = ({
     sectionId,
     title,
+    subtitle,
     children,
     disabled = false,
     icon
@@ -300,6 +307,13 @@ export const AccordionItem = ({
                             style={{ color: 'var(--accordion-title-color, var(--gray-12))' }}
                         >
                             {title}
+                        </Text>
+                         <Text 
+                            size="2" 
+                            weight="light" 
+                            style={{ color: 'var(--accordion-title-color, var(--gray-12))' }}
+                        >
+                            {subtitle}
                         </Text>
                     </Flex>
                     <Icon name="chevrondown" height="20" width="20" className="v-accordion-chevron" />

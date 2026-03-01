@@ -10,6 +10,7 @@ export const xFormPrototypeData: XFormType = {
     {
       sectionId: "profile-info-section",
       title: "Profile Information",
+      subtitle: "Help us deliver a bespoke experience",
       icon: "user",
       queries: [
         {

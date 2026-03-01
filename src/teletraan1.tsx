@@ -36,6 +36,7 @@ import {
     stockInputType, textInputType, toggleInputType 
 } from "utils/voltaire";
 import { XFormType, XFormQuery } from 'utils/voltron';
+import { DateTimePicker } from 'components/datetimepicker/datetimepicker';
 
 export type teletraan1Display = 'accordion' | 'codice' | 'codex' | 'dual';
 
@@ -147,8 +148,9 @@ export const Teletraan1 = ({
             case datePickerInputType.includes(normalizedType):
                 return <DatePicker {...layoutProps} placeholder={inputPlaceholder} />
             case dateRangePickerInputType.includes(normalizedType):
+                return <DateRangePicker {...layoutProps} placeholder={inputPlaceholder}/>
             case dateTimePickerInputType.includes(normalizedType):
-                return <DateRangePicker {...layoutProps} />
+                return <DateTimePicker {...layoutProps} placeholder={inputPlaceholder}/>
             case dropdownInputType.includes(normalizedType):
                 return <Dropdown {...layoutProps} placeholder={inputPlaceholder} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case fileInputType.includes(normalizedType):
@@ -236,7 +238,8 @@ export const Teletraan1 = ({
                         {dualToggled ? 
                             <Accordion defaultOpenId={xFormModel.model?.[0]?.sectionId ? String(xFormModel.model[0].sectionId) : ''} allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
                                 {xFormModel.model.map((formsection) => (
-                                    <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}>
+                                    <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} 
+                                    subtitle={ formsection.subtitle ? formsection.subtitle : undefined } icon={<Icon name={formsection.icon || "fontfamily"}/>}>
                                         <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
                                     </AccordionItem>
                                 ))}
@@ -244,7 +247,8 @@ export const Teletraan1 = ({
                         : 
                             xFormModel.model.map((formsection) => (
                                 <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-                                    <SectionTitle withSeparator={false} backgroundColor={brandColor} titleColor='#FFFFFF' title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}/>
+                                    <SectionTitle withSeparator={false} backgroundColor={brandColor} titleColor='#FFFFFF' title={formsection.title} 
+                                    subTitle={formsection.subtitle ? formsection.subtitle : undefined} icon={<Icon name={formsection.icon || "fontfamily"}/>}/>
                                     <Row>{renderQueries(formsection.queries)}</Row>
                                 </React.Fragment>
                             ))
@@ -256,7 +260,8 @@ export const Teletraan1 = ({
                 return (
                     <Accordion defaultOpenId={xFormModel.model?.[0]?.sectionId ? String(xFormModel.model[0].sectionId) : ''} allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
                         {xFormModel.model.map((formsection) => (
-                            <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}>
+                            <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} 
+                            subtitle={ formsection.subtitle ? formsection.subtitle : undefined } icon={<Icon name={formsection.icon || "fontfamily"}/>}>
                                 <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
                             </AccordionItem>
                         ))}
@@ -268,7 +273,7 @@ export const Teletraan1 = ({
                     <Codex brandColor={brandColor}>
                         {xFormModel.model.map((formsection, index, array) => (
                             <CodexItem key={formsection.sectionId} stepId={String(formsection.sectionId)} title={formsection.title}
-                            icon={<Icon name={formsection.icon || "fontfamily"}/>}>
+                            subtitleDescription={formsection.subtitle ? formsection.subtitle : undefined} icon={<Icon name={formsection.icon || "fontfamily"}/>}>
                                 <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
                                 <CodexControls 
                                     prevStepId={index > 0 ? String(array[index - 1].sectionId) : undefined} 
@@ -288,7 +293,8 @@ export const Teletraan1 = ({
                     <React.Fragment key={xFormModel.uuid}>
                         {xFormModel.model.map((formsection) => (
                             <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-                                <SectionTitle withSeparator={false} backgroundColor={brandColor} titleColor='#FFFFFF' title={formsection.title} icon={<Icon name={String(formsection.icon)}/>}/>
+                                <SectionTitle withSeparator={false} backgroundColor={brandColor} titleColor='#FFFFFF' title={formsection.title} 
+                                subTitle={formsection.subtitle ? formsection.subtitle : undefined} icon={<Icon name={String(formsection.icon)}/>}/>
                                 <Row>{renderQueries(formsection.queries)}</Row>
                             </React.Fragment>
                         ))}

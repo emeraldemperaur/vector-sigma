@@ -285,14 +285,15 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
      * VΣ builder method to create a Section object in the xForm model.
      * @param sectionId sectionId string for the xForm model section.
      * @param title title string for the xForm model section.
+     * @param subtitle optional subtitle string for the xForm model section.
      * @param icon xForm icon name for the xForm model section.
      * @example 
      * const xForm97 = new VectorSigma()
      * .setBrand("#000000", brandLogoUrlRef, 'right')
-     * .createSection('bio-data', 'Personal Information', 'user')
+     * .createSection('bio-data', 'Personal Information', 'Help us learn more to deliver a bespoke experience', 'user')
      */
-    public createSection(sectionId: string, title: string, icon?: string): this {
-        this.formObject.model.push({ sectionId, title, icon, queries: [] });
+    public createSection(sectionId: string, title: string, subtitle?: string, icon?: string): this {
+        this.formObject.model.push({ sectionId, title, subtitle, icon, queries: [] });
         return this;
     }
     /**
