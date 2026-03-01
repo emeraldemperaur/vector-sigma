@@ -92,7 +92,7 @@ export interface FileMultipleInputProps {
    */
   className?: string;
   /**
-   * * Option to inject custom CSS the FileMultiple input field.
+   * * Option to inject custom CSS for the FileMultiple input field.
    * * @example
    * style={{ color: "#000000" }}
    */
@@ -238,9 +238,12 @@ export const FileMultiple = ({
             ...styles[inputtype],
             cursor: readOnly ? 'default' : 'pointer',
             transition: 'all 0.2s',
-            borderColor: hasError ? 'var(--red-9)' : (styles[inputtype].borderBottom ? 'var(--accent-9)' : 'var(--gray-a8)'),
+            borderColor: hasError ? 'var(--red-9)' : (inputtype === 'filemultiple-material' ? 'var(--accent-9)' : 'var(--gray-a8)'),
             position: 'relative',
-            opacity: readOnly ? 0.7 : 1
+            opacity: readOnly ? 0.7 : 1,
+            boxSizing: 'border-box',
+            width: '100%',
+            overflow: 'hidden'
           }}
         >
           <Flex align="center" gap="4">
@@ -249,19 +252,20 @@ export const FileMultiple = ({
                 background: isNeumorphic ? '#e0e0e0' : 'var(--accent-3)', 
                 borderRadius: '50%', 
                 padding: '10px',
-                boxShadow: isNeumorphic ? 'inset 3px 3px 6px #b8b9be, inset -3px -3px 6px #ffffff' : 'none'
+                boxShadow: isNeumorphic ? 'inset 3px 3px 6px #b8b9be, inset -3px -3px 6px #ffffff' : 'none',
+                flexShrink: 0
               }}
             >
               <Icon name='upload' width="20" height="20" color={isNeumorphic ? '#555' : 'var(--accent-9)'} />
             </Box>
             
-            <Flex direction="column">
-              <Text weight="bold" style={{ color: isNeumorphic ? '#444' : 'inherit' }}>
+            <Flex direction="column" style={{ minWidth: 0, flex: 1 }}>
+              <Text weight="bold" style={{ color: isNeumorphic ? '#444' : 'inherit', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {currentFiles.length > 0 
                   ? `${currentFiles.length} file${currentFiles.length !== 1 ? 's' : ''} selected` 
                   : (placeholder || "Choose files...")}
               </Text>
-              <Text size="1" color="gray" style={{ opacity: 0.8 }}>
+              <Text size="1" color="gray" style={{ opacity: 0.8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 PDF, Images, Office Docs, JSON, ZIP
               </Text>
             </Flex>
@@ -316,7 +320,8 @@ export const FileMultiple = ({
                         background: 'var(--gray-a3)',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        flexShrink: 0
                       }}
                     >
                       {previewUrl && (fileName.match(/\.(jpeg|jpg|png|gif|webp)$/i) || (file instanceof File && file.type.startsWith('image/'))) ? (
@@ -354,25 +359,25 @@ export const FileMultiple = ({
           </Grid>
         )}
 
-        <div>
-          {inputLabel && (
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>
-              {inputLabel}
-            </Text>
-          )}
-          &nbsp;
-          {isHinted && (
-            <Tooltip content={hintText || "No hint available"}>
-              <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray', marginLeft: 4 }} />
-              </a> 
-            </Tooltip>
-          )} 
-          {hasError && (
-            <Text id={errorId} size="1" color="red" style={{ display: 'block', marginTop: 2 }}>
-              {typeof fieldError === 'string' ? (errorText || fieldError) : 'Invalid file selection'}
-            </Text>
-          )} 
+        <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+            {inputLabel && (
+                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>
+                    {inputLabel}
+                </Text>
+            )}
+            
+            {isHinted && (
+                <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                    <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                        <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                    </a> 
+                </Tooltip>
+            )} 
+            {hasError && (
+                <Text id={errorId} size="1" color="red" className='core-input-label-error'>
+                    {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
+                </Text>
+            )} 
         </div>
       </Flex>
     </Column>

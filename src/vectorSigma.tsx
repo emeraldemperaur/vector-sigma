@@ -117,7 +117,9 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
             "checkbox", "checkboxes", "checkboxinput", "chechbox-input", "input-checkbox", "inputcheckbox", "checkboxgroup-input",
             "filemultiple", "filemultipleinput", "filemultiple-input", "input-filemultiple", "inputfilemultiple",
             "selectmultiple", "selectmultipleinput", "selectmultiple-input", "input-selectmultiple", "inputselectmultiple",
-            "range", "rangeslider", "rangeinput", "rangesliderinput", "rangeslider-input", "range-input", "input-rangeslider", "inputrangeslider"
+            "countrymultiselect", "countrymultiselectinput", "countrymultiselect-input", "input-countrymultiselect", "inputcountrymultiselect",
+            "range", "rangeslider", "rangeinput", "rangesliderinput", "rangeslider-input", "range-input", "input-rangeslider", "inputrangeslider",
+            "slider", "sliderinput", "slider-input", "input-slider", "inputslider"
         ];
 
         const booleanTypes = [
@@ -126,7 +128,6 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
         ];
 
         const numberTypes = [
-            "slider", "sliderinput", "slider-input", "input-slider", "inputslider",
             "currency", "currencyinput", "currency-input", "input-currency", "inputcurrency",
             "stock", "stockinput", "stock-input", "input-stock", "inputstock"
         ];

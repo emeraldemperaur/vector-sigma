@@ -209,12 +209,13 @@ export const StockInput = ({
                     </Flex>
                 </Flex>
                 
-                <div>
+                <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
                     {inputLabel && (
                         <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>
                             {inputLabel}
                         </Text>
                     )}
+                    
                     {isHinted && (
                         <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
@@ -223,9 +224,9 @@ export const StockInput = ({
                         </Tooltip>
                     )} 
                     {hasError && (
-                        <p id={errorId} className='core-input-label-error'>
+                        <Text id={errorId} size="1" color="red" className='core-input-label-error'>
                             {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
-                        </p>
+                        </Text>
                     )} 
                 </div>
             </Flex>

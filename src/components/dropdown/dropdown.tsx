@@ -103,7 +103,7 @@ export interface xDropDownProps {
    */
   className?: string;
   /**
-   * * Option to inject custom CSS the Dropdown input field.
+   * * Option to inject custom CSS for the Dropdown input field.
    * * @example
    * style={{ color: "#000000" }}
    */

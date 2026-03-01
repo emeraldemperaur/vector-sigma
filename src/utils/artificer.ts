@@ -196,7 +196,38 @@ export const xFormPrototypeData: XFormType = {
             }
           ],
           queryResponse: null
+        },
+         {
+          queryId: 10,
+          inputType: "countryselect-input",
+          inputAlias: "userLocationCountry",
+          inputLabel: "VΣ Service Country",
+          inputPlaceholder: "Select a service country",
+          newRow: true,
+          inputWidth: 6,
+          isRequired: true,
+          isHinted: true,
+          hintText: "This is a sample hint text for an xForm CountrySelect component",
+          hintUrl: "https://www.mekaegwim.ca",
+          errorText: "Service country selection is required",
+          queryResponse: null
+        },
+        {
+          queryId: 11,
+          inputType: "countrymultiselect-input",
+          inputAlias: "userRelocationCountries",
+          inputLabel: "VΣ Service Countries",
+          inputPlaceholder: "Select all desired service countries",
+          newRow: false,
+          inputWidth: 6,
+          isRequired: false,
+          isHinted: true,
+          hintText: "This is a sample hint text for an xForm CountryMultiselect component",
+          hintUrl: "https://www.mekaegwim.ca",
+          errorText: "Service country selection is not required",
+          queryResponse: null
         }
+
       ]
     },
     {

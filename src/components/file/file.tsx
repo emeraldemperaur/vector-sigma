@@ -86,7 +86,7 @@ export interface FileInputProps {
    */
   errorText?: ReactNode | string | null;
   /**
-   * * Option to inject custom CSS the File input field.
+   * * Option to inject custom CSS for the File input field.
    * * @example
    * style={{ color: "#000000" }}
    */
@@ -192,6 +192,7 @@ export const File = ({
     width: '100%',
     position: 'relative',
     overflow: 'hidden',
+    boxSizing: 'border-box',
   };
 
   const materialTrigger: React.CSSProperties = {
@@ -210,8 +211,6 @@ export const File = ({
     ...baseTriggerStyle,
     backgroundColor: 'var(--neu-bg)',
     color: hasError ? 'var(--red-9)' : 'var(--neu-text)',
-    // Empty: (Dropzone effect)
-    // Selected: (Card effect)
     boxShadow: !selectedFile 
        ? 'inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light)'
        : '6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light)',
@@ -252,12 +251,13 @@ export const File = ({
         {!selectedFile ? (
           // --- EMPTY STATE RENDER ---
           <Flex align="center" gap="3" style={{ width: '100%', color: 'var(--gray-10)' }}>
-            <Box style={{ padding: 8, borderRadius: '50%', backgroundColor: 'var(--gray-3)' }}>
+            <Box style={{ padding: 8, borderRadius: '50%', backgroundColor: 'var(--gray-3)', flexShrink: 0 }}>
               <Icon name='upload' width="18" height="18" />
             </Box>
-            <Flex direction="column">
-                <Text size="2" weight="bold" color="gray">Upload File</Text>
-                <Text size="1" color="gray">Supports PDF, Images, Excel, JSON...</Text>
+            
+            <Flex direction="column" style={{ minWidth: 0, flex: 1 }}>
+                <Text size="2" weight="bold" color="gray" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Upload File</Text>
+                <Text size="1" color="gray" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Supports PDF, Images, Excel, JSON...</Text>
             </Flex>
           </Flex>
         ) : (
@@ -279,7 +279,7 @@ export const File = ({
                 </Box>
             )}
 
-            <Flex direction="column" style={{ flexGrow: 1, overflow: 'hidden' }}>
+            <Flex direction="column" style={{ flexGrow: 1, minWidth: 0, overflow: 'hidden' }}>
                 <Text size="2" weight="bold" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {selectedFile.name}
                 </Text>
@@ -302,24 +302,26 @@ export const File = ({
         )}
       </div>
 
-       <div>
-                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>{inputLabel}</Text>
-                &nbsp;  
-                {isHinted ?
-                  <>
-                  <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                      <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                      </a> 
-                  </Tooltip>
-                  </> : null} 
-                {hasError ?
-                  <>
-                  <p id={errorId} className='core-input-label-error'>
-                      {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
-                  </p>
-                  </> : null } 
-        </div>
+       <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+           {inputLabel && (
+               <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>
+                   {inputLabel}
+               </Text>
+           )}
+           
+           {isHinted && (
+               <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
+                   <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
+                   </a> 
+               </Tooltip>
+           )} 
+           {hasError && (
+               <Text id={errorId} size="1" color="red" className='core-input-label-error'>
+                   {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
+               </Text>
+           )} 
+       </div>
     </Flex>
     </Column>
   );
