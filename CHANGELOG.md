@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.42
+
+### Patch Changes
+
+- 94b86db: xForm Components :: Teletraan1, ConditionalTrigger update
+
 ## 1.4.41
 
 ### Patch Changes
