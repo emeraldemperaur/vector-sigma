@@ -4,7 +4,6 @@ import { Theme } from '@radix-ui/themes';
 import { Codex, CodexItem } from '../../layouts/codex/codex';
 import { CodexControls } from '../../layouts/codex/codexcontrols';
 
-
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -130,7 +129,7 @@ describe('VΣ Layouts(CodexControls) Test', () => {
       expect(screen.queryByTestId('content-2')).not.toBeInTheDocument();
     });
 
-    it('CodexControls :: Triggered bespoke onNext, onPrev, onFinish callback functions', () => {
+    it('CodexControls :: Triggered bespoke onNext, onPrev, onFinish callback functions', async () => {
       const mockOnNext = jest.fn();
       const mockOnFinish = jest.fn();
 
@@ -142,6 +141,7 @@ describe('VΣ Layouts(CodexControls) Test', () => {
                 nextStepId="step-2" 
                 nextLabel="Bespoke Next" 
                 onNext={mockOnNext} 
+                onSubmit={false}
               />
             </div>
           </CodexItem>
@@ -150,6 +150,7 @@ describe('VΣ Layouts(CodexControls) Test', () => {
               <CodexControls 
                 finishLabel="Launch App" 
                 onFinish={mockOnFinish} 
+                onSubmit={false}
               />
             </div>
           </CodexItem>
@@ -163,6 +164,7 @@ describe('VΣ Layouts(CodexControls) Test', () => {
       const finishButton = screen.getByRole('button', { name: 'Launch App' });
       fireEvent.click(finishButton);
       expect(mockOnFinish).toHaveBeenCalledTimes(1);
+     
     });
   });
 

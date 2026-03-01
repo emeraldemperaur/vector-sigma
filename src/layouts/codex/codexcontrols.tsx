@@ -96,7 +96,7 @@ export const CodexControls = ({
             if (onNext) onNext();
             setActiveStepId(nextStepId);
         } else {
-            if (onFinish) onFinish();
+            if (onFinish && !onSubmit) onFinish();
         }
     };
 

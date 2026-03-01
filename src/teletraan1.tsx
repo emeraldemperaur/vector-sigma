@@ -141,7 +141,9 @@ export const Teletraan1 = ({
             case checkboxInputType.includes(normalizedType):
                 return <CheckboxGroupInput {...layoutProps} direction='row' inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case conditionalInputType.includes(normalizedType):
-                return <ConditionalTrigger {...layoutProps} inputOptions={inputOptions} triggerValue={triggerValue} children={toggledInput}/>
+                return <ConditionalTrigger {...layoutProps} inputOptions={inputOptions} 
+                inputtype={inputType !== "conditionaltoggle" || "conditionalcheckbox" || "conditionalselect" ? "conditionaltoggle" : inputType} 
+                triggerValue={triggerValue} children={toggledInput}/>
             case datePickerInputType.includes(normalizedType):
                 return <DatePicker {...layoutProps} placeholder={inputPlaceholder} />
             case dateRangePickerInputType.includes(normalizedType):
@@ -232,7 +234,7 @@ export const Teletraan1 = ({
                             <Icon name="layers" height="20" width="20" color={brandColor} style={{ opacity: readOnlyMode ? 0.5 : 1, cursor: 'pointer' }} onClick={() => setDualToggled(!dualToggled)} />
                         </div>
                         {dualToggled ? 
-                            <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
+                            <Accordion defaultOpenId={xFormModel.model?.[0]?.sectionId ? String(xFormModel.model[0].sectionId) : ''} allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
                                 {xFormModel.model.map((formsection) => (
                                     <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}>
                                         <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
@@ -252,7 +254,7 @@ export const Teletraan1 = ({
 
             case 'accordion':
                 return (
-                    <Accordion allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
+                    <Accordion defaultOpenId={xFormModel.model?.[0]?.sectionId ? String(xFormModel.model[0].sectionId) : ''} allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
                         {xFormModel.model.map((formsection) => (
                             <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} icon={<Icon name={formsection.icon || "fontfamily"}/>}>
                                 <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
