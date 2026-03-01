@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.43
+
+### Patch Changes
+
+- ad48cb2: xForm Components :: VectorSigma, Teletraan1, Section Subtitle Triage Fix
+
 ## 1.4.42
 
 ### Patch Changes
