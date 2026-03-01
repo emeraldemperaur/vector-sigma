@@ -150,7 +150,7 @@ export const Teletraan1 = ({
             case dateTimePickerInputType.includes(normalizedType):
                 return <DateRangePicker {...layoutProps} />
             case dropdownInputType.includes(normalizedType):
-                return <Dropdown {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
+                return <Dropdown {...layoutProps} placeholder={inputPlaceholder} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case fileInputType.includes(normalizedType):
                 return <File {...layoutProps} preview/>
             case fileMultipleInputType.includes(normalizedType):
@@ -172,9 +172,9 @@ export const Teletraan1 = ({
             case radioInputType.includes(normalizedType):
                 return <RadioGroupInput {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case selectInputType.includes(normalizedType):
-                return <OptionSelect {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
+                return <OptionSelect {...layoutProps} placeholder={inputPlaceholder} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case selectMultipleInputType.includes(normalizedType):
-                return <MultipleSelect {...layoutProps} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
+                return <MultipleSelect {...layoutProps} placeholder={inputPlaceholder} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
             case sliderInputType.includes(normalizedType):
                 return <SliderInput {...layoutProps} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} />
             case rangeSliderInputType.includes(normalizedType):
