@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, forwardRef } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { TextField, Flex, Text, Tooltip } from '@radix-ui/themes';
@@ -94,6 +94,28 @@ interface DatePickerProps {
     formikContext?: FormikContextType<any>;
 }
 
+const DatePickerInput = forwardRef<HTMLInputElement, any>((props, ref) => {
+    const { radixId, radixStyle, ...restProps } = props;
+    
+    return (
+        <TextField.Root 
+            {...restProps} 
+            id={radixId}
+            style={radixStyle}
+            variant="surface"
+            ref={ref}
+            placeholder={props.placeholder || props.placeholderText || "Select date"}
+            autoComplete="off"
+        >
+            <TextField.Slot>
+                <Icon name="calendar" height="16" width="16" style={{ color: 'var(--gray-10)' }} />
+            </TextField.Slot>
+        </TextField.Root>
+    );
+});
+DatePickerInput.displayName = "DatePickerInput";
+
+
 export const DatePicker = ({
     alias,
     inputLabel,
@@ -141,7 +163,7 @@ export const DatePicker = ({
 
     // --- STYLES ---
     const getInputStyles = () => {
-        const base = { cursor: 'pointer', transition: 'all 0.2s' };
+        const base = { cursor: 'pointer', transition: 'all 0.2s', width: '100%' };
         if (inputtype === 'datepicker-neumorphic') return {
             ...base,
             backgroundColor: 'var(--neu-bg)', border: 'none',
@@ -167,6 +189,7 @@ export const DatePicker = ({
                 
                 <style>{`
                     .react-datepicker-popper { z-index: 9999 !important; }
+                    .react-datepicker-wrapper { width: 100%; } 
                     .react-datepicker {
                         font-family: var(--default-font-family, sans-serif);
                         border: none !important;
@@ -213,27 +236,23 @@ export const DatePicker = ({
                         setFieldTouched(alias, true, false);
                     }}
                     disabled={readOnly}
-                    placeholderText={placeholder}
+                    placeholderText={placeholder} 
                     dateFormat="MMM d, yyyy"
                     aria-labelledby={labelId}
                     customInput={
-                        <TextField.Root 
-                            id={inputId}
-                            variant="surface"
-                            style={getInputStyles()}
-                        >
-                            <TextField.Slot>
-                                <Icon name="calendar" height="16" width="16" style={{ color: 'var(--gray-10)' }} />
-                            </TextField.Slot>
-                        </TextField.Root>
+                        <DatePickerInput 
+                            radixId={inputId}
+                            radixStyle={getInputStyles()}
+                            placeholder={placeholder}
+                        />
                     }
                 />
 
-                <div>
+                <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
                     {inputLabel && <Text id={labelId} size="2" weight="bold" as="div" style={{ display: 'inline' }}>{inputLabel}</Text>}
                     {isHinted && (
                         <Tooltip content={hintText || "No hint"} align="start">
-                            <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 6 }}>
+                            <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                                 <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
                             </a>
                         </Tooltip>

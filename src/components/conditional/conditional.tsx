@@ -133,9 +133,12 @@ const animationStyles = {
   wrapper: {
     display: 'grid',
     transition: 'grid-template-rows 0.3s ease-out',
+    width: '100%',
   },
   inner: {
     overflow: 'hidden',
+    minHeight: 0,
+    width: '100%',
   }
 };
 
