@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.45
+
+### Patch Changes
+
+- d2d77b0: xForm Component :: AccordionItem subtitle color update
+
 ## 1.4.44
 
 ### Patch Changes
