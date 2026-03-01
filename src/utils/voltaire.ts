@@ -7,6 +7,9 @@ export const datePickerInputType = ["datepicker", "datepickerinput", "datepicker
 export const dateRangePickerInputType = ["daterangepicker", "daterangepickerinput", "daterangepicker-input", "input-daterangepicker", "inputdaterangepicker"];
 export const dateTimePickerInputType = ["datetimepicker", "datetimepickerinput", "datetimepicker-input", "input-datetimepicker", "inputdatetimepicker"];
 export const dropdownInputType = ["dropdown", "dropdowninput", "dropdown-input", "input-dropdown", "inputdropdown"];
+export const countrydropdownInputType = ["countrydropdown", "countrydropdowninput", "countrydropdown-input", "input-countrydropdown", "inputcountrydropdown", 
+  "countryselect", "countryselect-input", "countryselectinput", "input-countryselect"];
+export const countrymultiselectInputType = ["countrymultiselect", "countrymultiselectinput", "countrymultiselect-input", "input-countrymultiselect", "inputcountrymultiselect"];
 export const fileInputType = ["file", "fileinput", "file-input", "input-file", "inputfile"];
 export const fileMultipleInputType = ["filemultiple", "filemultipleinput", "filemultiple-input", "input-filemultiple", "inputfilemultiple"];
 export const imageOutputType = ["image", "imageoutput", "image-output", "output-image", "outputimage"];
@@ -25,22 +28,17 @@ export const toggleInputType = ["toggle", "switch", "toggleinput", "toggle-input
 export const sectionTitleOutputType = ["title", "xtitle", "sectiontitle", "titlesection"];
 export const conditionalInputType = ["conditional", "conditionaltoggle", "conditionalcheckbox", "conditionalselect", "conditional-toggle", "conditional-select", "conditional-checkbox"];
 
-// --- Helper to extract Formik initial values from the clean schema ---
  export const generateInitialValues = (schema: XFormType) => {
     const initials: Record<string, any> = {};
     
     const traverseQueries = (queries: XFormQuery[]) => {
       queries.forEach(query => {
-        // Assign defaultValue if exists or assign empty string/null
         initials[query.inputAlias] = query.defaultValue ?? "";
-        
-        // Nested/toggled input, recursive value extract
         if (query.toggledInput) {
           traverseQueries([query.toggledInput]);
         }
       });
     };
-
     schema.model.forEach(section => traverseQueries(section.queries));
     return initials;
   };

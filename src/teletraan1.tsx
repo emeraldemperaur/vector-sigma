@@ -29,7 +29,7 @@ import { CodexControls } from 'layouts/codex/codexcontrols';
 import { SectionTitle } from 'components/xtitle/xtitle';
 import { Icon } from 'components/icons/icons';
 import { 
-    avatarInputType, buttonInputType, checkboxInputType, conditionalInputType, creditCardInputType, 
+    avatarInputType, buttonInputType, checkboxInputType, conditionalInputType, countrydropdownInputType, countrymultiselectInputType, creditCardInputType, 
     currencyInputType, datePickerInputType, dateRangePickerInputType, dateTimePickerInputType, dropdownInputType, 
     fileInputType, fileMultipleInputType, imageOutputType, passwordInputType, phoneInputType, radioInputType, 
     rangeSliderInputType, selectInputType, selectMultipleInputType, sliderInputType, 
@@ -37,6 +37,7 @@ import {
 } from "utils/voltaire";
 import { XFormType, XFormQuery } from 'utils/voltron';
 import { DateTimePicker } from 'components/datetimepicker/datetimepicker';
+import { CountrySelect } from 'components/dropdown/countrydropdown';
 
 export type teletraan1Display = 'accordion' | 'codice' | 'codex' | 'dual';
 
@@ -153,6 +154,10 @@ export const Teletraan1 = ({
                 return <DateTimePicker {...layoutProps} placeholder={inputPlaceholder}/>
             case dropdownInputType.includes(normalizedType):
                 return <Dropdown {...layoutProps} placeholder={inputPlaceholder} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
+            case countrydropdownInputType.includes(normalizedType):
+                return <CountrySelect displayFlag enableSearch {...layoutProps} placeholder={inputPlaceholder} />
+            case countrymultiselectInputType.includes(normalizedType):
+                return <CountrySelect displayFlag enableSearch multiselect {...layoutProps} placeholder={inputPlaceholder} />
             case fileInputType.includes(normalizedType):
                 return <File {...layoutProps} preview/>
             case fileMultipleInputType.includes(normalizedType):

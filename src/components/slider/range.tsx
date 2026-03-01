@@ -223,12 +223,14 @@ export const RangeSlider = ({
         style={neuVars}
       />
 
-      <div>
-            <Text id={labelId} as="div" size="2" weight="bold" style={{ display: 'inline' }}>
-               {inputLabel}
-            </Text>
+      <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+            {inputLabel && (
+                <Text id={labelId} as="div" size="2" weight="bold" style={{ display: 'inline' }}>
+                  {inputLabel}
+                </Text>
+                )}
                 
-                {isHinted && (
+            {isHinted && (
                         <>
                         <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
                             <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
@@ -236,8 +238,9 @@ export const RangeSlider = ({
                             </a> 
                         </Tooltip>
                         </>
-                )} 
-                 {hasError && (
+                )}
+                 
+            {hasError && (
                         <>
                         <p id={errorId} className='core-input-label-error'>
                             {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
