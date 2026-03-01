@@ -1,5 +1,12 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.44
+
+### Patch Changes
+
+- d20234c: Package dependencies fix
+- b525e34: Updated VΣ package dependencies
+
 ## 1.4.43
 
 ### Patch Changes
