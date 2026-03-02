@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.47
+
+### Patch Changes
+
+- 87ae5d3: xForm Components :: Theming extensibility
+
 ## 1.4.46
 
 ### Patch Changes
