@@ -42,12 +42,10 @@ export interface ImageDisplayProps {
   layout?: ImageLayout  & {};
    /**
    * * The aspect ratio of the ImageOutput component. 
-   * Default: 16 / 9
-   * Variants: 16 / 9, 4 / 3, 1.
    * * @example
    * aspectratio={ 16 / 9 || 4 / 3 }
    */
-  aspectratio?: number; // 16/9, 4/3, 1
+  aspectratio?: number; 
   /**
    * * Option to specify a height for ImageOutput component.
    * * @example
@@ -109,9 +107,9 @@ const getStyles = (design: ImageDesign, layout: ImageLayout): React.CSSPropertie
   return {
     borderRadius,
     ...visualStyles,
-    position: 'relative',
-    overflow: 'hidden',
+    overflow: 'hidden', 
     display: 'block', 
+ 
   };
 };
 
@@ -120,7 +118,7 @@ export const ImageOutput = ({
   alt = "Image",
   design = 'outline',
   layout = 'normal',
-  aspectratio = 16 / 9,
+  aspectratio, 
   height,
   width = '100%',
   className,
@@ -136,7 +134,9 @@ export const ImageOutput = ({
       style={{
         ...containerStyles,
         width: '100%',
-        height: height || '100%', 
+        maxWidth: 500, 
+        maxHeight: 500,
+        height: height || 'auto', 
         ...style,
       }}
       onClick={onClick}
@@ -148,8 +148,9 @@ export const ImageOutput = ({
           alt={alt}
           style={{
             width: '100%',
-            height: '100%',
-            objectFit: 'cover', 
+            maxHeight: 500,
+            height: height ? '100%' : 'auto', 
+            objectFit: 'contain', 
             display: 'block',
           }}
         />
@@ -159,9 +160,8 @@ export const ImageOutput = ({
           justify="center"
           style={{
             width: '100%',
-            height: '100%',
+            height: height || '150px',
             backgroundColor: design === 'neumorphic' ? 'transparent' : 'var(--gray-3)',
-            minHeight: height || '100%', 
           }}
         >
           <Flex direction="column" align="center" gap="2">
@@ -173,15 +173,19 @@ export const ImageOutput = ({
     </Box>
   );
 
+  if (aspectratio && !height) {
+    return (
+      <Box style={{ width, maxWidth: 500 }}>
+        <AspectRatio ratio={aspectratio}>
+          {content}
+        </AspectRatio>
+      </Box>
+    );
+  }
+
   return (
-    <Box style={{ width, maxWidth: 500, maxHeight: 500 }}>
-      {height ? (
-          content
-      ) : (
-          <AspectRatio ratio={aspectratio}>
-            {content}
-          </AspectRatio>
-      )}
+    <Box style={{ width, maxWidth: 500 }}>
+      {content}
     </Box>
   );
 };
