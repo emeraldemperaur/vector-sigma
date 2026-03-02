@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.48
+
+### Patch Changes
+
+- cbfa580: xForm Components :: ImageOutput dimension fix
+
 ## 1.4.47
 
 ### Patch Changes
