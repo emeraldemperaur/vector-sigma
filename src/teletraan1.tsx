@@ -38,6 +38,8 @@ import {
 import { XFormType, XFormQuery } from 'utils/voltron';
 import { DateTimePicker } from 'components/datetimepicker/datetimepicker';
 import { CountrySelect } from 'components/dropdown/countrydropdown';
+import { FormikHelpers } from 'formik';
+import { VectorSigma } from 'vectorSigma';
 
 export type teletraan1Display = 'accordion' | 'codice' | 'codex' | 'dual';
 
@@ -89,7 +91,11 @@ export interface Teletraan1Props {
      * * @example
      * onFinish={console.log("Teletraan-1 Codex :: onFinish()")}
      */
-    onFinish?: () => void;
+    onFinish?: (
+            values: any, 
+            actions: FormikHelpers<any>, 
+            instance: VectorSigma<any>
+        ) => void | Promise<any>;
 
 }
 
@@ -286,7 +292,7 @@ export const Teletraan1 = ({
                                     nextStepId={index < array.length - 1 ? String(array[index + 1].sectionId) : undefined}
                                     onPrev={onPrev}
                                     onNext={onNext}
-                                    onFinish={onFinish}
+                                    onFinish={() => onFinish}
                                 />
                             </CodexItem>
                         ))}

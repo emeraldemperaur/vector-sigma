@@ -3,7 +3,7 @@ import { XFormSchema, XFormType, XFormQuery, SectionSchema } from './utils/voltr
 import { normalizeXForm } from './utils/minerva'; 
 import { Teletraan1, Teletraan1Props } from './teletraan1';
 import { z } from "zod";
-import { Theme, Button, Flex } from '@radix-ui/themes';
+import { Theme, Button, Flex, ThemeProps } from '@radix-ui/themes';
 import { Formik, Form, useFormikContext, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import './styles/main.scss';
@@ -28,6 +28,15 @@ export interface VectorSigmaRenderProps<T extends Record<string, any> = Record<s
         actions: FormikHelpers<T>, 
         instance: VectorSigma<T>
     ) => void | Promise<any>;
+    /**
+     * * Optional Radix UI Theme configuration. 
+     * Enables developer theming extensibility to align xForm appearance with an extant application design system.
+     * 
+     * https://www.radix-ui.com/themes/docs/components/theme
+     * @example
+     * theme={{ appearance: 'dark', accentColor: 'ruby', radius: 'large' }}
+     */
+    theme?: Omit<ThemeProps, 'children'>;
 }
 
 const FormikStateObserver = <T extends Record<string, any>>({ instance }: { instance: VectorSigma<T> }) => {
@@ -354,9 +363,15 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
 
         const { initialValues, validationSchema } = this.buildFormikConfig(sanitizedData);
         const isCodexMode = options?.displayMode === 'codex';
+        const themeConfig: ThemeProps = {
+            appearance: 'inherit', 
+            accentColor: 'blue',
+            radius: 'medium',
+            ...options?.theme
+        };
         
         return (
-            <Theme>
+            <Theme {...themeConfig}>
                 <Formik<T>
                     initialValues={initialValues as unknown as T}
                     validationSchema={validationSchema}
@@ -372,7 +387,7 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
                             }
                             
                             if (options?.onFinish) {
-                                options.onFinish();
+                                options.onFinish(values, actions, this);
                             }
                         } catch (error) {
                             console.error(`VectorSigma xForm Submission Error:`, error);

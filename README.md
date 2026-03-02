@@ -343,19 +343,28 @@ import { useVectorSigma } from './hooks/useVectorSigma';
 
 <li><strong>🎨Theming Extensibilty</strong></br>
 <p align="justify">Customizable to fit seamlessly into an existing design system and allow developer control of the visual layer through standard CSS patterns.</p>
+<p>Radix UI <code>theme</code> {} passed into the <code>transfrom()</code> or <code>render()</code> method(s) as an <code>options</code> attribute can be leveraged to cleverly align the returned xForm style and appearance with an extant application design system.</p>
 
 ```javascript
-import { Theme, File, Dropdown } from '@emeraldemperaur/vector-sigma';
+import React from 'react';
+import { VectorSigma } from './VectorSigma';
 
-const App = () => {
-  return (
-    
-    <Theme>
-      <File/>
-      <Dropdown/>
-    </Theme>
-  );
-}
+const xForm97 = new VectorSigma(apiJSONData);
+
+return xForm97.render({
+    displayMode: 'codex',
+    // www.radix-ui.com/themes/docs/components/theme
+    theme: {
+        appearance: 'dark',  
+        accentColor: 'yellow',     
+        grayColor: 'slate',        
+        radius: 'none',            
+        scaling: '100%'            
+    },
+    onSubmit: async (values, actions, instance) => {
+        console.log(values);
+    }
+});
 ```
 </li>
 

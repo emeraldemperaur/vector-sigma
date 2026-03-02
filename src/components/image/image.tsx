@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Box, Flex, Text, AspectRatio } from '@radix-ui/themes';
 import { Icon } from 'components/icons/icons';
+
 export type ImageDesign = 'outline' | 'material' | 'neumorphic';
 export type ImageLayout = 'normal' | 'rounded' | 'squared';
 
@@ -134,8 +135,8 @@ export const ImageOutput = ({
       className={className}
       style={{
         ...containerStyles,
-        width,
-        height: height || 'auto',
+        width: '100%',
+        height: height || '100%', 
         ...style,
       }}
       onClick={onClick}
@@ -146,9 +147,9 @@ export const ImageOutput = ({
           src={src}
           alt={alt}
           style={{
-            width: '333px',
-            height: '333px',
-            objectFit: 'cover',
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover', 
             display: 'block',
           }}
         />
@@ -172,15 +173,15 @@ export const ImageOutput = ({
     </Box>
   );
 
-  if (height) {
-    return content;
-  }
-
   return (
-    <Box style={{ width }}>
-      <AspectRatio ratio={aspectratio}>
-        {content}
-      </AspectRatio>
+    <Box style={{ width, maxWidth: 500, maxHeight: 500 }}>
+      {height ? (
+          content
+      ) : (
+          <AspectRatio ratio={aspectratio}>
+            {content}
+          </AspectRatio>
+      )}
     </Box>
   );
 };
