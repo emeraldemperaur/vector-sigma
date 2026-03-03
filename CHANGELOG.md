@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.4.49
+
+### Patch Changes
+
+- 5221492: xForm Component :: VectorSigma Formik Actions property update
+
 ## 1.4.48
 
 ### Patch Changes
