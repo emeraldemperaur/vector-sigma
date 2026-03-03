@@ -31,36 +31,68 @@ export interface VectorSigmaRenderProps<T extends Record<string, any> = Record<s
     /**
      * * Optional Radix UI Theme configuration. 
      * Enables developer theming extensibility to align xForm appearance with an extant application design system.
-     * 
-     * https://www.radix-ui.com/themes/docs/components/theme
+     * * https://www.radix-ui.com/themes/docs/components/theme
      * @example
      * theme={{ appearance: 'dark', accentColor: 'ruby', radius: 'large' }}
      */
     theme?: Omit<ThemeProps, 'children'>;
+    /**
+     * * Optional toggle to disable the default xForm bottom submit button.
+     * Allows developers to implement custom Submit, Save or Validate buttons outside xForm component.
+     * @example
+     * buttonOverride={true}
+     */
+    buttonOverride?: boolean;
 }
 
 const FormikStateObserver = <T extends Record<string, any>>({ instance }: { instance: VectorSigma<T> }) => {
-    const { values, errors, dirty } = useFormikContext<T>();
+    const formikContext = useFormikContext<T>();
     
     useEffect(() => {
-        instance.values = values as Partial<T>;
-        instance.errors = errors;
+        instance.values = formikContext.values as Partial<T>;
+        instance.errors = formikContext.errors;
+        
+        if (!instance.actions) {
+            instance.actions = {
+                submitForm: formikContext.submitForm,
+                resetForm: formikContext.resetForm,
+                setValues: formikContext.setValues,
+                setFieldValue: formikContext.setFieldValue,
+                setFieldError: formikContext.setFieldError,
+                setFieldTouched: formikContext.setFieldTouched,
+                validateForm: formikContext.validateForm,
+                setSubmitting: formikContext.setSubmitting,
+            };
+        }
+
         // Status code 0 (Empty) to 
         // Status code 1 (In Progress) :: user typing detected
-        if (dirty && instance.statusCode === 0) {
+        if (formikContext.dirty && instance.statusCode === 0) {
             instance.statusCode = 1;
             instance.timeInProgress = Date.now();
         }
-    }, [values, errors, dirty, instance]);
+    }, [formikContext, instance]);
 
     return null; 
 };
+
+export interface VectorSigmaActions<T> {
+    submitForm: () => Promise<void | undefined>;
+    resetForm: (nextState?: Partial<import('formik').FormikState<T>>) => void;
+    setValues: (values: React.SetStateAction<T>, shouldValidate?: boolean) => Promise<void | import('formik').FormikErrors<T>>;
+    setFieldValue: (field: string, value: any, shouldValidate?: boolean) => Promise<void | import('formik').FormikErrors<T>>;
+    setFieldError: (field: string, message: string | undefined) => void;
+    setFieldTouched: (field: string, isTouched?: boolean, shouldValidate?: boolean) => Promise<void | import('formik').FormikErrors<T>>;
+    validateForm: (values?: any) => Promise<import('formik').FormikErrors<T>>;
+    setSubmitting: (isSubmitting: boolean) => void;
+}
 
 export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
     public isValid: boolean = false;
     public formObject: XFormType;
     public values: Partial<T> = {};
     public errors: Record<string, any> = {};
+    public actions: VectorSigmaActions<T> | null = null;
     public statusCode: 0 | 1 | 2 = 0; // 0 = Created/Empty | 1 = In Progress | 2 = Submitted
     public timeCreated: number;
     public timeInProgress: number | null = null;
@@ -204,7 +236,7 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
     }
 
     /**
-     * Traverses xForm schema object and injects Formik values into their respective input queryResponse attributes by `inputAlias`.
+     * Traverses xForm schema object and injects Formik values into respective input queryResponse attributes by `inputAlias`.
      */
     private hydrateQueryResponses(submittedValues: T) {
         const traverseAndHydrate = (queries: XFormQuery[]) => {
@@ -344,17 +376,17 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
      * * Transforms the initialized xForm JSON/JS object, normalizing attribute fields and returning a `<Teletraan1/>` component.
      * @param options VectorSigmaRenderProps -- `VectorSigma` and `Teletraan1` props for VΣ render matrix.
      * @example .transform({ 
-          displayMode: 'codex', 
-          readOnlyMode: false,
-          brandColor: '#800020',
-          onSubmit: async (values, actions, instance) => { // <-- onSubmit callback function passed into VectorSigma props
+         displayMode: 'codex', 
+         readOnlyMode: false,
+         brandColor: '#800020',
+         onSubmit: async (values, actions, instance) => { // <-- onSubmit callback function passed into VectorSigma props
             // Use Case: Send extant xForm object to API
             await axios.post('/api/submit', instance.getxForm());
             // Use Case: Submit and clear form after success
             actions.submitForm();
             actions.resetForm(); 
             },
-          onFinish: () => handleFormFinish() // <-- onFinish callback function passed into Teletraan1 (Codex only) props
+         onFinish: () => handleFormFinish() // <-- onFinish callback function passed into Teletraan1 (Codex only) props
       })})
      */
     public transform(options?: VectorSigmaRenderProps<T>): React.ReactElement {
@@ -387,7 +419,7 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
                             }
                             
                             if (options?.onFinish) {
-                                options.onFinish(values, actions, this);
+                                options.onFinish(values as any, actions as any, this as any);
                             }
                         } catch (error) {
                             console.error(`VectorSigma xForm Submission Error:`, error);
@@ -418,7 +450,7 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
 
                             <Teletraan1 brandColor={sanitizedData.brandColor} xFormModel={sanitizedData} {...options} />
                             
-                            {!isCodexMode && !options?.readOnlyMode && (
+                            {!isCodexMode && !options?.readOnlyMode && !options?.buttonOverride && (
                                 <Flex 
                                     mt="6" 
                                     justify="end" 
@@ -454,17 +486,17 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
      * * `render()` is the final method in the Vector Sigma builder pattern chain.
      * @param options VectorSigmaRenderProps -- `VectorSigma` and `Teletraan1` props for VΣ render matrix.
      * @example .render({ 
-          displayMode: 'dual', 
-          brandColor: '#800020',
-          readOnlyMode: false,
-          onSubmit: async (values, actions, instance) => { // <-- onSubmit callback function passed into VectorSigma props
+         displayMode: 'dual', 
+         brandColor: '#800020',
+         readOnlyMode: false,
+         onSubmit: async (values, actions, instance) => { // <-- onSubmit callback function passed into VectorSigma props
             // Use Case: Send hydrated xForm object to API
             await axios.post('/api/submit', instance.getxForm());
             // Use Case: Submit and clear form after success
             actions.submitForm();
             actions.resetForm(); 
             },
-          onFinish: () => handleFormFinish() // <-- onFinish callback function passed into Teletraan1 (Codex) props
+         onFinish: () => handleFormFinish() // <-- onFinish callback function passed into Teletraan1 (Codex) props
       })})
      */
     public render(options?: VectorSigmaRenderProps<T>): React.ReactElement {
