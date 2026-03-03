@@ -15,18 +15,22 @@ Vector Sigma (VΣ) is a dynamic form orchestrator package for rapidly creating a
 #### Key Features
 <ol>
 <li>
-<strong>Real-Time Form Adaptation:</strong> Adapt the form layout by adding/removing fields, sections or entire steps based on conditional logic.</li>
+<strong>Real-Time Form Adaptation:</strong> Adapt the xForm layout by adding/removing fields, sections or entire steps based on conditional logic.</li>
 <li>
 <strong>Validation Logic Management:</strong> Centralize business rules such as complex field validation, visibility constraints, and facilitate input value pre-population from external APIs.
 </li>
 <li>
-<strong>Form State Coordination:</strong> Monitor the "state" of the form across multi-step processes, allowing users to save progress and resume later.
+<strong>Form State Coordination:</strong> Monitor the "state" of the xForm across multi-step processes, allowing users to save progress and resume later.
 </li>
 <li>
-<strong>Application UI Integration:</strong> Connects the form data to backend workflows, CRM systems, or databases immediately upon submission.</li>
+<strong>Application UI Integration:</strong> Connects the xForm data to backend workflows, CRM systems, or databases immediately upon submission.</li>
 </ol>
 
 ### Documentation
+<ul>
+<li><a href="#">VΣ Documentation</a></li>
+<li><a href="#">χForm Components Storybook</a></li>
+<ul>
 
 ### Installation
 ```bash
@@ -455,6 +459,10 @@ const App = () => {
 ![Testing Library](https://img.shields.io/badge/-Testing%20Library-%23E33332?style=for-the-badge&logo=testing-library&logoColor=white)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+[![Storybook](https://raw.githubusercontent.com/storybookjs/brand/master/badge/badge-storybook.svg)](https://storybook.js.org)
+![Lerna](https://img.shields.io/badge/-Lerna-9437FF?style=flat-square&logo=lerna&logoColor=white)
+![Chromatic](https://img.shields.io/badge/-Chromatic-FC521F?style=flat-square&logo=chromatic&logoColor=white)
+![Netlify](https://img.shields.io/badge/-Netlify-00C7B7?style=flat-square&logo=netlify&logoColor=white)
 
 
 ### Changeset Versioning Synopsis
