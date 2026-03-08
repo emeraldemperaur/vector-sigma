@@ -40,3 +40,4 @@ export * from './utils/voltron';
 export * from './utils/uuidparser';
 export * from './utils/currencyconfig';
 export * from './utils/minerva';
+export * from './hooks/useVectorSigma';

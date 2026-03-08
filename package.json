@@ -11,6 +11,7 @@
   "type": "module",
   "main": "lib/index.cjs",
   "module": "lib/index.esm.js",
+  "unpkg": "lib/index.umd.js",
   "browser": "lib/index.esm.js",
   "types": "lib/types/index.d.ts",
   "exports": {
