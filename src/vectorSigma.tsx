@@ -236,13 +236,41 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
     }
 
     /**
-     * Traverses xForm schema object and injects Formik values into respective input queryResponse attributes by `inputAlias`.
+     * Traverses xForm schema object and injects Formik values into their respective input queryResponse attributes by `inputAlias`.
+     * For select-based inputs, it hydrates the queryResponse with the full matching inputOption object(s).
      */
     private hydrateQueryResponses(submittedValues: T) {
+
+        const objectHydrationTypes = [
+            "dropdown", "dropdowninput", "dropdown-input", "input-dropdown", "inputdropdown",
+            "select", "selectinput", "select-input", "input-select", "inputselect",
+            "selectmultiple", "selectmultipleinput", "selectmultiple-input", "input-selectmultiple", "inputselectmultiple"
+        ];
+
         const traverseAndHydrate = (queries: XFormQuery[]) => {
             queries.forEach(query => {
-                const formikValue = submittedValues[query.inputAlias];   
-                query.queryResponse = formikValue !== undefined ? formikValue : null;
+                const formikValue = submittedValues[query.inputAlias];
+                const normalizedType = query.inputType.toLowerCase();
+
+                if (formikValue !== undefined && formikValue !== null) {
+                    
+                    if (objectHydrationTypes.includes(normalizedType) && query.inputOptions) {
+                        
+                        if (Array.isArray(formikValue)) {
+                            query.queryResponse = query.inputOptions.filter(opt => 
+                                formikValue.some(val => String(val) === String(opt.optionvalue))
+                            );
+                        } else {
+                            const matchedOption = query.inputOptions.find(opt => String(opt.optionvalue) === String(formikValue));
+                            query.queryResponse = matchedOption !== undefined ? matchedOption : formikValue;
+                        }
+                        
+                    } else {
+                        query.queryResponse = formikValue;
+                    }
+                } else {
+                    query.queryResponse = null;
+                }
                 if (query.toggledInput) {
                     traverseAndHydrate([query.toggledInput]);
                 }

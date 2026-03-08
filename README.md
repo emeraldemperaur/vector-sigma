@@ -7,9 +7,9 @@
 
 ### Overview
 <p align="justify">
-Vector Sigma (VΣ) is a dynamic form orchestrator package for rapidly creating and managing the complex lifecycle of interactive extensible input forms that can be easily embedded into a React front-end client interface for use in data capturing & onboarding applications or systems. 
+Vector Sigma (VΣ) is a dynamic form orchestrator package for rapidly creating and managing the complex lifecycle of interactive extensible input forms that can be easily embedded into a React front-end client interface for use in data pipelines, onboarding applications or automation workflows.
 
- Fields, Input Validation and Submission can be defined and parametized in real-time predicated on a JSON (JavaScript Object Notation) xForm definition or builder object pattern.
+Fields, Input Validation and Submission callback() can be defined and parametized in real-time predicated on a native JavaScript object/JSON (JavaScript Object Notation) xForm definition or by builder methods object pattern.
 </p>
  
 #### Key Features
