@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import * as TogglePrimitive from '@radix-ui/react-toggle';
-import { FormikContextType, useFormikContext, getIn } from 'formik'; // Removed useField, added getIn
+import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Button, Text, Tooltip } from '@radix-ui/themes'; 
 import type { ButtonProps } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground } from "utils/vinci";
