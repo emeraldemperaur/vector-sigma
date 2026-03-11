@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.5.0
+
+### Minor Changes
+
+- 77259c6: Vector Sigma 1.5.0 RC
+
 ## 1.4.50
 
 ### Patch Changes
