@@ -28,8 +28,8 @@ Fields, Input Validation and Submission callback() can be defined and parametize
 
 ### Documentation
 <ul>
-<li><a href="#">VΣ Documentation</a></li>
-<li><a href="#">χForm Components Storybook</a></li>
+<li><a href="https://vector-sigma.netlify.app/" target="_blank">VΣ Documentation</a></li>
+<li><a href="https://69ae1e2c772d79457e37fbad-zhvolbxhpp.chromatic.com/" target="_blank">χForm Components Storybook</a></li>
 <ul>
 
 ### Installation
