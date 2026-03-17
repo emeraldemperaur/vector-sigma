@@ -129,8 +129,10 @@ export const VΣRegistrationForm = () => {
 ### Screenshots
 
 #### Automation Workflow (N8N Webhook Trigger Node) Use Case
+![N8N Showcase](/teletraan1/n8n_demoshowcase.png)
 
 #### Web Application (User Onboarding Data Pipeline) Use Case
+![Airflow DAG Showcase](/teletraan1/airflow_demoshowcase.png)
 
 ### Design Tenets
 <ul>
