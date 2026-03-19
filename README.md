@@ -461,10 +461,10 @@ const App = () => {
 ![Testing Library](https://img.shields.io/badge/-Testing%20Library-%23E33332?style=for-the-badge&logo=testing-library&logoColor=white)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
-[![Storybook](https://raw.githubusercontent.com/storybookjs/brand/master/badge/badge-storybook.svg)](https://storybook.js.org)
-![Lerna](https://img.shields.io/badge/-Lerna-9437FF?style=flat-square&logo=lerna&logoColor=white)
-![Chromatic](https://img.shields.io/badge/-Chromatic-FC521F?style=flat-square&logo=chromatic&logoColor=white)
-![Netlify](https://img.shields.io/badge/-Netlify-00C7B7?style=flat-square&logo=netlify&logoColor=white)
+![Storybook](https://img.shields.io/badge/-Storybook-FF4785?style=for-the-badge&logo=storybook&logoColor=white)
+![Lerna](https://img.shields.io/badge/-Lerna-9437FF?style=for-the-badge&logo=lerna&logoColor=white)
+![Chromatic](https://img.shields.io/badge/-Chromatic-FC521F?style=for-the-badge&logo=chromatic&logoColor=white)
+![Netlify](https://img.shields.io/badge/-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
 
 
 ### Changeset Versioning Synopsis
