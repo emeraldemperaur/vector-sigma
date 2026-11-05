@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Theme } from '@radix-ui/themes';
 import { Codex, CodexItem } from '../../layouts/codex/codex';
 import { CodexControls } from '../../layouts/codex/codexcontrols';
@@ -43,9 +43,9 @@ describe('VΣ Layouts(Codex) Test', () => {
       </Codex>
     );
 
-    expect(screen.getByText('Account Setup')).toBeInTheDocument();
-    expect(screen.getByText('Basic info')).toBeInTheDocument();
-    expect(screen.getByText('Payment Details')).toBeInTheDocument();
+    expect(screen.getAllByText('Account Setup')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('Basic info')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('Payment Details')[0]).toBeInTheDocument();
     expect(screen.getByTestId('content-1')).toBeInTheDocument();
     expect(screen.queryByTestId('content-2')).not.toBeInTheDocument();
   });
@@ -66,7 +66,7 @@ describe('VΣ Layouts(Codex) Test', () => {
     expect(screen.getByTestId('content-2')).toBeInTheDocument();
   });
 
-  it('Codex :: Changed the active step when a step header is clicked', () => {
+  it('Codex :: Changed the active step when a step header is clicked', async () => {
     renderWithTheme(
       <Codex width={12}>
         <CodexItem stepId="step-1" title="Account Setup">
@@ -80,11 +80,14 @@ describe('VΣ Layouts(Codex) Test', () => {
 
     expect(screen.getByTestId('content-1')).toBeInTheDocument();
     expect(screen.queryByTestId('content-2')).not.toBeInTheDocument();
-    const step2Header = screen.getByText('Payment Details');
+    
+    const step2Header = screen.getAllByText('Payment Details')[0];
     fireEvent.click(step2Header);
 
-    expect(screen.queryByTestId('content-1')).not.toBeInTheDocument();
-    expect(screen.getByTestId('content-2')).toBeInTheDocument();
+    await waitFor(() => {
+        expect(screen.queryByTestId('content-1')).not.toBeInTheDocument();
+        expect(screen.getByTestId('content-2')).toBeInTheDocument();
+    });
   });
 
   it('Codex :: Rendered neumorphic variant', () => {
@@ -99,11 +102,11 @@ describe('VΣ Layouts(Codex) Test', () => {
     const stepperWrapper = container.querySelector('.v-stepper-neumorphic');
     expect(stepperWrapper).toBeInTheDocument();
   });
-
 });
 
 describe('VΣ Layouts(CodexControls) Test', () => {
-    it('CodexControls :: Navigated between steps using the Next and Back buttons', () => {
+    
+    it('CodexControls :: Navigated between steps using the Next and Back buttons', async () => {
       renderWithTheme(
         <Codex width={12}>
           <CodexItem stepId="step-1" title="Step 1">
@@ -119,14 +122,21 @@ describe('VΣ Layouts(CodexControls) Test', () => {
         </Codex>
       );
 
-      const nextButton = screen.getByRole('button', { name: 'Continue' });
+      const nextButton = screen.getByRole('button', { name: /Continue/i });
       fireEvent.click(nextButton);
-      expect(screen.queryByTestId('content-1')).not.toBeInTheDocument();
-      expect(screen.getByTestId('content-2')).toBeInTheDocument();
-      const backButton = screen.getByRole('button', { name: 'Back' });
+      
+      await waitFor(() => {
+        expect(screen.queryByTestId('content-1')).not.toBeInTheDocument();
+        expect(screen.getByTestId('content-2')).toBeInTheDocument();
+      });
+
+      const backButton = screen.getByRole('button', { name: /Back/i });
       fireEvent.click(backButton);
-      expect(screen.getByTestId('content-1')).toBeInTheDocument();
-      expect(screen.queryByTestId('content-2')).not.toBeInTheDocument();
+      
+      await waitFor(() => {
+        expect(screen.getByTestId('content-1')).toBeInTheDocument();
+        expect(screen.queryByTestId('content-2')).not.toBeInTheDocument();
+      });
     });
 
     it('CodexControls :: Triggered bespoke onNext, onPrev, onFinish callback functions', async () => {
@@ -157,14 +167,18 @@ describe('VΣ Layouts(CodexControls) Test', () => {
         </Codex>
       );
 
-      const customNextButton = screen.getByRole('button', { name: 'Bespoke Next' });
+      const customNextButton = screen.getByRole('button', { name: /Bespoke Next/i });
       fireEvent.click(customNextButton);
-      expect(mockOnNext).toHaveBeenCalledTimes(1);
+      
+      await waitFor(() => {
+        expect(mockOnNext).toHaveBeenCalledTimes(1);
+      });
 
-      const finishButton = screen.getByRole('button', { name: 'Launch App' });
+      const finishButton = screen.getByRole('button', { name: /Launch App/i });
       fireEvent.click(finishButton);
-      expect(mockOnFinish).toHaveBeenCalledTimes(1);
-     
+      
+      await waitFor(() => {
+        expect(mockOnFinish).toHaveBeenCalledTimes(1);
+      });
     });
-  });
-
+});

@@ -4,12 +4,11 @@ import { Formik, Form } from 'formik';
 import { Theme } from '@radix-ui/themes';
 import { AvatarInput } from '../../components/avatar/avatar';
 
-
 beforeAll(() => {
-  global.URL.createObjectURL = jest.fn(() => 'mock-preview-url');
-  global.URL.revokeObjectURL = jest.fn();
+  globalThis.URL.createObjectURL = jest.fn(() => 'mock-preview-url');
+  globalThis.URL.revokeObjectURL = jest.fn();
   
-  Object.defineProperty(window, 'crypto', {
+  Object.defineProperty(globalThis, 'crypto', {
     value: { randomUUID: () => 'mock-uuid-for-me' },
   });
 });
@@ -40,7 +39,6 @@ describe('VΣ Component(AvatarInput) Test', () => {
     );
 
     expect(screen.getByText('Upload VΣ Profile')).toBeInTheDocument();
-    
     expect(screen.getByText('Upload')).toBeInTheDocument();
 
     const fileInput = screen.getByLabelText('Upload VΣ Profile') as HTMLInputElement;
@@ -58,11 +56,10 @@ describe('VΣ Component(AvatarInput) Test', () => {
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
-      expect(global.URL.createObjectURL).toHaveBeenCalledWith(file);
+      expect(globalThis.URL.createObjectURL).toHaveBeenCalledWith(file);
     });
 
-    const previewImage = screen.getByAltText('Avatar');
-    expect(previewImage).toBeInTheDocument();
+    const previewImage = screen.getByRole('img');
     expect(previewImage).toHaveAttribute('src', 'mock-preview-url');
   });
 

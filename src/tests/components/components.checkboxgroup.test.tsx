@@ -10,7 +10,7 @@ jest.mock('../../utils/vinci', () => ({
 }));
 
 beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(globalThis, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       matches: false,
@@ -24,14 +24,13 @@ beforeAll(() => {
     })),
   });
 
-  global.ResizeObserver = class {
+  globalThis.ResizeObserver = class {
     observe() {}
     unobserve() {}
     disconnect() {}
-  };
-
+  } as unknown as typeof ResizeObserver;
   
-  Object.defineProperty(global, 'crypto', {
+  Object.defineProperty(globalThis, 'crypto', {
     value: { randomUUID: () => 'mock-uuid-for-me' },
   });
 });
@@ -82,8 +81,10 @@ describe('VΣ Component(CheckboxGroupInput) Test', () => {
 
     const kaijuCheckbox = screen.getAllByRole('checkbox')[0];
     const mechaCheckbox = screen.getAllByRole('checkbox')[1];
+    
     expect(kaijuCheckbox).toHaveAttribute('data-state', 'unchecked');
     expect(mechaCheckbox).toHaveAttribute('data-state', 'unchecked');
+    
     fireEvent.click(kaijuCheckbox);
     await waitFor(() => {
       expect(kaijuCheckbox).toHaveAttribute('data-state', 'checked');
@@ -127,7 +128,8 @@ describe('VΣ Component(CheckboxGroupInput) Test', () => {
       />
     );
     const firstCheckbox = screen.getAllByRole('checkbox')[0];
-    expect(firstCheckbox.classList.contains('neu-checkbox')).toBe(true);
+    const wrapper = firstCheckbox.closest('label') || firstCheckbox.parentElement;
+    expect(wrapper?.className).toMatch(/neumorphic/i);
   });
 
 });

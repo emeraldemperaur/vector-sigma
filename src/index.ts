@@ -22,6 +22,7 @@ export * from './components/input/uuidInput';
 export * from './components/input/xCreditCardInput';
 export * from './components/inputcurrency/inputcurrency';
 export * from './components/inputcurrency/stockInput';
+export * from './components/input/inputTextArea';
 export * from './components/radio/radio';
 export * from './components/select/select';
 export * from './components/selectmultiple/selectmultiple';

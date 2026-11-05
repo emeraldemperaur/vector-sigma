@@ -1,135 +1,214 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState, useId, useMemo } from 'react';
 import { FormikContextType, useFormikContext, getIn } from 'formik';
-import { Flex, Text, Slider as RadixSlider, Tooltip } from '@radix-ui/themes';
+import { Flex, Text, Slider as RadixSlider, Tooltip, Badge } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground } from 'utils/vinci';
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
 import '../../styles/main.scss';
 
-export type SliderDesign = 'slider' | 'slider-material' | 'slider-outline' | 'slider-neumorphic';
+export type SliderDesign = 
+  | 'slider' 
+  | 'slider-material' 
+  | 'slider-outline' 
+  | 'slider-neumorphic';
 
-interface SliderProps {
+/**
+ * SliderInputProps Interface
+ * @description Configuration properties for the VectorSigma SliderInput component.
+ * Emits a single scalar primitive `number` to satisfy VectorSigma's `Yup.number()` validation engine.
+ * Features enterprise-grade aesthetics (Outline, Material, n8n Neumorphic),
+ * real-time numeric badges, responsive typography overrides, and strict Formik integration.
+ */
+export interface SliderInputProps {
   /**
-     * * The required unique identifier for the SliderInput field in useFormikContext(). 
-     * Alias referenced as `name` attribute and Formik state key.
-     * * @example
-     * alias="numberOfRentalRooms"
-     */
-    alias: string; 
-    /**
-     * * The optional input label or description for the SliderInput field. 
-     * * @example
-     * inputLabel="Specify number of rooms for rental"
-     */
-    inputLabel?: string; 
-    /**
-     * * The design variation of the SliderInput field. 
-     * Default: 'slider-outline' 
-     * Variants: 'slider', 'slider-outline', 'slider-material', 'slider-neumorphic'.
-     * * @example
-     * inputtype="slider-neumorphic"
-     */
-    inputtype?: SliderDesign & {};
-     /**
-     * * The required viewport column width for the SliderInput field.
-     * i.e. 1 - 12
-     * * @example
-     * width={5}
-     */ 
-    width: number;
-     /**
-     * * Option to render SliderInput field on new row.
-     * * @example
-     * newRow
-     */
-    newRow?: boolean; 
-     /**
-     * * Option to specify the isRequired error text for the SliderInput field.
-     * * @example
-     * errorText="A number range selection is required"
-     */
-    errorText?: ReactNode | string | null;
-    /**
-     * * Option to disable edits for SliderInput field.
-     * * @example
-     * readOnly
-     */
-    readOnly?: boolean;
-    /**
-       * * Option to enable a hint for SliderInput field.
-       * * @example
-       * isHinted
-       */
-    isHinted?: boolean; 
-    /**
-     * * Option to specify hint text for SliderInput field.
-     * * @example
-     * hintText="This is a hint for a VΣ SliderInput"
-     */
-    hintText?: string;
-    /**
-     * * Option to specify a hint url reference or resource for SliderInput field.
-     * * @example
-     * hintUrl="https://www.mekaegwim.ca"
-     */ 
-    hintUrl?: string;
-     /**
-     * * Option to specify a minimum value for SliderInput field.
-     * * @example
-     * minvalue={10}
-     */ 
-    minvalue?: number;
-      /**
-     * * Option to specify a maximum value for SliderInput field.
-     * * @example
-     * minvalue={100}
-     */ 
-    maxvalue?: number;
-      /**
-     * * Option to specify an incremental step value for SliderInput field.
-     * * @example
-     * minvalue={10}
-     */ 
-    stepvalue?: number;
-    /**
-     * * Option to specify the .scss class selector for the SliderInput field.
-     * * @example
-     * className="teletraan-1-sliderinput"
-     */
-    className?: string;
-    /**
-     * * Option to inject custom CSS the SliderInput field.
-     * * @example
-     * style={{ color: "#000000" }}
-     */
-    style?: React.CSSProperties;
-    /**
-     * * Optional explicit Formik context. Useful when bypassing duplicate 
-     * context issues in monorepos or bundled npm packages.
-     */
-    formikContext?: FormikContextType<any>;
+   * The required unique identifier for the SliderInput field in Formik context.
+   * Alias referenced as `name` attribute and Formik state key.
+   * Stores a scalar primitive number (e.g., `4`).
+   * @example "numberOfRentalRooms"
+   */
+  alias: string;
+
+  /**
+   * The primary semantic label rendered above the slider track.
+   * @example "Number of Rental Rooms"
+   */
+  inputLabel?: string;
+
+  /**
+   * The aesthetic design variation of the slider track and thumb.
+   * - `slider-outline`: Minimalist enterprise border track with accent thumb (Default).
+   * - `slider-material`: Elevated solid track with halo drop shadows.
+   * - `slider-neumorphic`: Soft-UI with recessed track and extruded thumbs.
+   * @default "slider-outline"
+   */
+  inputtype?: SliderDesign;
+
+  /**
+   * Alternative prop name matching standard VectorSigma prop conventions.
+   */
+  inputvariant?: SliderDesign;
+
+  /**
+   * Defines the responsive grid column span for the component (1-12 based on the parent grid).
+   * @example 6
+   */
+  width: number;
+
+  /**
+   * Forces the component to break into a new Flex/Grid row within the Form layout.
+   * @default false
+   */
+  newRow?: boolean;
+
+  /**
+   * Minimum allowable numerical boundary for the slider.
+   * @default 0
+   */
+  minvalue?: number;
+
+  /**
+   * Alias for `minvalue` matching standard HTML slider conventions.
+   */
+  min?: number;
+
+  /**
+   * Maximum allowable numerical boundary for the slider.
+   * @default 100
+   */
+  maxvalue?: number;
+
+  /**
+   * Alias for `maxvalue` matching standard HTML slider conventions.
+   */
+  max?: number;
+
+  /**
+   * Incremental granularity step interval between values.
+   * @default 1
+   */
+  stepvalue?: number;
+
+  /**
+   * Alias for `stepvalue` matching standard HTML slider conventions.
+   */
+  step?: number;
+
+  /**
+   * Disables interaction, mutating the visual state to reflect read-only mode.
+   * @default false
+   */
+  readOnly?: boolean;
+
+  /**
+   * Toggles the visibility of the contextual hint icon and tooltip next to the label.
+   * @default false
+   */
+  isHinted?: boolean;
+
+  /**
+   * The text payload displayed inside the Tooltip when `isHinted` is true.
+   * @example "Select the maximum room occupancy for seasonal listings."
+   */
+  hintText?: string;
+
+  /**
+   * An optional URL bound to the hint icon, directing the user to external documentation.
+   * @example "https://docs.vectorsigma.io/properties/rooms"
+   */
+  hintUrl?: string;
+
+  /**
+   * Toggles the real-time value pill/badge in the top-right header row.
+   * @default true
+   */
+  showValueBadge?: boolean;
+
+  /**
+   * Optional formatting callback for rendering the number in the header badge.
+   * @example (val) => `${val} Rooms`
+   * @example (val) => `$${val.toLocaleString()}`
+   */
+  valueFormatter?: (value: number) => string;
+
+  /**
+   * Explicit error string to override standard Formik validation messages.
+   * @example "A valid number of rooms is required."
+   */
+  errorText?: ReactNode | string | null;
+
+  /**
+   * Sizing scale for the slider track and thumb.
+   * @default "2"
+   */
+  size?: "1" | "2" | "3";
+
+  /**
+   * Optional typographic color overrides. Allows explicit targeting of the component's
+   * internal CSS color assignments regardless of the global Radix theme.
+   */
+  typography?: {
+    /** Overrides the background color of tracks, badges, and containers */
+    background?: string;
+    /** Overrides the stroke/border color of track outlines and thumbs */
+    stroke?: string;
+    /** Overrides the text color of labels and numeric readouts */
+    textColor?: string;
+    /** Overrides the primary active fill color of the slider range and thumb */
+    accent?: string;
+  };
+
+  /**
+   * Optional custom SCSS class selector for external targeted styling overrides.
+   */
+  className?: string;
+
+  /**
+   * Inline React CSS properties applied to the outermost Flex wrapper.
+   */
+  style?: React.CSSProperties;
+
+  /**
+   * Injects an explicit Formik context. Required if the component operates outside 
+   * a standard `<FormikProvider>` tree.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
+export type SliderProps = SliderInputProps;
 
 export const SliderInput = ({
+  alias,
+  inputLabel,
   inputtype = 'slider-outline',
-  alias, readOnly, width, inputLabel,
-  newRow, isHinted, hintText, hintUrl, errorText,
-  minvalue = 0,
-  maxvalue = 100,
-  stepvalue = 1,
+  inputvariant,
+  width,
+  newRow,
+  minvalue,
+  min = 0,
+  maxvalue,
+  max = 100,
+  stepvalue,
+  step = 1,
+  readOnly = false,
+  isHinted,
+  hintText,
+  hintUrl,
+  showValueBadge = true,
+  valueFormatter,
+  errorText,
+  size = "2",
+  typography,
   className,
-  style, 
+  style,
   formikContext,
-  ...props
-}: SliderProps) => {
-  
+}: SliderInputProps) => {
+
   const defaultFormikContext = useFormikContext<any>();
   const activeContext = formikContext || defaultFormikContext;
 
   if (!activeContext) {
-      console.error(`SliderInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
-      return null;
+    console.error(`[VectorSigma]: SliderInput '${alias}' must be used within a Formik provider or receive an explicit formikContext prop.`);
+    return null;
   }
 
   const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
@@ -138,142 +217,253 @@ export const SliderInput = ({
   const fieldTouched = getIn(touched, alias);
   const fieldError = getIn(errors, alias);
 
-  const fieldValue = Array.isArray(fieldVal) ? fieldVal : [fieldVal || minvalue];
-  const hasError = Boolean(fieldTouched && fieldError);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+  const fallbackId = useId();
+  const inputId = `${alias}FormInput-${fallbackId}`;
   const labelId = `${alias}InputLabel`;
   const errorId = `${alias}-error`;
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+
+  const resolvedVariant = inputvariant || inputtype || 'slider-outline';
+  const resolvedMin = minvalue !== undefined ? minvalue : min;
+  const resolvedMax = maxvalue !== undefined ? maxvalue : max;
+  const resolvedStep = stepvalue !== undefined ? stepvalue : step;
+
+  const sliderValue: number[] = useMemo(() => {
+    if (typeof fieldVal === 'number' && !isNaN(fieldVal)) {
+      return [fieldVal];
+    }
+    if (Array.isArray(fieldVal) && fieldVal.length > 0) {
+      const parsed = Number(fieldVal[0]);
+      return [isNaN(parsed) ? resolvedMin : parsed];
+    }
+    if (fieldVal !== undefined && fieldVal !== null && fieldVal !== '') {
+      const parsed = Number(fieldVal);
+      return [isNaN(parsed) ? resolvedMin : parsed];
+    }
+    return [resolvedMin];
+  }, [fieldVal, resolvedMin]);
+
+  const hasError = Boolean(fieldTouched && fieldError);
+
   useEffect(() => {
-    if (inputtype === 'slider-neumorphic' && containerRef.current) {
+    if (resolvedVariant.includes('neumorphic') && containerRef.current) {
       const parentBg = getNearestParentBackground(containerRef.current.parentElement);
+      const computedBg = typography?.background || parentBg;
+
       setNeuVars({
-        '--neu-bg': parentBg,
-        '--neu-shadow-dark': adjustColor(parentBg, -20),
-        '--neu-shadow-light': adjustColor(parentBg, 20),
-        '--neu-accent': 'var(--accent-9)',
+        '--neu-bg': computedBg,
+        '--neu-shadow-dark': adjustColor(computedBg, -20),
+        '--neu-shadow-light': adjustColor(computedBg, 20),
       } as React.CSSProperties);
     }
-  }, [inputtype]);
+  }, [resolvedVariant, typography?.background]);
+
+  const typographyVars = {
+    '--vs-sl-bg': typography?.background || 'var(--color-surface)',
+    '--vs-sl-stroke': typography?.stroke || 'var(--gray-7)',
+    '--vs-sl-text': typography?.textColor || 'var(--gray-12)',
+    '--vs-sl-accent': typography?.accent || 'var(--accent-9)',
+  } as React.CSSProperties;
+
+  const formattedDisplayValue = useMemo(() => {
+    const currentValue = sliderValue[0];
+    if (valueFormatter) {
+      return valueFormatter(currentValue);
+    }
+    return currentValue.toString();
+  }, [sliderValue, valueFormatter]);
 
   return (
     <Column span={width} newLine={newRow}>
-    <Flex 
-      direction="column" 
-      gap="3" 
-      width="100%" 
-      ref={containerRef} 
-      style={style} 
-      className={className}
-    >
-      <Flex justify="between" align="center">
-        <Text size="2" color="gray" style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {fieldValue[0]}
-        </Text>
-      </Flex>
+      <Flex 
+        direction="column" 
+        gap="2" 
+        style={{ width: '100%', fontFamily: "'Libre Franklin', sans-serif", ...typographyVars, ...style }} 
+        ref={containerRef} 
+        className={className}
+      >
+        <style>
+          {`
+            .vs-single-slider-root {
+              position: relative;
+              display: flex;
+              align-items: center;
+              user-select: none;
+              touch-action: none;
+              width: 100%;
+              cursor: ${readOnly ? 'not-allowed' : 'pointer'};
+              padding: 6px 0;
+            }
+            .vs-single-slider-root.vs-readonly {
+              opacity: 0.6;
+              pointer-events: none;
+            }
 
-      <style dangerouslySetInnerHTML={{__html: `
-        /* --- NEUMORPHIC --- */
-        
-        /* Groove (Track) */
-        .neu-slider .rt-SliderTrack {
-          background-color: var(--neu-bg);
-          height: 8px; /* Thicker track for the groove effect */
-          box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), 
-                      inset -2px -2px 5px var(--neu-shadow-light);
-          border-radius: 99px;
-        }
+            .vs-single-slider-outline .rt-SliderTrack {
+              background-color: var(--gray-3);
+              border: 1px solid ${hasError ? 'var(--red-9)' : 'var(--vs-sl-stroke)'};
+              height: ${size === '1' ? '4px' : size === '3' ? '8px' : '6px'};
+              border-radius: 9999px;
+            }
+            .vs-single-slider-outline .rt-SliderRange {
+              background-color: ${hasError ? 'var(--red-9)' : 'var(--vs-sl-accent)'};
+              border-radius: 9999px;
+            }
+            .vs-single-slider-outline .rt-SliderThumb {
+              background-color: #ffffff;
+              border: 2px solid ${hasError ? 'var(--red-9)' : 'var(--vs-sl-accent)'};
+              width: ${size === '1' ? '16px' : size === '3' ? '24px' : '20px'};
+              height: ${size === '1' ? '16px' : size === '3' ? '24px' : '20px'};
+              border-radius: 50%;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+              transition: transform 0.15s ease, box-shadow 0.15s ease;
+            }
+            .vs-single-slider-outline .rt-SliderThumb:hover {
+              transform: scale(1.12);
+              box-shadow: 0 0 0 4px var(--accent-a3);
+            }
+            .vs-single-slider-outline .rt-SliderThumb:focus-visible {
+              outline: none;
+              box-shadow: 0 0 0 5px var(--accent-a4);
+            }
 
-        /* Fill (Range) */
-        .neu-slider .rt-SliderRange {
-          background-color: var(--neu-accent);
-          border-radius: 99px;
-          /* Optional: Add inner glow to the fill */
-          box-shadow: inset 0 0 2px rgba(0,0,0,0.2); 
-        }
+            .vs-single-slider-material .rt-SliderTrack {
+              background-color: var(--gray-4);
+              height: ${size === '1' ? '4px' : size === '3' ? '8px' : '6px'};
+              border-radius: 9999px;
+              box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+            }
+            .vs-single-slider-material .rt-SliderRange {
+              background-color: ${hasError ? 'var(--red-9)' : 'var(--vs-sl-accent)'};
+              border-radius: 9999px;
+            }
+            .vs-single-slider-material .rt-SliderThumb {
+              background-color: var(--vs-sl-accent);
+              border: 2px solid #ffffff;
+              width: ${size === '1' ? '16px' : size === '3' ? '24px' : '20px'};
+              height: ${size === '1' ? '16px' : size === '3' ? '24px' : '20px'};
+              border-radius: 50%;
+              box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+              transition: transform 0.15s ease, box-shadow 0.15s ease;
+            }
+            .vs-single-slider-material .rt-SliderThumb:hover {
+              transform: scale(1.15);
+              box-shadow: 0 4px 12px rgba(0,0,0,0.28), 0 0 0 6px var(--accent-a3);
+            }
+            .vs-single-slider-material .rt-SliderThumb:focus-visible {
+              outline: none;
+              box-shadow: 0 0 0 8px var(--accent-a4);
+            }
 
-        /* Puck (Thumb) */
-        .neu-slider .rt-SliderThumb {
-          background-color: var(--neu-bg);
-          border: 2px solid var(--neu-bg); /* subtle border */
-          width: 24px;
-          height: 24px;
-          /* Floating effect */
-          box-shadow: 3px 3px 6px var(--neu-shadow-dark), 
-                      -3px -3px 6px var(--neu-shadow-light);
-        }
-        
-        /* Thumb Hover/Active */
-        .neu-slider .rt-SliderThumb:hover {
-          transform: scale(1.1);
-          cursor: grab;
-        }
-        .neu-slider .rt-SliderThumb:active {
-          cursor: grabbing;
-          /* Press it slightly */
-          transform: scale(0.95);
-        }
+            .vs-single-slider-neumorphic .rt-SliderTrack {
+              background-color: var(--neu-bg);
+              height: ${size === '1' ? '6px' : size === '3' ? '10px' : '8px'};
+              border-radius: 9999px;
+              box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
+            }
+            .vs-single-slider-neumorphic .rt-SliderRange {
+              background-color: var(--vs-sl-accent);
+              border-radius: 9999px;
+            }
+            .vs-single-slider-neumorphic .rt-SliderThumb {
+              background-color: var(--neu-bg);
+              border: 2px solid var(--neu-bg);
+              width: ${size === '1' ? '18px' : size === '3' ? '26px' : '22px'};
+              height: ${size === '1' ? '18px' : size === '3' ? '26px' : '22px'};
+              border-radius: 50%;
+              box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+              transition: transform 0.15s ease, box-shadow 0.15s ease;
+            }
+            .vs-single-slider-neumorphic .rt-SliderThumb:hover {
+              transform: scale(1.1);
+              box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+            }
+            .vs-single-slider-neumorphic .rt-SliderThumb:active {
+              transform: scale(0.96);
+              box-shadow: inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light);
+            }
 
-        /* --- OUTLINE --- */
-        .outline-slider .rt-SliderTrack {
-           height: 4px;
-           background-color: transparent;
-           border: 1px solid var(--gray-8);
-        }
-        .outline-slider .rt-SliderRange {
-           background-color: var(--accent-9);
-        }
-        .outline-slider .rt-SliderThumb {
-           background-color: white;
-           border: 2px solid var(--accent-9);
-           box-shadow: none;
-        }
-      `}} />
+            /* Readout Pill Badge */
+            .vs-single-slider-badge {
+              font-family: inherit;
+              font-variant-numeric: tabular-nums;
+              font-weight: 600;
+              letter-spacing: 0.02em;
+            }
+          `}
+        </style>
 
-      <RadixSlider 
-        name={alias}
-        id={`${alias}FormInput`} 
-        disabled={readOnly}
-        aria-labelledby={labelId}
-        min={minvalue} 
-        max={maxvalue} 
-        step={stepvalue}
-        value={fieldValue}
-        onValueChange={(val) => {
-          setFieldValue(alias, val[0]);
-        }}
-        onValueCommit={() => {
-          setFieldTouched(alias, true, false);
-        }}
-        
-        className={ inputtype === 'slider-neumorphic' ? 'neu-slider' : inputtype === 'slider-outline' ? 'outline-slider' : ''}
-        style={neuVars}
-      />
-
-      <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+        <Flex justify="between" align="center" style={{ minHeight: '24px', paddingLeft: '2px', paddingRight: '2px' }}>
+          <Flex align="center" gap="2">
             {inputLabel && (
-                <Text id={labelId} as="div" size="2" weight="bold">
-                  {inputLabel}
-                </Text>
-                )}
-                
-            {isHinted ?
-                        <>
-                        <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                            <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                            <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                            </a> 
-                        </Tooltip>
-                        </> : null} 
-            {hasError ?
-                        <>
-                        <p id={errorId} className='core-input-label-error'>
-                            {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
-                        </p>
-                        </> : null } 
-      </div>
-    </Flex>
+              <Text id={labelId} as="label" size="2" weight="medium" style={{ color: 'var(--gray-11)' }} htmlFor={inputId}>
+                {inputLabel}
+              </Text>
+            )}
+            {isHinted && (
+              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5}>
+                <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Icon name="questionmarkcircled" height="15" width="15" style={{ cursor: 'pointer', color: 'var(--gray-9)', transition: 'color 0.2s' }} />
+                </a> 
+              </Tooltip>
+            )}
+          </Flex>
+
+          {showValueBadge && (
+            <Badge 
+              size={size === "3" ? "2" : "1"} 
+              variant={resolvedVariant.includes('neumorphic') ? "surface" : "soft"} 
+              color="gray"
+              className="vs-single-slider-badge"
+              style={{
+                backgroundColor: resolvedVariant.includes('neumorphic') 
+                  ? 'transparent' 
+                  : typography?.accent 
+                    ? adjustColor(typography.accent, 85) 
+                    : undefined,
+                color: typography?.accent ? typography.accent : undefined,
+                boxShadow: resolvedVariant.includes('neumorphic')
+                  ? '2px 2px 4px var(--neu-shadow-dark), -2px -2px 4px var(--neu-shadow-light)'
+                  : undefined,
+              }}
+            >
+              {formattedDisplayValue}
+            </Badge>
+          )}
+        </Flex>
+
+        <RadixSlider
+          name={alias}
+          id={inputId}
+          disabled={readOnly}
+          aria-labelledby={inputLabel ? labelId : undefined}
+          aria-describedby={hasError ? errorId : undefined}
+          min={resolvedMin}
+          max={resolvedMax}
+          step={resolvedStep}
+          value={sliderValue}
+          onValueChange={(val: number[]) => {
+            setFieldValue(alias, val[0]);
+          }}
+          onValueCommit={() => {
+            setFieldTouched(alias, true, false);
+          }}
+          className={`vs-single-slider-root ${
+            resolvedVariant.includes('material') ? 'vs-single-slider-material' : 
+            resolvedVariant.includes('neumorphic') ? 'vs-single-slider-neumorphic' : 
+            'vs-single-slider-outline'
+          } ${readOnly ? 'vs-readonly' : ''}`}
+          style={neuVars}
+        />
+
+        {hasError && (
+          <Text id={errorId} size="1" style={{ color: 'var(--red-9)', fontWeight: 500, paddingLeft: '2px' }}>
+            {errorText || (typeof fieldError === 'string' ? fieldError : "A valid selection is required")}
+          </Text>
+        )}
+      </Flex>
     </Column>
   );
 };

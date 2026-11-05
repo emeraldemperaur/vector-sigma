@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useId } from "react";
 import { FormikContextType, useFormikContext, getIn } from 'formik';
-import { Box, Flex, Text, Switch, Checkbox, Select, Card, Tooltip } from '@radix-ui/themes';
+import { Box, Flex, Text, Switch, Checkbox, Select, Tooltip } from '@radix-ui/themes';
 import { InputOption } from "utils/vinci";
 import { Column } from "layouts/column/column";
 import { Row } from "layouts/row/row"; 
@@ -11,193 +11,148 @@ export type ToggleTriggerDesign = 'conditionaltoggle' | 'conditionaltoggle-outli
 export type CheckboxTriggerDesign = 'conditionalcheckbox' | 'conditionalcheckbox-outline' | 'conditionalcheckbox-material' | 'conditionalcheckbox-neumorphic';
 export type SelectTriggerDesign = 'conditionalselect' | 'conditionalselect-outline' | 'conditionalselect-material' | 'conditionalselect-neumorphic';
 
-export type TriggerType = 'conditionaltoggle' | 'conditionalcheckbox' | 'conditionalselect' | 'conditional-toggle' | 'conditional-checkbox' | 'conditional-select';
+export type TriggerType = ToggleTriggerDesign | CheckboxTriggerDesign | SelectTriggerDesign;
 
+/**
+ * ConditionalProps Interface
+ * @description Configuration properties for the VectorSigma Conditional Wrapper.
+ * Orchestrates visibility of child inputs based on a driving trigger value. 
+ * Includes automated Formik state-wiping and unified enterprise animations.
+ */
 export interface ConditionalProps {
   /**
-   * * The design variation of the Conditional Trigger input. 
-   * Default: 'conditionaltoggle-outline' 
-   * Variants: 'conditionaltoggle-outline', 'conditionalcheckbox-outline', 'conditionalselect-outline',
-   * 'conditionaltoggle-material', 'conditionalcheckbox-material', 'conditionalselect-material', 
-   * 'conditionaltoggle-neumorphic', 'conditionalcheckbox-neumorphic', 'conditionalselect-neumorphic'.
-   * * @example
-   * inputtype="conditionalcheckbox-outline"
+   * The design aesthetic and input mechanism of the Conditional Trigger.
+   * Defines both *how* it looks (Outline, Material, Neumorphic) and *what* it is (Toggle, Checkbox, Select).
+   * @default 'conditionaltoggle-outline'
    */
-  inputtype?: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign  & {}; // Conditional Trigger Element input type (conditionaltoggle, conditionalcheckbox, conditionalselect)
+  inputtype?: TriggerType;
+
   /**
-   * * The required unique identifier for the Conditional Trigger input field in useFormikContext(). 
-   * Alias referenced as `name` attribute and Formik state key.
-   * * @example
-   * alias="isAIEnabled"
+   * The unique identifier bridging the trigger to the Formik state.
+   * @example "enableAdvancedSettings"
    */
   alias: string;
-   /**
-   * * The required conditional toggled (child) xForm input field.
-   * * @example
-   * children={<Avatar name="Upload Display Profile/>}
+
+  /**
+   * The child React nodes (usually other form inputs) that will be revealed 
+   * when the trigger's state matches the `triggerValue`.
    */
   children: React.ReactNode;
-   /**
-   * * Option to specify a value for Conditional Trigger element to reveal render the toggled child input field if trigger value is inputted.
-   * (e.g. Boolean, String, Number)
-   * * @example
-   * hintUrl="https://www.mekaegwim.ca"
+
+  /**
+   * The required threshold value that the trigger must meet to reveal the children.
+   * @example true
    */ 
   triggerValue: any;
+
   /**
-   * * The optional input label or description for the Conditional Trigger input field. 
-   * * @example
-   * inputLabel="Enable VΣ AI Models"
+   * Array of Formik field aliases (keys) rendered within this conditional block.
+   * When the trigger closes, these fields are automatically wiped to prevent stale data leaks.
+   * @example ["targetRegion", "autoScalingThreshold"]
+   */
+  fieldsToClearOnClose?: string[];
+
+  /**
+   * The primary semantic label rendered alongside the trigger control.
+   * @example "Enable AI Generation"
    */
   inputLabel?: string;
+
   /**
-   * * The required viewport column width for the Conditional Trigger input field.
-   * i.e. 1 - 12
-   * * @example
-   * width={6}
+   * Defines the responsive grid column span for the component wrapper (1-12).
+   * @example 12
    */
   width: number;
+
   /**
-   * * Option to render Conditional Trigger input field on new row.
-   * * @example
-   * newRow
+   * Forces the component to break into a new Flex/Grid row within the layout.
+   * @default false
    */
-  newRow?: boolean,
-   /**
-   * * Option to force set the default value for a Conditional Trigger (Select) input field.
-   * * @example
-   * placeholder="Activate Plan"
+  newRow?: boolean;
+
+  /**
+   * Placeholder text utilized only if the `inputtype` mechanism is a Select dropdown.
+   * @example "Select Provider..."
    */
   placeholder?: string;
+
   /**
-   * * Option to disable edits for Conditional Trigger input field.
-   * * @example
-   * readOnly
+   * Disables interaction, mutating the visual state to reflect read-only/disabled mode.
+   * @default false
    */ 
   readOnly?: boolean;
+
   /**
-     * * Option to enable a hint for Conditional Trigger input field.
-     * * @example
-     * isHinted
-     */ 
+   * Toggles the visibility of the contextual hint icon and tooltip next to the label.
+   * @default false
+   */ 
   isHinted?: boolean;
+
   /**
-   * * Option to specify hint text for Conditional Trigger input field.
-   * * @example
-   * hintText="This is a hint for a VΣ Conditional Trigger"
+   * The text payload displayed inside the Tooltip when `isHinted` is true.
+   * @example "Advanced settings may increase compute costs."
    */ 
   hintText?: string;
+
   /**
-   * * Option to specify a hint url reference or resource for Conditional Trigger input field.
-   * * @example
-   * hintUrl="https://www.mekaegwim.ca"
+   * An optional URL bound to the hint icon, directing the user to external documentation.
+   * @example "https://docs.vectorsigma.io/settings"
    */ 
   hintUrl?: string;
-   /**
-   * * Required  inputOptions{} for the Conditional Trigger input field.
-   * * @example
-   * inputOptions={
-   * [
-   * {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
-   * {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
-   * {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
-   * ]}
-  */   
+
+  /**
+   * The array of discrete options rendered if the `inputtype` mechanism is a Select dropdown.
+   */   
   inputOptions?: InputOption[]; 
-   /**
-   * * Option to specify the isRequired error text for the Conditional Trigger input field.
-   * * @example
-   * errorText="A VΣ category selection is required"
+
+  /**
+   * Explicit error string to override standard Formik validation messages on the trigger.
    */
   errorText?: ReactNode | string | null;
+
   /**
-   * * Option to specify the .scss class selector for the Conditional Trigger input field.
-   * * @example
-   * className="teletraan-1-checkbox"
+   * Optional custom SCSS class selector for external targeted styling overrides.
    */
   className?: string;
+
   /**
-   * * Option to inject custom CSS the Conditional Trigger input field.
-   * * @example
-   * style={{ color: "#000000" }}
+   * Inline React CSS properties applied to the outmost structural wrapper.
    */
   style?: React.CSSProperties;
+
   /**
-   * * Optional explicit Formik context. Useful when bypassing duplicate 
-   * context issues in monorepos or bundled npm packages.
+   * Injects an explicit Formik context. Required if the component operates outside 
+   * a standard `<FormikProvider>` tree.
    */
   formikContext?: FormikContextType<any>;
 }
 
-const animationStyles = {
-  wrapper: {
-    display: 'grid',
-    transition: 'grid-template-rows 0.3s ease-out',
-    width: '100%',
-  },
-  inner: {
-    overflow: 'hidden',
-    minHeight: 0,
-    margin: '0 -16px',
-    padding: '0 16px',
-  }
-};
-
-const getDesignStyles = (inputtype: ToggleTriggerDesign & {} | CheckboxTriggerDesign & {} | SelectTriggerDesign & {}, isOpen: boolean): React.CSSProperties => {
-  const base = {
-    transition: 'all 0.3s ease',
-    padding: '16px',
-    borderRadius: 'var(--radius-3)',
-  };
-
-  if (inputtype.includes('neumorphic')) {
-    return {
-      ...base,
-      backgroundColor: '#e0e5ec',
-      border: 'none',
-      boxShadow: isOpen 
-        ? 'inset 4px 4px 8px #bec3c9, inset -4px -4px 8px #ffffff' 
-        : '9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5)', 
-    };
-  }
-  
-  if (inputtype.includes('material')) {
-    return {
-      ...base,
-      backgroundColor: 'var(--gray-2)',
-      borderLeft: '4px solid var(--accent-9)', 
-      boxShadow: isOpen 
-        ? '0 8px 16px -4px rgba(0,0,0,0.1)' 
-        : '0 2px 4px -1px rgba(0,0,0,0.05)',
-    };
-  }
-
-  return {
-    ...base,
-    backgroundColor: 'transparent',
-    border: '1px solid var(--gray-6)',
-    borderLeft: isOpen ? '4px solid var(--accent-9)' : '1px solid var(--gray-6)',
-  };
-};
-
 export const ConditionalTrigger = ({
-  alias, readOnly, width,
-  placeholder = '', inputLabel,
+  alias, 
+  readOnly, 
+  width,
+  placeholder = '', 
+  inputLabel,
   inputtype = 'conditionaltoggle-outline',
   triggerValue = true,
+  fieldsToClearOnClose = [],
   inputOptions = [],
-  children, newRow, isHinted, hintText, hintUrl, errorText,
+  children, 
+  newRow, 
+  isHinted, 
+  hintText, 
+  hintUrl, 
+  errorText,
   style,
   className, 
-  formikContext,
-  ...props
+  formikContext
 }: ConditionalProps) => {
 
   const defaultFormikContext = useFormikContext<any>();
   const activeContext = formikContext || defaultFormikContext;
 
   if (!activeContext) {
-      console.error(`ConditionalTrigger '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      console.error(`[VectorSigma]: ConditionalTrigger '${alias}' must be used within a Formik provider or receive an explicit formikContext prop.`);
       return null;
   }
 
@@ -207,132 +162,227 @@ export const ConditionalTrigger = ({
   const fieldTouched = getIn(touched, alias);
   const fieldError = getIn(errors, alias);
 
-  const inputId = `${alias}FormInput`;
+  const fallbackId = useId();
+  const inputId = `${alias}ConditionalTrigger-${fallbackId}`;
   const errorId = `${alias}-error`;
 
   const isOpen = fieldValue === triggerValue;
-
-  const handleChange = (val: any) => {
-    setFieldValue(alias, val);
-    setFieldTouched(alias, true, false);
-  };
-
   const isNeumorphic = inputtype.includes('neumorphic');
+  const isMaterial = inputtype.includes('material');
   const hasError = Boolean(fieldTouched && fieldError);
 
-  const renderTrigger = () => {
-    if (inputtype.includes('conditionalcheckbox') || inputtype.includes('conditional-checkbox')) {
+  const handleChange = (val: any) => {
+    if (readOnly) return;
+    
+    setFieldValue(alias, val);
+    setFieldTouched(alias, true, false);
+
+    const willBeOpen = val === triggerValue;
+    if (!willBeOpen && fieldsToClearOnClose.length > 0) {
+      fieldsToClearOnClose.forEach(childAlias => {
+        setFieldValue(childAlias, undefined, true); 
+        setFieldTouched(childAlias, false, false); 
+      });
+    }
+  };
+
+  const getDesignStyles = (): React.CSSProperties => {
+    const base: React.CSSProperties = {
+      transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
+      padding: '16px 20px',
+      borderRadius: 'var(--radius-4)',
+      width: '100%',
+      fontFamily: "'Libre Franklin', sans-serif",
+    };
+
+    if (isNeumorphic) {
+      return {
+        ...base,
+        backgroundColor: '#e0e5ec',
+        border: 'none',
+        boxShadow: isOpen 
+          ? 'inset 4px 4px 8px #bec3c9, inset -4px -4px 8px #ffffff' 
+          : '9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5)', 
+      };
+    }
+    
+    if (isMaterial) {
+      return {
+        ...base,
+        backgroundColor: 'var(--gray-2)',
+        border: '1px solid var(--gray-4)',
+        borderLeft: isOpen ? '4px solid var(--accent-9)' : '4px solid var(--gray-6)', 
+        boxShadow: isOpen 
+          ? '0 8px 24px -4px rgba(0,0,0,0.08), 0 4px 12px -2px rgba(0,0,0,0.04)' 
+          : '0 2px 8px -2px rgba(0,0,0,0.05)',
+      };
+    }
+
+    return {
+      ...base,
+      backgroundColor: isOpen ? 'var(--gray-2)' : 'transparent',
+      border: '1px solid',
+      borderColor: isOpen ? 'var(--accent-9)' : 'var(--gray-6)',
+    };
+  };
+
+  const renderTriggerControl = () => {
+    if (inputtype.includes('conditionalcheckbox')) {
         return (
-          <Flex align="center" gap="2" style={{ cursor: 'pointer' }}>
-            <Checkbox 
-              name={alias}
-              disabled={readOnly}
-              checked={fieldValue === true} 
-              onCheckedChange={(checked) => handleChange(!!checked)} 
-              id={inputId}
-            />
-          </Flex>
+          <Checkbox 
+            name={alias}
+            disabled={readOnly}
+            checked={fieldValue === true} 
+            onCheckedChange={(checked) => handleChange(!!checked)} 
+            id={inputId}
+            size="2"
+            variant={isNeumorphic ? 'soft' : 'surface'}
+          />
         );
     } 
-    else if (inputtype.includes('conditionalselect') || inputtype.includes('conditional-select')) {
+    else if (inputtype.includes('conditionalselect')) {
         return (
-          <Flex direction="column" gap="1" style={{ width: '100%' }}>
-            <Select.Root
-              name={alias}
-              disabled={readOnly}
-              value={fieldValue ? String(fieldValue) : ""}
-              onValueChange={handleChange}
-            >
-              <Select.Trigger 
-                id={inputId}
-                variant={isNeumorphic ? 'soft' : 'surface'} 
-                style={{ width: '100%' }}
-                placeholder={placeholder || "Select"}
-              />
-              <Select.Content>
-                {inputOptions.map((inputoption, idx) => (
-                  <Select.Item key={`${alias}-opt-${inputoption.optionid || idx}`} value={String(inputoption.optionvalue)}>
-                    {inputoption.text}
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Root>
-          </Flex>
+          <Select.Root
+            name={alias}
+            disabled={readOnly}
+            value={fieldValue ? String(fieldValue) : ""}
+            onValueChange={handleChange}
+          >
+            <Select.Trigger 
+              id={inputId}
+              variant={isNeumorphic ? 'soft' : 'surface'} 
+              style={{ minWidth: '180px' }}
+              placeholder={placeholder || "Select to reveal..."}
+            />
+            <Select.Content position="popper" className="vs-animated-select-content">
+              {inputOptions.map((inputoption, idx) => (
+                <Select.Item key={`${alias}-opt-${inputoption.optionid || idx}`} value={String(inputoption.optionvalue)}>
+                  {inputoption.text}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select.Root>
         );
     } 
     else {
         return (
-          <Flex justify="between" align="center" style={{ width: '100%' }}>
-            <Switch 
-              id={inputId}
-              name={alias}
-              disabled={readOnly}
-              checked={fieldValue === true} 
-              onCheckedChange={(checked) => handleChange(!!checked)} 
-              variant={isNeumorphic ? 'soft' : 'surface'}
-            />
-          </Flex>
+          <Switch 
+            className="vs-spring-toggle"
+            id={inputId}
+            name={alias}
+            disabled={readOnly}
+            checked={fieldValue === true} 
+            onCheckedChange={(checked) => handleChange(!!checked)} 
+            variant={isNeumorphic ? 'soft' : 'surface'}
+            size="2"
+            style={{ cursor: readOnly ? 'not-allowed' : 'pointer' }}
+          />
         );
     }
   };
 
-  const containerStyle = getDesignStyles(inputtype, isOpen);
-
   return (
     <Column span={width} newLine={newRow}>
-    <Box 
-      className={className}
-      style={{
-        ...containerStyle,
-        ...style
-      }}
-    >
-      <Box mb={isOpen ? "4" : "0"} style={{ transition: 'margin 0.3s' }}>
-        {renderTrigger()}
-      </Box>
+      <style>
+        {`
+          .vs-spring-toggle .rt-SwitchThumb {
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+          }
+          .vs-spring-toggle .rt-SwitchRoot {
+            transition: background-color 0.3s ease !important;
+          }
+          .vs-spring-toggle:focus-within {
+            outline: 2px solid var(--accent-a8);
+            outline-offset: 2px;
+          }
 
-      <div 
+          @keyframes vs-select-enter {
+            from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+          }
+          @keyframes vs-select-exit {
+            from { opacity: 1; transform: scale(1) translateY(0); }
+            to { opacity: 0; transform: scale(0.96) translateY(-4px); }
+          }
+
+          .vs-animated-select-content[data-state="open"] {
+            animation: vs-select-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform-origin: top center;
+          }
+          .vs-animated-select-content[data-state="closed"] {
+            animation: vs-select-exit 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform-origin: top center;
+          }
+        `}
+      </style>
+      <Box 
+        className={className}
         style={{
-          ...animationStyles.wrapper,
-          gridTemplateRows: isOpen ? '1fr' : '0fr',
-          opacity: isOpen ? 1 : 0.6,
+          ...getDesignStyles(),
+          ...style
         }}
       >
-        <div style={animationStyles.inner}>
-           <Box 
-             style={{ 
-               paddingTop: '12px',
-               paddingBottom: '8px', 
-               borderTop: isOpen && !isNeumorphic ? '1px dashed var(--gray-6)' : 'none',
-             }}
-           >
-             <Row>
-               {children}
-             </Row>
-           </Box>
-        </div>
-      </div>
+        <Flex 
+          justify="between" 
+          align={inputtype.includes('select') ? 'start' : 'center'} 
+          style={{ width: '100%', paddingBottom: isOpen ? '16px' : '0', transition: 'padding 0.3s ease' }}
+        >
+          <Flex align="center" gap="3">
+            {renderTriggerControl()}
+            <Flex align="center" gap="2">
+              <Text 
+                id={`${alias}InputLabel`} 
+                as="label" 
+                size="3" 
+                weight="medium" 
+                htmlFor={inputId} 
+                style={{ cursor: readOnly ? 'not-allowed' : 'pointer', color: 'var(--gray-12)' }}
+              >
+                  {inputLabel}
+              </Text>
+              {isHinted && (
+                <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5}>
+                  <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center' }}>
+                    <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'var(--gray-9)', transition: 'color 0.2s' }} />
+                  </a> 
+                </Tooltip>
+              )} 
+            </Flex>
+          </Flex>
+        </Flex>
 
-      <div style={{ marginTop: '8px' }}>
-            <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId} style={{ cursor: 'pointer' }}>
-                {inputLabel}
-            </Text>
-            &nbsp;
-            {isHinted && (
-                  <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                      <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                      </a> 
-                  </Tooltip>
-            )} 
-             {hasError && (
-                  <p id={errorId} className='core-input-label-error'>
-                      {typeof fieldError === 'string' ? <>{errorText || "Required field"}</> : 'Invalid selection'}
-                  </p>
-             )}      
+        {hasError && (
+          <Text id={errorId} size="1" style={{ color: 'var(--red-9)', fontWeight: 500, display: 'block', marginTop: isOpen ? '-8px' : '8px', marginBottom: isOpen ? '12px' : '0' }}>
+            {errorText || (typeof fieldError === 'string' ? fieldError : "Invalid trigger state")}
+          </Text>
+        )}
+
+        <div 
+          style={{
+            display: 'grid',
+            gridTemplateRows: isOpen ? '1fr' : '0fr',
+            transition: 'grid-template-rows 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease',
+            opacity: isOpen ? 1 : 0,
+            width: '100%',
+          }}
+        >
+          <div style={{ overflow: 'hidden', minHeight: 0 }}>
+             <Box 
+               style={{ 
+                 paddingTop: '20px',
+                 paddingBottom: '8px',
+                 borderTop: isOpen && !isNeumorphic ? '1px dashed var(--gray-6)' : 'none',
+                 marginTop: '4px'
+               }}
+             >
+               <Row>
+                 {children}
+               </Row>
+             </Box>
+          </div>
         </div>
 
-    </Box>
+      </Box>
     </Column>
   );
 };

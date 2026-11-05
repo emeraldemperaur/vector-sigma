@@ -5,7 +5,7 @@ import { FlagIcon } from '../../components/icons/flagicon';
 import { Icon } from '../../components/icons/icons';
 
 beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(globalThis, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       matches: false,

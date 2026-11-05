@@ -17,7 +17,7 @@ const protoXFormModel: XFormType = {
                 {
                     queryId: 1,
                     inputAlias: 'agentName',
-                    inputType: 'text',
+                    inputType: 'text-input', 
                     inputLabel: 'VΣ AI Agent Name',
                     inputWidth: 12,
                     defaultValue: '',
@@ -77,7 +77,9 @@ describe('VΣ Orchestrator(Teletraan1) Tests', () => {
                 <Teletraan1 xFormModel={protoXFormModel} displayMode="dual" />
             </FormikWrapper>
         );
-        const toggleCheckbox = screen.getByRole('checkbox', { hidden: true });
-        expect(toggleCheckbox).toBeInTheDocument();
+        
+        const modeSwitch = screen.getByRole('switch');
+        expect(modeSwitch).toBeInTheDocument();
+        expect(modeSwitch).toHaveAttribute('aria-checked', 'false');
     });
 });

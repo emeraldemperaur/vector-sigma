@@ -16,7 +16,7 @@
 #         uses: actions/checkout@v2
 #         with:
 #           fetch-depth: 0
-#           token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
+#           token: ${{ secrets.SIGMA_GITHUB_TOKEN }} 
 
 #       - name: setup node.js
 #         uses: actions/setup-node@v4
@@ -44,8 +44,8 @@
 #         with:
 #           publish: npm run release-package
 #         env:
-#           GITHUB_TOKEN: ${{ secrets.SIGMA_CHANGESET_TOKEN }}
-#           NPM_TOKEN: ${{ secrets.NPM_CHANGESET_TOKEN }}
+#           GITHUB_TOKEN: ${{ secrets.SIGMA_GITHUB_TOKEN }}
+#           NPM_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
 
 
 
@@ -68,7 +68,7 @@ jobs:
       - name: checkout VΣ repository code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
+          token: ${{ secrets.SIGMA_GITHUB_TOKEN }} 
       - name: setup node.js
         uses: actions/setup-node@v4
         with:
@@ -90,7 +90,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.SIGMA_CHANGESET_TOKEN }} 
+          token: ${{ secrets.SIGMA_GITHUB_TOKEN }} 
       - name: setup node.js
         uses: actions/setup-node@v4
         with:
@@ -103,5 +103,5 @@ jobs:
         with:
           publish: npm run release-package
         env:
-          GITHUB_TOKEN: ${{ secrets.SIGMA_CHANGESET_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_CHANGESET_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SIGMA_GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}

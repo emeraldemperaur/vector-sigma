@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { Row } from '../../layouts/row/row';
 import '@testing-library/jest-dom';
 
-
 jest.mock('@radix-ui/themes', () => ({
   Grid: ({ children, className, ...props }: any) => (
     <div 
@@ -34,9 +33,9 @@ describe('VΣ Layouts(Row) Test', () => {
     
     const grid = screen.getByTestId('radix-grid');
     const props = JSON.parse(grid.getAttribute('data-props') || '{}');
-    expect(props.gap).toBe('4');
+    expect(props.gap).toEqual({ initial: '3', sm: '4' });
     expect(props.columns).toBe('12');
-    expect(props.width).toBe('auto');
+    expect(props.width).toBe('100%');
   });
 
   test('Row :: Rendered dynamic gap', () => {
@@ -45,7 +44,7 @@ describe('VΣ Layouts(Row) Test', () => {
     const grid = screen.getByTestId('radix-grid');
     const props = JSON.parse(grid.getAttribute('data-props') || '{}');
 
-    expect(props.gap).toBe('9');
+    expect(props.gap).toEqual({ initial: '3', sm: '9' });
   });
 
 });

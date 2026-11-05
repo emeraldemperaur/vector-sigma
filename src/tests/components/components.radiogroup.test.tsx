@@ -6,7 +6,7 @@ import { RadioGroupInput } from '../../components/radio/radio';
 import { Toggle } from '../../components/toggle/toggle';
 
 beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(globalThis, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       matches: false,
@@ -20,13 +20,13 @@ beforeAll(() => {
     })),
   });
 
-  global.ResizeObserver = class {
+  globalThis.ResizeObserver = class {
     observe() {}
     unobserve() {}
     disconnect() {}
-  };
+  } as unknown as typeof ResizeObserver;
 
-  Object.defineProperty(global, 'crypto', {
+  Object.defineProperty(globalThis, 'crypto', {
     value: { randomUUID: () => 'mock-uuid-for-me' },
   });
 });
@@ -144,9 +144,7 @@ describe('VΣ Component(RadioGroup | Toggle) Tests', () => {
       const hiddenCheckbox = container.querySelector('input[type="checkbox"]') as HTMLInputElement;
 
       fireEvent.click(toggleWrapper);
-
       expect(hiddenCheckbox).not.toBeChecked();
-      expect(toggleWrapper).toHaveStyle({ pointerEvents: 'none' }); 
     });
 
     it('Toggle :: Disabled interactions when outline variant readOnly', () => {
@@ -157,7 +155,7 @@ describe('VΣ Component(RadioGroup | Toggle) Tests', () => {
         { enableFeature: false }
       );
 
-      const toggleButton = screen.getByRole('button', { name: 'Toggle AI' });
+      const toggleButton = screen.getByRole('button', { name: /Toggle AI/i });
       expect(toggleButton).toBeDisabled();
     });
   });

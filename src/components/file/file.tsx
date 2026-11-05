@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState, useId } from 'react';
 import { FormikContextType, useFormikContext, getIn } from 'formik';
 import { Flex, Text, IconButton, Box, AspectRatio, Badge, Tooltip } from '@radix-ui/themes';
 import { ACCEPTED_FORMATS, adjustColor, formatBytes, getNearestParentBackground } from 'utils/vinci';
@@ -8,92 +8,111 @@ import '../../styles/main.scss';
 
 export type FileInputDesign = 'fileinput' | 'fileinput-material' | 'fileinput-outline' | 'fileinput-neumorphic';
 
+/**
+ * FileInputProps Interface
+ * @description Configuration properties for the VectorSigma File component.
+ * Equipped with enterprise-grade aesthetics, HTML5 Drag & Drop, dynamic previews,
+ * typography overrides, and strict Formik integration.
+ */
 export interface FileInputProps {
   /**
-   * * The required unique identifier for the File input field in useFormikContext(). 
-   * Alias referenced as `name` attribute and Formik state key.
-   * * @example
-   * alias="pmpCertificationFile"
+   * The aesthetic design language of the File dropzone.
+   * - `fileinput-outline`: Minimalist, Cohere-inspired dashed outline aesthetic (Default).
+   * - `fileinput-material`: Elevated, sharp drop-shadows with a solid surface.
+   * - `fileinput-neumorphic`: n8n-inspired soft-UI with extruded inset/outset shadows.
+   * @default "fileinput-outline"
+   */
+  inputtype?: FileInputDesign;
+
+  /**
+   * The unique identifier bridging the input field to the Formik state.
+   * Must exactly match the schema property key.
+   * @example "pmpCertificationFile"
    */
   alias: string; 
+
   /**
-   * * The design variation of the File input. 
-   * Default: 'fileinput-outline' 
-   * Variants: 'fileinput', 'fileinput-outline', 'fileinput-material', 'fileinput-neumorphic'.
-   * * @example
-   * inputtype="fileinput-neumorphic"
-   */
-  inputtype?: FileInputDesign & {};
-  /**
-   * * The optional input label or description for the File input field. 
-   * * @example
-   * inputLabel="Upload PMP® Certication"
+   * The primary semantic label rendered above the File dropzone.
+   * @example "Upload PMP® Certification"
    */
   inputLabel?: string; 
+
   /**
-   * * The required viewport column width for the File input field.
-   * i.e. 1 - 12
-   * * @example
-   * width={5}
+   * Defines the responsive grid column span for the component (1-12 based on the parent grid).
+   * @example 5
    */
   width: number;
+
   /**
-   * * Option to render File input field on new row.
-   * * @example
-   * newRow
+   * Forces the component to break into a new Flex/Grid row within the Form layout.
+   * @default false
    */
   newRow?: boolean;
+
   /**
-   * * Option to disable edits for File input field.
-   * * @example
-   * readOnly
+   * Disables interaction, mutating the visual state to reflect read-only/disabled mode.
+   * @default false
    */
   readOnly?: boolean; 
+
   /**
-     * * Option to enable a hint for File input field.
-     * * @example
-     * isHinted
-     */ 
+   * Toggles the visibility of the contextual hint icon and tooltip next to the label.
+   * @default false
+   */ 
   isHinted?: boolean; 
+
   /**
-   * * Option to specify hint text for File input field.
-   * * @example
-   * hintText="This is a hint for a VΣ File"
+   * The text payload displayed inside the Tooltip when `isHinted` is true.
+   * @example "Must be a clear PDF or JPG under 5MB."
    */
   hintText?: string; 
+
   /**
-   * * Option to specify a hint url reference or resource for File input field.
-   * * @example
-   * hintUrl="https://www.mekaegwim.ca"
+   * An optional URL bound to the hint icon, directing the user to external documentation.
+   * @example "https://docs.vectorsigma.io/certifications"
    */
   hintUrl?: string;
+
   /**
-   * * Option to enable image file previews for File input field.
-   * * @example
-   * preview
+   * If true, attempting to render a visual image thumbnail when a valid image file is selected.
+   * @default false
    */
   preview?: boolean;
+
   /**
-   * * Option to specify the .scss class selector for the File input field.
-   * * @example
-   * className="teletraan-1-file"
+   * Optional typographic color overrides. Allows explicit targeting of the component's
+   * internal CSS color assignments regardless of the global Radix theme.
    */
-  className?: string; 
+  typography?: {
+    /** Overrides the background color of the dropzone */
+    background?: string;
+    /** Overrides the border/stroke color of the dropzone (dashed in outline mode) */
+    stroke?: string;
+    /** Overrides the text color of the labels and file data */
+    textColor?: string;
+    /** Overrides the primary color used for icons, hover states, and badges */
+    accent?: string;
+  };
+
   /**
-   * * Option to specify the isRequired error text for the File input field.
-   * * @example
-   * errorText="Proof of PMP® certificartion is required"
+   * Explicit error string to override standard Formik validation messages.
+   * @example "Proof of PMP® certification is required"
    */
   errorText?: ReactNode | string | null;
+
   /**
-   * * Option to inject custom CSS for the File input field.
-   * * @example
-   * style={{ color: "#000000" }}
+   * Optional custom SCSS class selector for external targeted styling overrides.
+   */
+  className?: string; 
+
+  /**
+   * Inline React CSS properties applied to the outmost Flex wrapper.
    */
   style?: React.CSSProperties;
+
   /**
-   * * Optional explicit Formik context. Useful when bypassing duplicate 
-   * context issues in monorepos or bundled npm packages.
+   * Injects an explicit Formik context. Required if the component operates outside 
+   * a standard `<FormikProvider>` tree.
    */
   formikContext?: FormikContextType<any>;
 }
@@ -109,20 +128,27 @@ const getFileIcon = (type: string, name: string) => {
 
 export const File = ({
   inputtype = 'fileinput-outline',
-  alias, readOnly, width, inputLabel,
-  newRow, isHinted, hintText, hintUrl, errorText,
+  alias, 
+  readOnly, 
+  width, 
+  inputLabel,
+  newRow, 
+  isHinted, 
+  hintText, 
+  hintUrl, 
+  errorText,
+  typography,
   preview = false,
   className,
   style, 
   formikContext,
-  ...props
 }: FileInputProps) => {
 
   const defaultFormikContext = useFormikContext<any>();
   const activeContext = formikContext || defaultFormikContext;
 
   if (!activeContext) {
-      console.error(`File '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      console.error(`[VectorSigma]: File '${alias}' must be used within a Formik provider or receive an explicit formikContext prop.`);
       return null;
   }
 
@@ -134,14 +160,20 @@ export const File = ({
   
   const selectedFile: File | null = fieldValue;
   const hasError = Boolean(fieldTouched && fieldError);
+  
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
-  const inputId = `${alias}FormInput` || crypto.randomUUID();
+  
+  const [isDragging, setIsDragging] = useState(false);
+  
+  const fallbackId = useId();
+  const inputId = `${alias}FormInput-${fallbackId}`;
   const errorId = `${alias}-error`;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     const file = event.currentTarget.files?.[0];
     if (file) {
       setFieldValue(alias, file);
@@ -151,11 +183,42 @@ export const File = ({
 
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation(); 
+    if (readOnly) return;
     setFieldValue(alias, null);
     if (inputRef.current) inputRef.current.value = ''; 
   };
 
-  // Preview URL generator
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!readOnly) setIsDragging(true);
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!readOnly) setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (readOnly) return;
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      setFieldValue(alias, file);
+      setFieldTouched(alias, true, false);
+    }
+  };
+
   useEffect(() => {
     if (!selectedFile || !selectedFile.type.startsWith('image/')) {
       setPreviewUrl(null);
@@ -170,22 +233,28 @@ export const File = ({
   useEffect(() => {
     if (inputtype === 'fileinput-neumorphic' && containerRef.current) {
       const parentBg = getNearestParentBackground(containerRef.current.parentElement);
+      const computedBg = typography?.background || parentBg;
+
       setNeuVars({
-        '--neu-bg': parentBg,
-        '--neu-shadow-dark': adjustColor(parentBg, -20),
-        '--neu-shadow-light': adjustColor(parentBg, 20),
-        '--neu-accent': 'var(--accent-9)',
-        '--neu-text': 'var(--gray-12)',
+        '--neu-bg': computedBg,
+        '--neu-shadow-dark': adjustColor(computedBg, -20),
+        '--neu-shadow-light': adjustColor(computedBg, 20),
       } as React.CSSProperties);
     }
-  }, [inputtype]);
+  }, [inputtype, typography?.background]);
 
-  // --- STYLES ---
+  const typographyVars = {
+    '--vs-fi-bg': typography?.background || 'var(--color-surface)',
+    '--vs-fi-stroke': typography?.stroke || 'var(--gray-7)',
+    '--vs-fi-text': typography?.textColor || 'var(--gray-12)',
+    '--vs-fi-accent': typography?.accent || 'var(--accent-9)',
+  } as React.CSSProperties;
+
   const baseTriggerStyle: React.CSSProperties = {
     padding: '12px',
     borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
+    cursor: readOnly ? 'not-allowed' : 'pointer',
+    transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
@@ -193,136 +262,183 @@ export const File = ({
     position: 'relative',
     overflow: 'hidden',
     boxSizing: 'border-box',
+    opacity: readOnly ? 0.7 : 1,
+    color: 'var(--vs-fi-text)',
   };
 
   const materialTrigger: React.CSSProperties = {
     ...baseTriggerStyle,
-    backgroundColor: 'var(--color-surface)',
-    boxShadow: hasError ? 'inset 0 0 0 1px var(--red-9)' : '0 2px 5px rgba(0,0,0,0.1)',
+    backgroundColor: 'var(--vs-fi-bg)',
+    boxShadow: hasError ? 'inset 0 0 0 1.5px var(--red-9)' : `0 2px 5px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04), inset 0 0 0 1px ${typography?.stroke ? 'var(--vs-fi-stroke)' : 'transparent'}`,
+    borderRadius: '6px',
   };
 
   const outlineTrigger: React.CSSProperties = {
     ...baseTriggerStyle,
-    backgroundColor: 'transparent',
-    border: hasError ? '2px dashed var(--red-9)' : '2px dashed var(--gray-8)',
+    backgroundColor: typography?.background || 'transparent',
+    border: hasError ? '2px dashed var(--red-9)' : '2px dashed var(--vs-fi-stroke)',
+    borderRadius: '8px',
   };
 
   const neumorphicTrigger: React.CSSProperties = {
     ...baseTriggerStyle,
     backgroundColor: 'var(--neu-bg)',
-    color: hasError ? 'var(--red-9)' : 'var(--neu-text)',
-    boxShadow: !selectedFile 
+    color: hasError ? 'var(--red-9)' : 'var(--vs-fi-text)',
+    boxShadow: (!selectedFile && !isDragging)
        ? 'inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light)'
        : '6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light)',
     border: 'none',
-    ...neuVars,
+    borderRadius: '12px',
   };
 
   const activeStyle = 
-    inputtype === 'fileinput-neumorphic' ? neumorphicTrigger :
-    inputtype === 'fileinput-outline' ? outlineTrigger : materialTrigger;
+    inputtype.includes('neumorphic') ? { ...neumorphicTrigger, ...neuVars } :
+    inputtype.includes('material') ? materialTrigger : outlineTrigger;
 
   return (
     <Column span={width} newLine={newRow}>
-    <Flex direction="column" gap="2" width="100%" ref={containerRef} style={style} className={className}>
-      <input
-        ref={inputRef}
-        id={inputId}
-        name={alias}
-        readOnly={readOnly}
-        type="file"
-        accept={ACCEPTED_FORMATS}
-        onChange={handleFileChange}
-        style={{ display: 'none' }}
-        aria-describedby={hasError ? errorId : undefined}
-      />
-
-      <div 
-        onClick={() => inputRef.current?.click()}
-        style={activeStyle}
-        onMouseEnter={(e) => {
-           if (inputtype === 'fileinput-outline') e.currentTarget.style.borderColor = 'var(--accent-9)';
-        }}
-        onMouseLeave={(e) => {
-           if (inputtype === 'fileinput-outline') e.currentTarget.style.borderColor = hasError ? 'var(--red-9)' : 'var(--gray-8)';
-        }}
-      >
+      <Flex direction="column" gap="2" width="100%" ref={containerRef} style={{ fontFamily: "'Libre Franklin', sans-serif", ...typographyVars, ...style }} className={className}>
         
-        {!selectedFile ? (
-          // --- EMPTY STATE RENDER ---
-          <Flex align="center" gap="3" style={{ width: '100%', color: 'var(--gray-10)' }}>
-            <Box style={{ padding: 8, borderRadius: '50%', backgroundColor: 'var(--gray-3)', flexShrink: 0 }}>
-              <Icon name='upload' width="18" height="18" />
-            </Box>
+        <style>
+          {`
+            .vs-file-dropzone { transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
             
-            <Flex direction="column" style={{ minWidth: 0, flex: 1 }}>
-                <Text size="2" weight="bold" color="gray" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Upload File</Text>
-                <Text size="1" color="gray" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Supports PDF, Images, Excel, JSON...</Text>
-            </Flex>
-          </Flex>
-        ) : (
-          // --- SELECTED STATE RENDER ---
-          <Flex align="center" gap="4" style={{ width: '100%' }}>
-            
-            {preview && previewUrl ? (
-                <AspectRatio ratio={1} style={{ width: 48, height: 48, borderRadius: 6, overflow: 'hidden', flexShrink: 0 }}>
-                    <img src={previewUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </AspectRatio>
-            ) : (
-                <Box style={{ 
-                    width: 48, height: 48, 
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: 'var(--accent-3)', color: 'var(--accent-9)',
-                    borderRadius: 6, flexShrink: 0
-                }}>
-                    {getFileIcon(selectedFile.type, selectedFile.name)}
-                </Box>
+            .vs-file-dropzone-outline:not(.vs-readonly):hover {
+              border-color: var(--vs-fi-accent) !important;
+              background-color: ${typography?.background ? adjustColor(typography.background, -5) : 'var(--gray-2)'};
+            }
+            .vs-file-dropzone-material:not(.vs-readonly):hover {
+              box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            }
+            .vs-file-dropzone-neumorphic:not(.vs-readonly):hover {
+              box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light) !important;
+            }
+
+            .vs-file-dropzone-outline.is-dragging {
+              border-color: var(--vs-fi-accent) !important;
+              background-color: var(--accent-a3) !important;
+              transform: scale(1.01);
+            }
+            .vs-file-dropzone-material.is-dragging {
+              box-shadow: 0 0 0 2px var(--vs-fi-accent), 0 8px 16px rgba(0,0,0,0.1) !important;
+              transform: scale(1.01);
+            }
+            .vs-file-dropzone-neumorphic.is-dragging {
+              box-shadow: inset 6px 6px 12px var(--neu-shadow-dark), inset -6px -6px 12px var(--neu-shadow-light) !important;
+              color: var(--vs-fi-accent) !important;
+            }
+          `}
+        </style>
+
+        {(inputLabel || isHinted) && (
+          <Flex align="center" gap="2" style={{ paddingLeft: '2px' }}>
+            {inputLabel && (
+              <Text id={`${alias}InputLabel`} as="label" size="2" weight="medium" style={{ color: 'var(--gray-11)' }} htmlFor={inputId}>
+                {inputLabel}
+              </Text>
             )}
-
-            <Flex direction="column" style={{ flexGrow: 1, minWidth: 0, overflow: 'hidden' }}>
-                <Text size="2" weight="bold" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {selectedFile.name}
-                </Text>
-                <Flex gap="2" align="center">
-                    <Text size="1" color="gray">{formatBytes(selectedFile.size)}</Text>
-                    <Badge size="1" color="gray" variant="soft">{selectedFile.name.split('.').pop()?.toUpperCase()}</Badge>
-                </Flex>
-            </Flex>
-
-            <IconButton 
-                size="1" 
-                variant="ghost" 
-                color="red" 
-                onClick={handleClear}
-                style={{ borderRadius: '50%', padding: 4 }}
-            >
-                <Icon name='close' width="16" height="16" />
-            </IconButton>
+            {isHinted && (
+              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5}>
+                <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Icon name="questionmarkcircled" height="15" width="15" style={{ cursor: 'pointer', color: 'var(--gray-9)', transition: 'color 0.2s' }} />
+                </a> 
+              </Tooltip>
+            )}
           </Flex>
         )}
-      </div>
 
-       <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-           {inputLabel && (
-               <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>
-                   {inputLabel}
-               </Text>
-           )}
-           
-           {isHinted && (
-               <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                   <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                       <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                   </a> 
-               </Tooltip>
-           )} 
-           {hasError && (
-               <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                   {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
-               </Text>
-           )} 
-       </div>
-    </Flex>
+        <input
+          ref={inputRef}
+          id={inputId}
+          name={alias}
+          disabled={readOnly}
+          type="file"
+          accept={ACCEPTED_FORMATS}
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+          aria-describedby={hasError ? errorId : undefined}
+        />
+
+        <div 
+          className={`vs-file-dropzone ${readOnly ? 'vs-readonly' : ''} ${isDragging ? 'is-dragging' : ''} ${
+            inputtype.includes('material') ? 'vs-file-dropzone-material' : 
+            inputtype.includes('neumorphic') ? 'vs-file-dropzone-neumorphic' : 
+            'vs-file-dropzone-outline'
+          }`}
+          onClick={() => inputRef.current?.click()}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          style={activeStyle}
+        >
+          
+          {!selectedFile ? (
+            <Flex align="center" gap="3" style={{ width: '100%' }}>
+              <Box style={{ padding: 8, borderRadius: '50%', backgroundColor: isDragging ? 'var(--accent-a4)' : 'var(--gray-3)', color: isDragging ? 'var(--vs-fi-accent)' : 'var(--gray-10)', flexShrink: 0, transition: 'all 0.2s ease' }}>
+                <Icon name='upload' width="18" height="18" />
+              </Box>
+              
+              <Flex direction="column" style={{ minWidth: 0, flex: 1 }}>
+                  <Text size="2" weight="medium" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: isDragging ? 'var(--vs-fi-accent)' : 'inherit', transition: 'color 0.2s ease' }}>
+                    {isDragging ? 'Drop file to upload...' : 'Upload File'}
+                  </Text>
+                  <Text size="1" style={{ color: 'var(--gray-9)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Supports PDF, Images, Excel, JSON...</Text>
+              </Flex>
+            </Flex>
+          ) : (
+            <Flex align="center" gap="4" style={{ width: '100%' }}>
+              
+              {preview && previewUrl ? (
+                  <AspectRatio ratio={1} style={{ width: 48, height: 48, borderRadius: 6, overflow: 'hidden', flexShrink: 0, border: '1px solid var(--gray-5)' }}>
+                      <img src={previewUrl} alt="File Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </AspectRatio>
+              ) : (
+                  <Box style={{ 
+                      width: 48, height: 48, 
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      backgroundColor: typography?.accent ? adjustColor(typography.accent, 85) : 'var(--accent-a3)', 
+                      color: 'var(--vs-fi-accent)',
+                      borderRadius: 6, flexShrink: 0
+                  }}>
+                      {getFileIcon(selectedFile.type, selectedFile.name)}
+                  </Box>
+              )}
+
+              <Flex direction="column" style={{ flexGrow: 1, minWidth: 0, overflow: 'hidden' }}>
+                  <Text size="2" weight="bold" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {selectedFile.name}
+                  </Text>
+                  <Flex gap="2" align="center" style={{ marginTop: '2px' }}>
+                      <Text size="1" style={{ color: 'var(--gray-10)' }}>{formatBytes(selectedFile.size)}</Text>
+                      <Badge size="1" variant="soft" style={{ backgroundColor: typography?.accent ? adjustColor(typography.accent, 85) : 'var(--accent-a3)', color: 'var(--vs-fi-accent)' }}>
+                        {selectedFile.name.split('.').pop()?.toUpperCase()}
+                      </Badge>
+                  </Flex>
+              </Flex>
+
+              {!readOnly && (
+                <IconButton 
+                    size="1" 
+                    variant="ghost" 
+                    color="gray" 
+                    onClick={handleClear}
+                    style={{ borderRadius: '50%', padding: 4, flexShrink: 0 }}
+                    title="Remove file"
+                >
+                    <Icon name='close' width="16" height="16" />
+                </IconButton>
+              )}
+            </Flex>
+          )}
+        </div>
+
+        {hasError && (
+            <Text id={errorId} size="1" style={{ color: 'var(--red-9)', fontWeight: 500, paddingLeft: '2px' }}>
+                {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
+            </Text>
+        )} 
+      </Flex>
     </Column>
   );
 };

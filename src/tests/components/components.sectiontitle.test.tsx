@@ -4,7 +4,7 @@ import { Theme } from '@radix-ui/themes';
 import { SectionTitle } from '../../components/xtitle/xtitle'; 
 
 beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(globalThis, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       matches: false,

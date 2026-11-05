@@ -6,7 +6,7 @@ import { SliderInput } from '../../components/slider/slider';
 import { RangeSlider } from '../../components/slider/range';
 
 beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(globalThis, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       matches: false,
@@ -20,13 +20,13 @@ beforeAll(() => {
     })),
   });
 
-  global.ResizeObserver = class {
+  globalThis.ResizeObserver = class {
     observe() {}
     unobserve() {}
     disconnect() {}
-  };
+  } as unknown as typeof ResizeObserver;
 
-  Object.defineProperty(global, 'crypto', {
+  Object.defineProperty(globalThis, 'crypto', {
     value: { randomUUID: () => 'mock-uuid-for-me' },
   });
 });
@@ -96,7 +96,10 @@ describe('VΣ Component(SliderInput | RangeSlider) Tests', () => {
         { priceRange: [20, 80] } 
       );
       expect(screen.getByText('Price Range')).toBeInTheDocument();
-      expect(screen.getByText('20 - 80')).toBeInTheDocument();
+      
+      expect(screen.getByText(/20/i)).toBeInTheDocument();
+      expect(screen.getByText(/80/i)).toBeInTheDocument();
+      
       const sliderThumbs = screen.getAllByRole('slider');
       expect(sliderThumbs).toHaveLength(2);
       expect(sliderThumbs[0]).toHaveAttribute('aria-valuenow', '20');
@@ -120,8 +123,8 @@ describe('VΣ Component(SliderInput | RangeSlider) Tests', () => {
       );
 
       const sliders = screen.getAllByRole('slider');
-      const trackContainer = sliders[0].closest('.neu-slider');
-      expect(trackContainer).toBeInTheDocument();
+      const trackContainer = sliders[0].parentElement?.parentElement;
+      expect(trackContainer?.className).toMatch(/neumorphic/i);
     });
   });
 

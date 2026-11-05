@@ -13,6 +13,7 @@ export const countrymultiselectInputType = ["countrymultiselect", "countrymultis
 export const fileInputType = ["file", "fileinput", "file-input", "input-file", "inputfile"];
 export const fileMultipleInputType = ["filemultiple", "filemultipleinput", "filemultiple-input", "input-filemultiple", "inputfilemultiple"];
 export const imageOutputType = ["image", "imageoutput", "image-output", "output-image", "outputimage"];
+export const textAreaInputType = ["textarea", "textarea-input", "textarea-outline", "textarea-material", "textarea-neumorphic"];
 export const textInputType = ["text", "textinput", "text-input", "input-text", "inputtext"];
 export const passwordInputType = ["password", "passwordinput", "password-input", "input-password", "inputpassword"];
 export const phoneInputType = ["phone", "phoneinput", "phone-input", "input-phone", "inputphone"];

@@ -1,105 +1,124 @@
-import React, { useRef, useState, useEffect, ReactNode } from 'react';
+import React, { ReactNode, useEffect, useRef, useState, useId } from 'react';
 import { FormikContextType, useFormikContext, getIn } from 'formik';
-import { Box, Flex, Text, Card, IconButton, Grid, Tooltip } from '@radix-ui/themes';
+import { Box, Flex, Text, Card, IconButton, Grid, Tooltip, AspectRatio, Badge } from '@radix-ui/themes';
 import { Icon } from 'components/icons/icons';
-import { ACCEPTED_EXTENSIONS } from 'utils/vinci';
+import { ACCEPTED_EXTENSIONS, adjustColor, formatBytes, getNearestParentBackground } from 'utils/vinci';
 import { Column } from 'layouts/column/column';
 import '../../styles/main.scss';
 
 export type FileMultipleInputDesign = 'filemultiple' | 'filemultiple-material' | 'filemultiple-outline' | 'filemultiple-neumorphic';
 
+/**
+ * FileMultipleInputProps Interface
+ * @description Configuration properties for the VectorSigma Multi-File component.
+ * Equipped with enterprise-grade aesthetics, HTML5 Drag & Drop, dynamic previews,
+ * typography overrides, array state management, and strict Formik integration.
+ */
 export interface FileMultipleInputProps {
   /**
-   * * The required unique identifier for the FileMultiple input field in useFormikContext(). 
-   * Alias referenced as `name` attribute and Formik state key.
-   * * @example
-   * alias="awsCertificationFiles"
-   */
-  alias: string;
-  /**
-   * * The design variation of the FileMultiple input. 
-   * Default: 'fileinput-outline' 
-   * Variants: 'fileinput', 'fileinput-outline', 'fileinput-material', 'fileinput-neumorphic'.
-   * * @example
-   * inputtype="fileinput-neumorphic"
+   * The aesthetic design language of the File dropzone and selected file cards.
+   * - `filemultiple-outline`: Minimalist, Cohere-inspired dashed outline aesthetic (Default).
+   * - `filemultiple-material`: Elevated, sharp drop-shadows with a solid surface.
+   * - `filemultiple-neumorphic`: n8n-inspired soft-UI with extruded inset/outset shadows.
+   * @default "filemultiple-outline"
    */
   inputtype?: FileMultipleInputDesign;
+
   /**
-   * * The optional input label or description for the FileMultiple input field. 
-   * * @example
-   * inputLabel="Upload AWS Certication(s)"
+   * The unique identifier bridging the input field to the Formik state.
+   * Must exactly match the schema property key.
+   * @example "awsCertificationFiles"
+   */
+  alias: string;
+
+  /**
+   * The primary semantic label rendered above the File dropzone.
+   * @example "Upload AWS Certifications"
    */
   inputLabel?: string;
+
   /**
-   * * The required viewport column width for the FileMultiple input field.
-   * i.e. 1 - 12
-   * * @example
-   * width={5}
+   * Defines the responsive grid column span for the component (1-12 based on the parent grid).
+   * @example 12
    */
   width: number;
+
   /**
-   * * Option to render FileMultiple input field on new row.
-   * * @example
-   * newRow
+   * Forces the component to break into a new Flex/Grid row within the Form layout.
+   * @default false
    */
   newRow?: boolean;
+
   /**
-   * * Option to force set the placeholder text for a FileMultiple input field.
-   * * @example
-   * placeholder="Select an auto model"
+   * Placeholder text utilized when the state is empty (0 files selected).
+   * @example "Choose or drag files here..."
    */
   placeholder?: string;
+
   /**
-   * * Option to disable edits for FileMultiple input field.
-   * * @example
-   * readOnly
+   * Disables interaction, mutating the visual state to reflect read-only/disabled mode.
+   * @default false
    */
   readOnly?: boolean;
+
   /**
-     * * Option to enable a hint for FileMultiple input field.
-     * * @example
-     * isHinted
-     */ 
+   * Toggles the visibility of the contextual hint icon and tooltip next to the label.
+   * @default false
+   */ 
   isHinted?: boolean;
+
   /**
-   * * Option to specify hint text for FileMultiple input field.
-   * * @example
-   * hintText="This is a hint for a VΣ FileMultiple"
+   * The text payload displayed inside the Tooltip when `isHinted` is true.
+   * @example "You may upload up to 5 files at once."
    */
   hintText?: string;
+
   /**
-   * * Option to specify a hint url reference or resource for FileMultiple input field.
-   * * @example
-   * hintUrl="https://www.mekaegwim.ca"
+   * An optional URL bound to the hint icon, directing the user to external documentation.
+   * @example "https://docs.vectorsigma.io/certifications"
    */
   hintUrl?: string;
+
   /**
-   * * Option to enable image file previews for FileMultiple input field.
-   * * @example
-   * preview
+   * If true, generates and renders image thumbnails for valid image files in the selected grid.
+   * @default true
    */
   preview?: boolean;
+
   /**
-   * * Option to specify the isRequired error text for the FileMultiple input field.
-   * * @example
-   * errorText="Proof of AWS certificartion is required"
+   * Optional typographic color overrides. Allows explicit targeting of the component's
+   * internal CSS color assignments regardless of the global Radix theme.
+   */
+  typography?: {
+    /** Overrides the background color of the dropzone and file cards */
+    background?: string;
+    /** Overrides the border/stroke color of the dropzone */
+    stroke?: string;
+    /** Overrides the text color of the labels and file data */
+    textColor?: string;
+    /** Overrides the primary color used for icons, hover states, and badges */
+    accent?: string;
+  };
+
+  /**
+   * Explicit error string to override standard Formik validation messages.
+   * @example "At least one certification document is required."
    */
   errorText?: ReactNode | string | null;
+
   /**
-   * * Option to specify the .scss class selector for the FileMultiple input field.
-   * * @example
-   * className="teletraan-1-file"
+   * Optional custom SCSS class selector for external targeted styling overrides.
    */
   className?: string;
+
   /**
-   * * Option to inject custom CSS for the FileMultiple input field.
-   * * @example
-   * style={{ color: "#000000" }}
+   * Inline React CSS properties applied to the outmost Flex wrapper.
    */
   style?: React.CSSProperties;
+
   /**
-   * * Optional explicit Formik context. Useful when bypassing duplicate 
-   * context issues in monorepos or bundled npm packages.
+   * Injects an explicit Formik context. Required if the component operates outside 
+   * a standard `<FormikProvider>` tree.
    */
   formikContext?: FormikContextType<any>;
 }
@@ -107,39 +126,15 @@ export interface FileMultipleInputProps {
 const getFileIcon = (fileOrUrl: File | string) => {
   if (typeof fileOrUrl === 'string') {
     const ext = fileOrUrl.split('.').pop()?.toLowerCase();
-    if (['jpg', 'jpeg', 'png', 'gif'].includes(ext || '')) return <Icon name='image' />;
-    if (ext === 'pdf') return <Icon name='filetext' color="red" />;
-    return <Icon name='file' />;
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '')) return <Icon name='image' width="20" height="20" />;
+    if (ext === 'pdf') return <Icon name='reader' width="20" height="20" />;
+    return <Icon name='filetext' width="20" height="20" />;
   }
-  if (fileOrUrl.type?.startsWith('image/')) return <Icon name='image' />;
-  if (fileOrUrl.type?.includes('pdf')) return <Icon name='filetext' color="red" />;
-  if (fileOrUrl.type?.includes('sheet') || fileOrUrl.type?.includes('csv')) return <Icon name='filetext' color="green" />;
-  return <Icon name='filetext' />;
-};
-
-const styles: Record<FileMultipleInputDesign, React.CSSProperties> = {
-  'filemultiple': {
-    border: '2px dashed var(--gray-a8)',
-    borderRadius: 'var(--radius-3)',
-    background: 'transparent',
-  },
-  'filemultiple-outline': {
-    border: '2px dashed var(--gray-a8)',
-    borderRadius: 'var(--radius-3)',
-    background: 'transparent',
-  },
-  'filemultiple-material': {
-    border: 'none',
-    borderBottom: '2px solid var(--accent-9)',
-    background: 'var(--gray-a3)',
-    borderRadius: '4px 4px 0 0',
-  },
-  'filemultiple-neumorphic': {
-    border: 'none',
-    borderRadius: '16px',
-    background: '#e0e0e0',
-    boxShadow: '6px 6px 12px #b8b9be, -6px -6px 12px #ffffff',
-  }
+  if (fileOrUrl.type?.startsWith('image/')) return <Icon name='image' width="20" height="20" />;
+  if (fileOrUrl.type?.includes('pdf')) return <Icon name='reader' width="20" height="20" />;
+  if (fileOrUrl.type?.includes('sheet') || fileOrUrl.type?.includes('csv') || fileOrUrl.name.endsWith('.xlsx')) return <Icon name='table' width="20" height="20" />;
+  if (fileOrUrl.type?.includes('zip') || fileOrUrl.name.endsWith('.zip')) return <Icon name='archive' width="20" height="20" />;
+  return <Icon name='filetext' width="20" height="20" />;
 };
 
 export const FileMultiple = ({ 
@@ -148,24 +143,24 @@ export const FileMultiple = ({
   readOnly, 
   width, 
   inputLabel,
-  placeholder = '', 
+  placeholder, 
   newRow, 
   isHinted, 
   hintText, 
   hintUrl, 
   errorText,
+  typography,
   preview = true, 
   className,
   style, 
   formikContext,
-  ...props
 }: FileMultipleInputProps) => {
 
   const defaultFormikContext = useFormikContext<any>();
   const activeContext = formikContext || defaultFormikContext;
 
   if (!activeContext) {
-      console.error(`FileMultiple '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
+      console.error(`[VectorSigma]: FileMultiple '${alias}' must be used within a Formik provider or receive an explicit formikContext prop.`);
       return null;
   }
 
@@ -175,13 +170,19 @@ export const FileMultiple = ({
   const fieldTouched = getIn(touched, alias);
   const fieldError = getIn(errors, alias);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [objectUrls, setObjectUrls] = useState<Record<string, string>>({});
-  const inputId = `${alias}FormInput`;
-  const errorId = `${alias}-error`;
-
   const currentFiles: (File | string)[] = Array.isArray(fieldValue) ? fieldValue : [];
   const hasError = Boolean(fieldTouched && fieldError);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [objectUrls, setObjectUrls] = useState<Record<string, string>>({});
+  const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+  
+  const [isDragging, setIsDragging] = useState(false);
+
+  const fallbackId = useId();
+  const inputId = `${alias}FormInput-${fallbackId}`;
+  const errorId = `${alias}-error`;
 
   useEffect(() => {
     if (!preview) return;
@@ -205,8 +206,21 @@ export const FileMultiple = ({
     }
   }, [currentFiles, preview]);
 
+  useEffect(() => {
+    if (inputtype === 'filemultiple-neumorphic' && containerRef.current) {
+      const parentBg = getNearestParentBackground(containerRef.current.parentElement);
+      const computedBg = typography?.background || parentBg;
+
+      setNeuVars({
+        '--neu-bg': computedBg,
+        '--neu-shadow-dark': adjustColor(computedBg, -20),
+        '--neu-shadow-light': adjustColor(computedBg, 20),
+      } as React.CSSProperties);
+    }
+  }, [inputtype, typography?.background]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     if (e.target.files && e.target.files.length > 0) {
       const newFiles = Array.from(e.target.files);
       setFieldValue(alias, [...currentFiles, ...newFiles]);
@@ -216,6 +230,7 @@ export const FileMultiple = ({
   };
 
   const handleRemove = (indexToRemove: number) => {
+    if (readOnly) return;
     const fileToRemove = currentFiles[indexToRemove];
     const updatedFiles = currentFiles.filter((_, index) => index !== indexToRemove);
     setFieldValue(alias, updatedFiles);
@@ -225,131 +240,290 @@ export const FileMultiple = ({
     }
   };
 
-  const isNeumorphic = inputtype === 'filemultiple-neumorphic';
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!readOnly) setIsDragging(true);
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!readOnly) setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (readOnly) return;
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const newFiles = Array.from(e.dataTransfer.files);
+      setFieldValue(alias, [...currentFiles, ...newFiles]);
+      setFieldTouched(alias, true, false);
+    }
+  };
+
+  const typographyVars = {
+    '--vs-fm-bg': typography?.background || 'var(--color-surface)',
+    '--vs-fm-stroke': typography?.stroke || 'var(--gray-7)',
+    '--vs-fm-text': typography?.textColor || 'var(--gray-12)',
+    '--vs-fm-accent': typography?.accent || 'var(--accent-9)',
+  } as React.CSSProperties;
+
+  const baseTriggerStyle: React.CSSProperties = {
+    padding: '16px',
+    borderRadius: '8px',
+    cursor: readOnly ? 'not-allowed' : 'pointer',
+    transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
+    width: '100%',
+    position: 'relative',
+    overflow: 'hidden',
+    boxSizing: 'border-box',
+    opacity: readOnly ? 0.7 : 1,
+    color: 'var(--vs-fm-text)',
+  };
+
+  const materialTrigger: React.CSSProperties = {
+    ...baseTriggerStyle,
+    backgroundColor: 'var(--vs-fm-bg)',
+    boxShadow: hasError ? 'inset 0 0 0 1.5px var(--red-9)' : `0 2px 5px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04), inset 0 0 0 1px ${typography?.stroke ? 'var(--vs-fm-stroke)' : 'transparent'}`,
+    borderRadius: '6px',
+  };
+
+  const outlineTrigger: React.CSSProperties = {
+    ...baseTriggerStyle,
+    backgroundColor: typography?.background || 'transparent',
+    border: hasError ? '2px dashed var(--red-9)' : '2px dashed var(--vs-fm-stroke)',
+    borderRadius: '8px',
+  };
+
+  const neumorphicTrigger: React.CSSProperties = {
+    ...baseTriggerStyle,
+    backgroundColor: 'var(--neu-bg)',
+    color: hasError ? 'var(--red-9)' : 'var(--vs-fm-text)',
+    boxShadow: (!isDragging)
+       ? 'inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light)'
+       : '6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light)',
+    border: 'none',
+    borderRadius: '12px',
+  };
+
+  const activeStyle = 
+    inputtype.includes('neumorphic') ? { ...neumorphicTrigger, ...neuVars } :
+    inputtype.includes('material') ? materialTrigger : outlineTrigger;
 
   return (
     <Column span={width} newLine={newRow}>
-      <Flex direction="column" gap="2" className={className} style={{ width: '100%', ...style }}>
+      <Flex direction="column" gap="3" width="100%" ref={containerRef} style={{ fontFamily: "'Libre Franklin', sans-serif", ...typographyVars, ...style }} className={className}>
         
-        <Box
-          onClick={() => !readOnly && inputRef.current?.click()}
-          p="4"
-          style={{
-            ...styles[inputtype],
-            cursor: readOnly ? 'default' : 'pointer',
-            transition: 'all 0.2s',
-            borderColor: hasError ? 'var(--red-9)' : (inputtype === 'filemultiple-material' ? 'var(--accent-9)' : 'var(--gray-a8)'),
-            position: 'relative',
-            opacity: readOnly ? 0.7 : 1,
-            boxSizing: 'border-box',
-            width: '100%',
-            overflow: 'hidden'
-          }}
-        >
-          <Flex align="center" gap="4">
-            <Box 
-              style={{ 
-                background: isNeumorphic ? '#e0e0e0' : 'var(--accent-3)', 
-                borderRadius: '50%', 
-                padding: '10px',
-                boxShadow: isNeumorphic ? 'inset 3px 3px 6px #b8b9be, inset -3px -3px 6px #ffffff' : 'none',
-                flexShrink: 0
-              }}
-            >
-              <Icon name='upload' width="20" height="20" color={isNeumorphic ? '#555' : 'var(--accent-9)'} />
-            </Box>
+        <style>
+          {`
+            .vs-filemultiple-dropzone { transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
             
-            <Flex direction="column" style={{ minWidth: 0, flex: 1 }}>
-              <Text weight="bold" style={{ color: isNeumorphic ? '#444' : 'inherit', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {currentFiles.length > 0 
-                  ? `${currentFiles.length} file${currentFiles.length !== 1 ? 's' : ''} selected` 
-                  : (placeholder || "Choose files...")}
+            .vs-filemultiple-dropzone-outline:not(.vs-readonly):hover {
+              border-color: var(--vs-fm-accent) !important;
+              background-color: ${typography?.background ? adjustColor(typography.background, -5) : 'var(--gray-2)'};
+            }
+            .vs-filemultiple-dropzone-material:not(.vs-readonly):hover {
+              box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            }
+            .vs-filemultiple-dropzone-neumorphic:not(.vs-readonly):hover {
+              box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light) !important;
+            }
+
+            .vs-filemultiple-dropzone-outline.is-dragging {
+              border-color: var(--vs-fm-accent) !important;
+              background-color: var(--accent-a3) !important;
+              transform: scale(1.01);
+            }
+            .vs-filemultiple-dropzone-material.is-dragging {
+              box-shadow: 0 0 0 2px var(--vs-fm-accent), 0 8px 16px rgba(0,0,0,0.1) !important;
+              transform: scale(1.01);
+            }
+            .vs-filemultiple-dropzone-neumorphic.is-dragging {
+              box-shadow: inset 6px 6px 12px var(--neu-shadow-dark), inset -6px -6px 12px var(--neu-shadow-light) !important;
+              color: var(--vs-fm-accent) !important;
+            }
+
+            .vs-filemultiple-card {
+              transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .vs-filemultiple-card:hover {
+              transform: translateY(-2px);
+            }
+            .vs-filemultiple-card-outline {
+              border: 1px solid var(--vs-fm-stroke);
+              background: var(--vs-fm-bg);
+            }
+            .vs-filemultiple-card-material {
+              border: none;
+              background: var(--vs-fm-bg);
+              box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            }
+            .vs-filemultiple-card-neumorphic {
+              border: none;
+              box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+            }
+          `}
+        </style>
+
+        {(inputLabel || isHinted) && (
+          <Flex align="center" gap="2" style={{ paddingLeft: '2px' }}>
+            {inputLabel && (
+              <Text id={`${alias}InputLabel`} as="label" size="2" weight="medium" style={{ color: 'var(--gray-11)' }} htmlFor={inputId}>
+                {inputLabel}
               </Text>
-              <Text size="1" color="gray" style={{ opacity: 0.8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                PDF, Images, Office Docs, JSON, ZIP
-              </Text>
-            </Flex>
+            )}
+            {isHinted && (
+              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5}>
+                <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Icon name="questionmarkcircled" height="15" width="15" style={{ cursor: 'pointer', color: 'var(--gray-9)', transition: 'color 0.2s' }} />
+                </a> 
+              </Tooltip>
+            )}
           </Flex>
+        )}
 
-          <input
-            id={inputId}
-            ref={inputRef}
-            name={alias}
-            type="file"
-            multiple
-            accept={ACCEPTED_EXTENSIONS}
-            onChange={handleFileChange}
-            disabled={readOnly}
-            style={{ display: 'none' }}
-            aria-describedby={hasError ? errorId : undefined}
-          />
-        </Box>
+        <input
+          id={inputId}
+          ref={inputRef}
+          name={alias}
+          disabled={readOnly}
+          type="file"
+          multiple
+          accept={ACCEPTED_EXTENSIONS}
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+          aria-describedby={hasError ? errorId : undefined}
+        />
 
-        {preview && currentFiles.length > 0 && (
-          <Grid columns="repeat(auto-fill, minmax(220px, 1fr))" gap="3" mt="1">
+        <div 
+          className={`vs-filemultiple-dropzone ${readOnly ? 'vs-readonly' : ''} ${isDragging ? 'is-dragging' : ''} ${
+            inputtype.includes('material') ? 'vs-filemultiple-dropzone-material' : 
+            inputtype.includes('neumorphic') ? 'vs-filemultiple-dropzone-neumorphic' : 
+            'vs-filemultiple-dropzone-outline'
+          }`}
+          onClick={() => !readOnly && inputRef.current?.click()}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          style={activeStyle}
+        >
+          <Box style={{ 
+              padding: 10, 
+              borderRadius: '50%', 
+              backgroundColor: isDragging ? 'var(--accent-a4)' : 'var(--gray-3)', 
+              color: isDragging ? 'var(--vs-fm-accent)' : 'var(--gray-10)', 
+              flexShrink: 0, 
+              transition: 'all 0.2s ease',
+              boxShadow: inputtype.includes('neumorphic') ? 'inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light)' : 'none'
+          }}>
+            <Icon name='upload' width="20" height="20" />
+          </Box>
+          
+          <Flex direction="column" style={{ minWidth: 0, flex: 1 }}>
+            <Text size="2" weight="bold" style={{ color: isDragging ? 'var(--vs-fm-accent)' : 'inherit', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', transition: 'color 0.2s ease' }}>
+              {currentFiles.length > 0 
+                ? `${currentFiles.length} file${currentFiles.length !== 1 ? 's' : ''} staged for upload` 
+                : (placeholder || (isDragging ? 'Drop files here...' : 'Choose or drag files here...'))}
+            </Text>
+            <Text size="1" style={{ color: 'var(--gray-9)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              Supports PDF, Images, Office Docs, JSON, ZIP
+            </Text>
+          </Flex>
+        </div>
+
+        {hasError && (
+            <Text id={errorId} size="1" style={{ color: 'var(--red-9)', fontWeight: 500, paddingLeft: '2px', marginTop: '-4px' }}>
+                {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
+            </Text>
+        )} 
+
+        {currentFiles.length > 0 && (
+          <Grid columns="repeat(auto-fill, minmax(240px, 1fr))" gap="3" mt="1">
             {currentFiles.map((file, index) => {
-              let previewUrl: string | null = null;
+              let localPreviewUrl: string | null = null;
               let fileName = 'Unknown File';
               let fileSize = '';
+              let fileExtension = '';
 
               if (typeof file === 'string') {
-                 previewUrl = file;
+                 localPreviewUrl = file;
                  fileName = file.split('/').pop() || file;
+                 fileExtension = fileName.split('.').pop()?.toUpperCase() || 'FILE';
               } else {
-                 previewUrl = objectUrls[file.name] || null;
+                 localPreviewUrl = objectUrls[file.name] || null;
                  fileName = file.name;
-                 fileSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+                 fileSize = formatBytes(file.size);
+                 fileExtension = file.name.split('.').pop()?.toUpperCase() || 'FILE';
               }
+
+              const cardClass = inputtype.includes('neumorphic') ? 'vs-filemultiple-card-neumorphic' : 
+                                inputtype.includes('material') ? 'vs-filemultiple-card-material' : 
+                                'vs-filemultiple-card-outline';
 
               return (
                 <Card 
                   key={`${fileName}-${index}`}
-                  style={isNeumorphic ? {
-                    background: '#e0e0e0',
-                    border: 'none',
-                    boxShadow: '4px 4px 8px #b8b9be, -4px -4px 8px #ffffff'
-                  } : {}}
+                  className={`vs-filemultiple-card ${cardClass}`}
+                  style={inputtype.includes('neumorphic') ? { backgroundColor: 'var(--neu-bg)', ...neuVars } : {}}
                 >
                   <Flex align="center" gap="3">
-                    <Box 
-                      style={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: '6px', 
-                        overflow: 'hidden', 
-                        background: 'var(--gray-a3)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0
-                      }}
-                    >
-                      {previewUrl && (fileName.match(/\.(jpeg|jpg|png|gif|webp)$/i) || (file instanceof File && file.type.startsWith('image/'))) ? (
-                        <img src={previewUrl} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : (
-                        getFileIcon(file)
-                      )}
-                    </Box>
+                    
+                    {preview && localPreviewUrl && (fileName.match(/\.(jpeg|jpg|png|gif|webp)$/i) || (file instanceof File && file.type.startsWith('image/'))) ? (
+                      <AspectRatio ratio={1} style={{ width: 44, height: 44, borderRadius: 6, overflow: 'hidden', flexShrink: 0, border: '1px solid var(--gray-5)' }}>
+                          <img src={localPreviewUrl} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </AspectRatio>
+                    ) : (
+                      <Box style={{ 
+                        width: 44, height: 44, 
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        backgroundColor: typography?.accent ? adjustColor(typography.accent, 85) : 'var(--accent-a3)', 
+                        color: 'var(--vs-fm-accent)',
+                        borderRadius: 6, flexShrink: 0
+                      }}>
+                        {getFileIcon(file)}
+                      </Box>
+                    )}
 
                     <Flex direction="column" style={{ flex: 1, overflow: 'hidden' }}>
-                      <Text size="1" weight="bold" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: isNeumorphic ? '#444' : 'inherit' }}>
+                      <Text size="2" weight="bold" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--vs-fm-text)' }}>
                         {fileName}
                       </Text>
-                      {fileSize && <Text size="1" color="gray">{fileSize}</Text>}
+                      <Flex gap="2" align="center" style={{ marginTop: '2px' }}>
+                        {fileSize && <Text size="1" style={{ color: 'var(--gray-10)' }}>{fileSize}</Text>}
+                        <Badge size="1" variant="soft" style={{ backgroundColor: typography?.accent ? adjustColor(typography.accent, 85) : 'var(--accent-a3)', color: 'var(--vs-fm-accent)' }}>
+                          {fileExtension}
+                        </Badge>
+                      </Flex>
                     </Flex>
 
                     {!readOnly && (
                         <IconButton 
-                        size="1" 
-                        variant="ghost" 
-                        color="red"
-                        type="button" 
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemove(index);
-                        }}
+                          size="1" 
+                          variant="ghost" 
+                          color="gray"
+                          type="button" 
+                          onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemove(index);
+                          }}
+                          style={{ borderRadius: '50%', padding: 4, flexShrink: 0 }}
+                          title="Remove file"
                         >
-                        <Icon name='close' />
+                          <Icon name='close' width="16" height="16" />
                         </IconButton>
                     )}
                   </Flex>
@@ -358,27 +532,6 @@ export const FileMultiple = ({
             })}
           </Grid>
         )}
-
-        <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-            {inputLabel && (
-                <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={inputId}>
-                    {inputLabel}
-                </Text>
-            )}
-            
-            {isHinted && (
-                <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                    <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                        <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                    </a> 
-                </Tooltip>
-            )} 
-            {hasError && (
-                <Text id={errorId} size="1" color="red" className='core-input-label-error'>
-                    {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
-                </Text>
-            )} 
-        </div>
       </Flex>
     </Column>
   );

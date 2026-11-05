@@ -13,7 +13,7 @@ describe('VΣ Engine(VectorSigma) Tests', () => {
                 .addQueryToSection('sec-1', {
                     queryId: 1,
                     inputAlias: 'autobotName',
-                    inputType: 'text',
+                    inputType: 'text-input',
                     inputLabel: 'Designation',
                     inputWidth: 12
                 });
@@ -49,7 +49,13 @@ describe('VΣ Engine(VectorSigma) Tests', () => {
             const goodxFormData = JSON.stringify({
                 uuid: "1234",
                 name: "Valid xForm",
-                model: []
+                model: [
+                    {
+                        sectionId: "test-section",
+                        title: "Test Section",
+                        queries: [] 
+                    }
+                ]
             });
 
             const vs = new VectorSigma(goodxFormData);
@@ -68,7 +74,7 @@ describe('VΣ Engine(VectorSigma) Tests', () => {
                 .addQueryToSection('sec-1', {
                     queryId: 1,
                     inputAlias: 'agentName',
-                    inputType: 'text',
+                    inputType: 'text-input', 
                     inputLabel: 'AI Agent Name',
                     inputWidth: 12,
                     defaultValue: '',
@@ -78,10 +84,13 @@ describe('VΣ Engine(VectorSigma) Tests', () => {
             render(vs.render({ onSubmit: mockSubmit }));
             expect(vs.statusCode).toBe(0);
             expect(vs.timeCreated).toBeGreaterThan(0);
+            
             const inputElement = screen.getByPlaceholderText('Enter AI agent name');
             const submitButton = screen.getByRole('button', { name: 'Submit' });
+            
             expect(inputElement).toBeInTheDocument();
             expect(submitButton).toBeInTheDocument();
+            
             fireEvent.change(inputElement, { target: { value: 'Optimus Prime' } });
 
             await waitFor(() => {

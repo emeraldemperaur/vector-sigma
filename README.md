@@ -1,5 +1,5 @@
 #  💠 Vector Sigma
-## Dynamic Form Orchestrator 📦
+## Declarative Form Engine 📦
 [![NPM Version](https://img.shields.io/npm/v/@emeraldemperaur/vector-sigma.svg)](https://www.npmjs.com/package/@emeraldemperaur/vector-sigma)
 ![Changesets](https://img.shields.io/badge/maintained%20with-changesets-176de3?style=flat-square&logo=changesets&logoColor=white) 
 [![Release Status](https://github.com/emeraldemperaur/vector-sigma/actions/workflows/release.yml/badge.svg)](https://github.com/emeraldemperaur/vector-sigma/actions)
@@ -7,7 +7,7 @@
 
 ### Overview
 <p align="justify">
-Vector Sigma (VΣ) is a dynamic form orchestrator package for rapidly creating and managing the complex lifecycle of interactive extensible input forms that can be easily embedded into a React front-end client interface for use in data pipelines, onboarding applications or automation workflows.
+Vector Sigma (VΣ) is a declarative form engine package for rapidly creating and managing the complex lifecycle of interactive extensible input forms that can be easily embedded into a React front-end client interface for use in data pipelines, onboarding applications or automation workflows.
 
 Fields, Input Validation and Submission callback() can be defined and parametized in real-time predicated on a native JavaScript object/JSON (JavaScript Object Notation) xForm definition or by builder methods object pattern.
 </p>
@@ -46,7 +46,7 @@ npm install react@latest react-dom@latest sass@latest
 #### Stateless Implementation
 ```javascript
 import React from 'react';
-import { VectorSigma } from './VectorSigma';
+import { VectorSigma } from '@emeraldemperaur/vector-sigma';
 
 const xForm = new VectorSigma(apiJSONSchema);
 // e.g. https://github.com/emeraldemperaur/vector-sigma/blob/prometheus/src/utils/artificer.json
@@ -69,7 +69,7 @@ return xForm.transform({
 
 ```javascript
 import React from 'react';
-import { useVectorSigma } from './hooks/useVectorSigma';
+import { useVectorSigma } from '@emeraldemperaur/vector-sigma';
 import { apiXFormData } from './mockData';
 // e.g. https://github.com/emeraldemperaur/vector-sigma/blob/prometheus/src/utils/artificer.json
 
@@ -129,10 +129,10 @@ export const VΣRegistrationForm = () => {
 ### Screenshots
 
 #### Automation Workflow (N8N Webhook Trigger Node) Use Case
-![N8N Showcase](/teletraan1/n8n_demoshowcase.png)
+![N8N Showcase](./teletraan1/n8n_demoshowcase.png)
 
 #### Web Application (User Onboarding Data Pipeline) Use Case
-![Airflow DAG Showcase](/teletraan1/airflow_demoshowcase.png)
+![Airflow DAG Showcase](./teletraan1/airflow_demoshowcase.png)
 
 ### Design Tenets
 <ul>
@@ -145,7 +145,7 @@ export const VΣRegistrationForm = () => {
 
 ```javascript
 import React from 'react';
-import { VectorSigma } from './VectorSigma';
+import { VectorSigma } from '@emeraldemperaur/vector-sigma';
 import { xFormPrototypeData } from './mockData'; 
 
 export const BespokeAPIForm = ({ brandColor, brandLogoUrl }) => {
@@ -195,7 +195,7 @@ export const BespokeAPIForm = ({ brandColor, brandLogoUrl }) => {
 
 ```javascript
 import React from 'react';
-import { VectorSigma } from './VectorSigma';
+import { VectorSigma } from '@emeraldemperaur/vector-sigma';
 
 export const VΣCodexForm = () => {
     // Initialize an empty xForm
@@ -320,7 +320,7 @@ export const VΣCodexForm = () => {
 
 ```javascript
 import React from 'react';
-import { useVectorSigma } from './hooks/useVectorSigma';
+import { useVectorSigma } from '@emeraldemperaur/vector-sigma';
 
  const xFormBuilder = useVectorSigma(apiXFormData);
         .setName('VΣ Robot Activation')
@@ -353,7 +353,7 @@ import { useVectorSigma } from './hooks/useVectorSigma';
 
 ```javascript
 import React from 'react';
-import { VectorSigma } from './VectorSigma';
+import { VectorSigma } from '@emeraldemperaur/vector-sigma';
 
 const xForm97 = new VectorSigma(apiJSONData);
 
@@ -376,7 +376,7 @@ return xForm97.render({
 
 <li><strong>🧩Exported UI Components</strong></br>
 <p align="justify">Explicitly exported reusable form UI components with material, outline and neumorphic design variants from package entry point <code>src/index.ts</code> to enable developer-friendly use as lightweight ARIA compliant component library.</p>
-<p><em>Container, Row, Column, Theme, Accordion, AccordionItem, Codex, CodexItem, CodexControls, AvatarInput, ButtonInput, CheckboxGroupInput, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, CountrySelect, File, FileMultiple, FlagIcon, Icon, Image, Input, PasswordInput, PhoneInput, CreditCardInput, CurrencyInput, StockInput, RadioGroupInput, OptionSelect, MultipleSelect, RangeSlider, SliderInput, Toggle, SectionTitle, Teletraan1 (Render Matrix)</em></p>
+<p><em>Container, Row, Column, Theme, Accordion, AccordionItem, Codex, CodexItem, CodexControls, AvatarInput, ButtonInput, CheckboxGroupInput, ConditionalTrigger, DatePicker, DateRangePicker, DateTimePicker, Dropdown, CountrySelect, File, FileMultiple, FlagIcon, Icon, Image, Input, TextAreaInput, PasswordInput, PhoneInput, CreditCardInput, CurrencyInput, StockInput, RadioGroupInput, OptionSelect, MultipleSelect, RangeSlider, SliderInput, Toggle, SectionTitle, Teletraan1 (Render Matrix)</em></p>
 
 ```javascript
 import { Container, Column, Row, CheckboxGroup, Dropdown, File, RangeSlider } 

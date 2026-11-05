@@ -3,7 +3,7 @@ import { XFormSchema, XFormType, XFormQuery, SectionSchema } from './utils/voltr
 import { normalizeXForm } from './utils/minerva'; 
 import { Teletraan1, Teletraan1Props } from './teletraan1';
 import { z } from "zod";
-import { Theme, Button, Flex, ThemeProps } from '@radix-ui/themes';
+import { Theme, Flex, ThemeProps } from '@radix-ui/themes';
 import { Formik, Form, useFormikContext, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import './styles/main.scss';
@@ -65,8 +65,7 @@ const FormikStateObserver = <T extends Record<string, any>>({ instance }: { inst
             };
         }
 
-        // Status code 0 (Empty) to 
-        // Status code 1 (In Progress) :: user typing detected
+        
         if (formikContext.dirty && instance.statusCode === 0) {
             instance.statusCode = 1;
             instance.timeInProgress = Date.now();
@@ -155,27 +154,28 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
         const shape: Record<string, any> = {};
 
         const arrayTypes = [
-            "checkbox", "checkboxes", "checkboxinput", "chechbox-input", "input-checkbox", "inputcheckbox", "checkboxgroup-input",
-            "filemultiple", "filemultipleinput", "filemultiple-input", "input-filemultiple", "inputfilemultiple",
-            "selectmultiple", "selectmultipleinput", "selectmultiple-input", "input-selectmultiple", "inputselectmultiple",
+            "checkbox", "checkboxes", "checkboxinput", "chechbox-input", "input-checkbox", "inputcheckbox", "checkboxgroup", "checkboxgroup-input",
+            "filemultiple", "filemultipleinput", "filemultiple-input", "input-filemultiple", "inputfilemultiple", "file-upload",
+            "selectmultiple", "selectmultipleinput", "selectmultiple-input", "input-selectmultiple", "inputselectmultiple", "multiselect",
             "countrymultiselect", "countrymultiselectinput", "countrymultiselect-input", "input-countrymultiselect", "inputcountrymultiselect",
-            "range", "rangeslider", "rangeinput", "rangesliderinput", "rangeslider-input", "range-input", "input-rangeslider", "inputrangeslider",
-            "slider", "sliderinput", "slider-input", "input-slider", "inputslider"
+            "range", "rangeslider", "rangeinput", "rangesliderinput", "rangeslider-input", "range-input", "input-rangeslider", "inputrangeslider"
         ];
 
         const booleanTypes = [
             "toggle", "switch", "toggleinput", "toggle-input", "input-toggle", "inputtoggle",
-            "conditionaltoggle", "conditionalcheckbox", "conditional-toggle", "conditional-checkbox"
+            "conditional", "conditionaltoggle", "conditional-toggle", "conditionalcheckbox", "conditional-checkbox", "conditionalselect", "conditional-select"
         ];
 
         const numberTypes = [
             "currency", "currencyinput", "currency-input", "input-currency", "inputcurrency",
-            "stock", "stockinput", "stock-input", "input-stock", "inputstock"
+            "stock", "stockinput", "stock-input", "input-stock", "inputstock",
+            "slider", "sliderinput", "slider-input", "input-slider", "inputslider",
+            "number-input", "number"
         ];
 
         const traverseQueries = (queries: XFormQuery[]) => {
             queries.forEach(q => {
-                const normalizedType = q.inputType.toLowerCase();
+                const normalizedType = (q.inputType || 'text').toLowerCase();
 
                 const isArray = arrayTypes.includes(normalizedType);
                 const isBoolean = booleanTypes.includes(normalizedType);
@@ -243,14 +243,17 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
 
         const objectHydrationTypes = [
             "dropdown", "dropdowninput", "dropdown-input", "input-dropdown", "inputdropdown",
-            "select", "selectinput", "select-input", "input-select", "inputselect",
-            "selectmultiple", "selectmultipleinput", "selectmultiple-input", "input-selectmultiple", "inputselectmultiple"
+            "select", "selectinput", "select-input", "input-select", "inputselect", "optionselect",
+            "selectmultiple", "selectmultipleinput", "selectmultiple-input", "input-selectmultiple", "inputselectmultiple", "multiselect",
+            "countrydropdown", "countrydropdowninput", "countrydropdown-input", "input-countrydropdown", "inputcountrydropdown", "countryselect", "countryselect-input", "countryselectinput", "input-countryselect",
+            "countrymultiselect", "countrymultiselectinput", "countrymultiselect-input", "input-countrymultiselect", "inputcountrymultiselect",
+            "radio", "radioinput", "radio-input", "input-radio", "inputradio", "radiogroup", "radiogroup-input"
         ];
 
         const traverseAndHydrate = (queries: XFormQuery[]) => {
             queries.forEach(query => {
                 const formikValue = submittedValues[query.inputAlias];
-                const normalizedType = query.inputType.toLowerCase();
+                const normalizedType = (query.inputType || 'text').toLowerCase();
 
                 if (formikValue !== undefined && formikValue !== null) {
                     
@@ -281,10 +284,6 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
             traverseAndHydrate(section.queries);
         });
     }
-
-    // ==========================================
-    // VΣ BUILDER PATTERN METHODS
-    // ==========================================
 
     /**
      * VΣ builder method to set the xForm model's unique universal identifier (uuid) attribute.
@@ -394,10 +393,6 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
         return this;
     }
 
-    // ==========================================
-    // VΣ RENDER METHODS
-    // ==========================================
-
     /**
      * VΣ `transform()` method for use with initialized JSON/Object
      * * Apt for integration with JSON data fetched from a backend API or localhost .json file.
@@ -457,9 +452,56 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
                     }}
                 >
                     {({ isSubmitting }) => (
-                        <Form>
+                        <Form className="vs-form-root" style={{ fontFamily: "'Libre Franklin', sans-serif" }}>
                             {isSubmitting ? this.isSubmitting = isSubmitting : null}
                             <FormikStateObserver<T> instance={this} />
+
+                            <style>
+                                {`
+                                    .vs-submit-btn {
+                                        font-family: inherit;
+                                        display: inline-flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-weight: 600;
+                                        border-radius: 8px;
+                                        cursor: pointer;
+                                        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+                                        height: 40px;
+                                        padding: 0 24px;
+                                        border: none;
+                                        background-color: ${sanitizedData.brandColor || '#000000'};
+                                        color: #ffffff;
+                                        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+                                        font-size: 0.875rem;
+                                    }
+                                    .vs-submit-btn:hover:not(:disabled) {
+                                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+                                        transform: translateY(-1px);
+                                    }
+                                    .vs-submit-btn:active:not(:disabled) {
+                                        transform: translateY(0) scale(0.98);
+                                    }
+                                    .vs-submit-btn:disabled {
+                                        opacity: 0.6;
+                                        cursor: not-allowed;
+                                        transform: none;
+                                        box-shadow: none;
+                                    }
+                                    .vs-submit-spinner {
+                                        width: 16px;
+                                        height: 16px;
+                                        border: 2px solid rgba(255, 255, 255, 0.3);
+                                        border-radius: 50%;
+                                        border-top-color: #ffffff;
+                                        animation: vsSubmitSpin 0.6s linear infinite;
+                                        margin-right: 8px;
+                                    }
+                                    @keyframes vsSubmitSpin {
+                                        to { transform: rotate(360deg); }
+                                    }
+                                `}
+                            </style>
 
                             {sanitizedData.logo && (
                                 <div style={{ display: 'flex', width: '100%', marginBottom: '24px', 
@@ -476,7 +518,11 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
                                 </div>
                             )}
 
-                            <Teletraan1 brandColor={sanitizedData.brandColor} xFormModel={sanitizedData} {...options} />
+                            <Teletraan1 
+                                brandColor={sanitizedData.brandColor} 
+                                xFormModel={sanitizedData} 
+                                {...options} 
+                            />
                             
                             {!isCodexMode && !options?.readOnlyMode && !options?.buttonOverride && (
                                 <Flex 
@@ -484,20 +530,14 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
                                     justify="end" 
                                     style={{ width: '100%', paddingTop: '20px', borderTop: '1px solid var(--gray-5)' }}
                                 >
-                                    <Button 
+                                    <button 
                                         type="submit" 
                                         disabled={isSubmitting}
-                                        style={{ 
-                                            cursor: isSubmitting ? 'wait' : 'pointer',
-                                            padding: '0 24px',
-                                            ...(sanitizedData.brandColor ? 
-                                                { backgroundColor: sanitizedData.brandColor, color: '#fff' } 
-                                                : 
-                                                { backgroundColor: '#000000', color: '#fff' })
-                                        }}
+                                        className="vs-submit-btn"
                                     >
-                                        {isSubmitting ? 'Submitting...' : 'Submit'}
-                                    </Button>
+                                        {isSubmitting && <div className="vs-submit-spinner" aria-hidden="true" />}
+                                        <span>{isSubmitting ? 'Submitting...' : 'Submit'}</span>
+                                    </button>
                                 </Flex>
                             )}
                             
@@ -531,9 +571,6 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
         return this.transform(options);
     }
 
-    // ==========================================
-    // VΣ UTILITY METHODS
-    // ==========================================
 
     /**
      * VΣ `toJSON()` utility method for retrieving the extant VectorSigma xForm JSON string

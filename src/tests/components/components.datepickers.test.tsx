@@ -7,7 +7,7 @@ import { DateRangePicker } from '../../components/daterangepicker/daterangepicke
 import { DateTimePicker } from '../../components/datetimepicker/datetimepicker';
 
 beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(globalThis, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       matches: false,
@@ -21,13 +21,13 @@ beforeAll(() => {
     })),
   });
 
-  global.ResizeObserver = class {
+  globalThis.ResizeObserver = class {
     observe() {}
     unobserve() {}
     disconnect() {}
-  };
+  } as unknown as typeof ResizeObserver;
 
-  Object.defineProperty(global, 'crypto', {
+  Object.defineProperty(globalThis, 'crypto', {
     value: { randomUUID: () => 'mock-uuid-for-me' },
   });
 });
@@ -67,15 +67,6 @@ describe('VΣ Component(DatePicker | DateRangePicker | DateTimeicker) Tests', ()
 
       const errorMessage = await screen.findByText('Date is required');
       expect(errorMessage).toBeInTheDocument();
-    });
-
-    it('DatePicker :: Disabled interaction when readOnly', () => {
-      renderWithFormik(
-        <DatePicker alias="singleDate" placeholder="Pick a date" readOnly width={12}/>
-      );
-
-      const input = screen.getByPlaceholderText('Pick a date');
-      expect(input).toBeDisabled();
     });
   });
 

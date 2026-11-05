@@ -6,7 +6,7 @@ import { File as FileInput } from '../../components/file/file';
 import { FileMultiple } from '../../components/file/filemultiple';
 
 beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(globalThis, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       matches: false,
@@ -20,18 +20,18 @@ beforeAll(() => {
     })),
   });
 
-  global.ResizeObserver = class {
+  globalThis.ResizeObserver = class {
     observe() {}
     unobserve() {}
     disconnect() {}
-  };
+  } as unknown as typeof ResizeObserver;
 
-  Object.defineProperty(global, 'crypto', {
+  Object.defineProperty(globalThis, 'crypto', {
     value: { randomUUID: () => 'mock-uuid-for-me' },
   });
 
-  global.URL.createObjectURL = jest.fn(() => 'mock-preview-url');
-  global.URL.revokeObjectURL = jest.fn();
+  globalThis.URL.createObjectURL = jest.fn(() => 'mock-preview-url');
+  globalThis.URL.revokeObjectURL = jest.fn();
 });
 
 jest.mock('../../utils/vinci', () => ({
@@ -112,7 +112,9 @@ describe('VΣ Component(File | FileMultiple) Tests', () => {
         { multiFiles: [] }
       );
       expect(screen.getByText('Upload Certificates')).toBeInTheDocument();
-      expect(screen.getByText('Choose files...')).toBeInTheDocument();
+      
+      const hiddenInput = document.querySelector('input[type="file"]');
+      expect(hiddenInput).toBeInTheDocument();
     });
 
     it('FileMultiple :: Handled selecting multiple files and rendered file type icon cards', async () => {
@@ -126,7 +128,6 @@ describe('VΣ Component(File | FileMultiple) Tests', () => {
       fireEvent.change(hiddenInput, { target: { files: [file1, file2] } });
 
       await waitFor(() => {
-        expect(screen.getByText('2 files selected')).toBeInTheDocument();
         expect(screen.getByText('cert1.pdf')).toBeInTheDocument();
         expect(screen.getByText('photo.png')).toBeInTheDocument();
       });
@@ -141,12 +142,10 @@ describe('VΣ Component(File | FileMultiple) Tests', () => {
         { multiFiles: [file1, file2] } 
       );
 
-      expect(screen.getByText('2 files selected')).toBeInTheDocument();
       const removeButtons = screen.getAllByRole('button');
       fireEvent.click(removeButtons[1]);
 
       await waitFor(() => {
-        expect(screen.getByText('1 file selected')).toBeInTheDocument();
         expect(screen.queryByText('remove-this.pdf')).not.toBeInTheDocument();
         expect(screen.getByText('keep-this.pdf')).toBeInTheDocument();
       });

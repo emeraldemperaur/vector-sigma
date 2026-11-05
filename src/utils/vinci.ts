@@ -94,49 +94,89 @@ export const formatBytes = (bytes: number, decimals = 2) => {
 
 export const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ');
 
+/**
+ * Universal option entity for all VectorSigma selection primitives 
+ * (`Dropdown`, `OptionSelect`, `MultipleSelect`, `RadioGroupInput`).
+ *
+ * @description Standardized data transfer object (DTO) representing a single selectable choice.
+ * Separates internal identity, UI presentation, and Formik form state payload.
+ *
+ * @example
+ * ```typescript
+ * const deploymentRegions: InputOption[] = [
+ *   {
+ *     optionid: "us-east-1",
+ *     optionvalue: "us-east-1",
+ *     text: "US East (N. Virginia)",
+ *     tag: "Recommended",
+ *     note: "Lowest latency cluster",
+ *     score: 98,
+ *   },
+ *   {
+ *     optionid: "eu-central-1",
+ *     optionvalue: "eu-central-1",
+ *     text: "Europe (Frankfurt)",
+ *     tag: "GDPR Compliant",
+ *     optionurl: "[https://docs.vectorsigma.io/clusters/eu-central-1](https://docs.vectorsigma.io/clusters/eu-central-1)",
+ *   }
+ * ];
+ * ```
+ */
 export interface InputOption {
-   /**
-   * * The required unique option id for the Input Option item. 
-   * * @example
-   * optionid="versin-gtr-x-1000"
-   */
-   optionid: number | string;
-   /**
-   * * The required text for the Input Option item. 
-   * * @example
-   * text="Versin' GTR-X"
-   */
-   text: string; 
-   /**
-   * * The required option value for the Input Option item. 
-   * * @example
-   * optionvalue="VGTRX-1000"
-   */
-   optionvalue: string | number | boolean;
-   /**
-   * * The optional tag for the Input Option item. 
-   * * @example
-   * tag="HINT"
-   */
-   tag?: string;
-   /**
-   * * The optional meta numerical score for the Input Option item. 
-   * * @example
-   * score={10}
-   */
-   score?: number;
   /**
-   * * The optional meta note for the Input Option item. 
-   * * @example
-   * note="This is an example hint note for the Input Option item."
+   * Unique structural identifier used strictly for React reconciliation (`key` prop)
+   * and DOM node identification.
+   * 
+   * @remarks Does NOT represent the form state value (see `optionvalue`).
+   * @example "opt-region-useast1"
    */
-   note?: string; 
-   /**
-   * * The optional meta optionurl for the Input Option item. 
-   * * @example
-   * optionurl="https://github.com/emeraldemperaur/vector-sigma"
+  optionid: number | string;
+
+  /**
+   * The human-readable label rendered in the UI (dropdown item text, radio label, tile heading).
+   * 
+   * @example "US East (N. Virginia)"
    */
-   optionurl?: string;
+  text: string;
+
+  /**
+   * The actual data payload committed to Formik state when this option is selected.
+   * 
+   * @remarks Can be a string, numeric identifier, or boolean toggle.
+   * @example "us-east-1"
+   */
+  optionvalue: string | number | boolean;
+
+  /**
+   * Optional badge or pill label displayed alongside the option text in rich lists and card tiles.
+   * 
+   * @example "Beta"
+   * @example "Recommended"
+   */
+  tag?: string;
+
+  /**
+   * Optional numerical weighting or evaluation metric.
+   * 
+   * @remarks Used for algorithmic sorting, weighted risk scoring, or recommendation rank.
+   * @example 95
+   */
+  score?: number;
+
+  /**
+   * Optional secondary descriptive copy, subtitle, or tooltip text accompanying the option.
+   * 
+   * @example "Optimized for latency-critical distributed workloads."
+   */
+  note?: string;
+
+  /**
+   * Optional external URL bound to the option item.
+   * 
+   * @remarks When present, clicking the option or secondary anchor triggers navigation in a new tab.
+   * @example "https://docs.vectorsigma.io/regions/us-east-1"
+   */
+  optionurl?: string;
 }
 
 export const InputOptionsPlaceholder = {

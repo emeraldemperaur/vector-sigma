@@ -1,175 +1,144 @@
-import React, { useRef, useState, useEffect, ReactNode } from 'react';
+import React, { useRef, useState, useEffect, ReactNode, useMemo, useId } from 'react';
 import { FormikContextType, useFormikContext, getIn } from 'formik';
-import { Box, Flex, Text, IconButton, Avatar, Tooltip } from '@radix-ui/themes';
+import { Box, Flex, Text, IconButton, Tooltip } from '@radix-ui/themes';
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
+import '../../styles/main.scss';
 
 export type AvatarDesign = 'avatar' | 'avatar-outline' | 'avatar-material' | 'avatar-neumorphic';
-export type AvatarShape = 'circle' | 'square' | 'rounded';
+export type AvatarShape = 'circle' | 'square' | 'rounded' | 'hexagon';
 
+/**
+ * AvatarProps Interface
+ * @description Configuration properties for the VectorSigma AvatarInput component.
+ */
 export interface AvatarProps {
   /**
-   * * The design variation of the Avatar input. 
-   * Default: 'avatar-outline' 
-   * Variants: 'avatar', 'avatar-outline', 'avatar-material', 'avatar-neumorphic'.
-   * * @example
-   * inputtype="avatar-neumorphic"
+   * The aesthetic design language of the Avatar component.
+   * - `avatar-outline`: Minimalist, outlined aesthetic (Default).
+   * - `avatar-material`: Elevated, sharp drop-shadows with a solid surface.
+   * - `avatar-neumorphic`: Soft-UI with extruded inset/outset shadows.
+   * @default "avatar-outline"
    */
-  inputtype?: AvatarDesign & {};
+  inputtype?: AvatarDesign;
+
   /**
-   * * The required unique identifier for the input field in useFormikContext(). 
-   * Alias referenced as `name` attribute and Formik state key.
-   * * @example
-   * alias="torukMakto"
+   * The unique identifier bridging the input field to the Formik state.
+   * Must exactly match the schema property key.
+   * @example "userProfileImage"
    */
   alias: string;
+
   /**
-   * * The optional input label or description for the Avatar input field. 
-   * * @example
-   * inputLabel="Upload VΣ Profile"
+   * The primary semantic label rendered above the Avatar component.
+   * @example "Upload Organization Logo"
    */
   inputLabel?: string;
- /**
-   * * The required viewport column width for the Avatar input field.
-   * i.e. 1 - 12
-   * * @example
-   * width={5}
+
+  /**
+   * Defines the responsive grid column span for the component (1-12 based on the parent grid).
+   * @example 4
    */
   width: number; 
+
   /**
-   * * Option to render Avatar input field on new row.
-   * * @example
-   * newRow
+   * Forces the component to break into a new Flex/Grid row within the Form layout.
+   * @default false
    */
   newRow?: boolean;
-   /**
-   * * Option to disable edits for Avatar input field.
-   * * @example
-   * readOnly
+
+  /**
+   * Disables interaction, preventing file selection or removal.
+   * @default false
    */
   readOnly?: boolean; 
+
   /**
-     * * Option to enable a hint for Avatar input field.
-     * * @example
-     * isHinted
-     */
+   * Toggles the visibility of the contextual hint icon and tooltip next to the label.
+   * @default false
+   */
   isHinted?: boolean;
+
   /**
-   * * Option to specify hint text for Avatar input field.
-   * * @example
-   * hintText="This is a hint for a VΣ AvatarInput"
+   * The text payload displayed inside the Tooltip when `isHinted` is true.
+   * @example "Must be a square image under 2MB in PNG or JPEG format."
    */
   hintText?: string;
+
   /**
-   * * Option to specify a hint url reference or resource for Avatar input field.
-   * * @example
-   * hintUrl="https://www.mekaegwim.ca"
+   * An optional URL bound to the hint icon, directing the user to external documentation.
+   * @example "https://docs.vectorsigma.io/assets"
    */
   hintUrl?: string;
-   /**
-   * * Option to specify the layout shape of the Avatar input field.
-   * Variants: 'circle', 'square', 'rounded'
-   * * @example
-   * shape="rounded"
+
+  /**
+   * The geometric profile of the Avatar masking layer.
+   * Variants: 'circle', 'square', 'rounded' (SaaS standard 16px), 'hexagon'.
+   * @default "circle"
    */
   shape?: AvatarShape;
-   /**
-   * * Option to specify the isRequired error text for the Avatar input field.
-   * * @example
-   * errorText="A profile is required for VΣ Plus user subscription"
+
+  /**
+   * Explicit error string to override standard Formik validation messages.
+   * @example "A valid high-resolution avatar is required for deployment."
    */
   errorText?: ReactNode | string | null;
-    /**
-   * * Option to specify the size for the Avatar input field.
-   * Default: 120 (i.e. 120px x 120px)
-   * * @example
-   * size={200}
+
+  /**
+   * The numeric dimension (width & height in pixels) of the Avatar dropzone.
+   * @default 120
    */
   size?: number;
-   /**
-   * * Option to specify the SCSS class selector for the Avatar input field.
-   * * @example
-   * className="teletraan-1-profile"
+
+  /**
+   * Optional custom SCSS class selector for external targeted styling overrides.
    */
   className?: string;
+
   /**
-   * * Option to inject custom CSS the Avatar input field.
-   * * @example
-   * style={{ color: "#000000" }}
+   * Inline React CSS properties applied to the outmost Flex wrapper.
    */
   style?: React.CSSProperties;
-    /**
-   * * Option to specify the accepted file formats for the Avatar input field.
-   * Default: image/*
-   * * @example
-   * accept="image/*"
+
+  /**
+   * MIME type restrictions defining valid file uploads via the native file input.
+   * @default "image/*"
+   * @example "image/png, image/jpeg"
    */
   accept?: string;
+
   /**
-   * * Optional explicit Formik context. Useful when bypassing duplicate 
-   * context issues in monorepos or bundled npm packages.
+   * Injects an explicit Formik context. Required if the component operates outside 
+   * a standard `<FormikProvider>` tree, typical in advanced monorepo architectures.
    */
   formikContext?: FormikContextType<any>;
 }
 
-const getStyles = (inputtype: AvatarDesign, shape: AvatarShape, hasError: boolean) => {
-  const base = {
-    position: 'relative' as const,
-    cursor: 'pointer',
-    overflow: 'hidden',
-    transition: 'all 0.2s ease-in-out',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  let borderRadius = '0';
-  if (shape === 'circle') borderRadius = '50%';
-  if (shape === 'rounded') borderRadius = '20%';
-  
-  let designStyles: React.CSSProperties = {};
-
-  if (inputtype === 'avatar-neumorphic') {
-    designStyles = {
-      backgroundColor: '#e0e5ec',
-      border: hasError ? '2px solid var(--red-9)' : 'none',
-      boxShadow: hasError 
-        ? 'inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff' 
-        : '9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5)',
-    };
-  } else if (inputtype === 'avatar-material') {
-    designStyles = {
-      backgroundColor: 'var(--gray-3)',
-      border: hasError ? '2px solid var(--red-9)' : '3px solid white',
-      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    };
-  } else {
-    designStyles = {
-      backgroundColor: 'var(--gray-2)',
-      border: hasError ? '2px solid var(--red-9)' : '2px dashed var(--gray-8)',
-    };
-  }
-
-  return { ...base, borderRadius, ...designStyles };
-};
-
 export const AvatarInput = ({
   inputtype = 'avatar-outline',
-  alias, readOnly, width, inputLabel,
+  alias, 
+  readOnly = false, 
+  width, 
+  inputLabel,
   shape = 'circle',
-  size = 120, newRow, isHinted, hintText, hintUrl, errorText,
-  style, className,
+  size = 120, 
+  newRow, 
+  isHinted, 
+  hintText, 
+  hintUrl, 
+  errorText,
+  style, 
+  className,
   accept = 'image/*',
   formikContext,
-  ...props
 }: AvatarProps) => {
 
   const defaultFormikContext = useFormikContext<any>();
   const activeContext = formikContext || defaultFormikContext;
 
   if (!activeContext) {
-      console.error(`AvatarInput '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
-      return null;
+    console.error(`[VectorSigma]: AvatarInput '${alias}' must be rendered within a Formik context or receive an explicit formikContext prop.`);
+    return null;
   }
 
   const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
@@ -177,143 +146,266 @@ export const AvatarInput = ({
   const fieldValue = getIn(values, alias);
   const fieldTouched = getIn(touched, alias);
   const fieldError = getIn(errors, alias);
+  const hasError = Boolean(fieldTouched && fieldError);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const inputId = `${alias}FormInput` || crypto.randomUUID();
+  const fallbackId = useId();
+  const inputId = `${alias}FormInput-${fallbackId}`;
   const errorId = `${alias}-error`;
 
-  const hasError = Boolean(fieldTouched && fieldError);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     let objectUrl: string | null = null;
     if (fieldValue instanceof File) {
-        objectUrl = URL.createObjectURL(fieldValue);
-        setPreviewUrl(objectUrl);
-    } else if (typeof fieldValue === 'string' && fieldValue) {
-        setPreviewUrl(fieldValue);
+      objectUrl = URL.createObjectURL(fieldValue);
+      setPreviewUrl(objectUrl);
+    } else if (typeof fieldValue === 'string' && fieldValue.trim() !== '') {
+      setPreviewUrl(fieldValue);
     } else {
-        setPreviewUrl(null);
+      setPreviewUrl(null);
     }
 
     return () => {
-        if (objectUrl) {
-        URL.revokeObjectURL(objectUrl);
-        }
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-}, [fieldValue]);
+  }, [fieldValue]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) return;
     const file = e.currentTarget.files?.[0];
     if (file) {
       setFieldValue(alias, file);
     }
     setFieldTouched(alias, true, false);
-    if (inputRef.current) inputRef.current.value = '';
+    if (inputRef.current) inputRef.current.value = ''; 
   };
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (readOnly) return;
     setFieldValue(alias, null);
+    if (inputRef.current) inputRef.current.value = '';
   };
 
-  const containerStyles = getStyles(inputtype, shape, !!hasError);
+  const computedShapeClass = useMemo(() => {
+    switch (shape) {
+      case 'square': return 'vs-shape-square';
+      case 'rounded': return 'vs-shape-rounded';
+      case 'hexagon': return 'vs-shape-hexagon';
+      case 'circle':
+      default: return 'vs-shape-circle';
+    }
+  }, [shape]);
 
-  const iconColor = inputtype === 'avatar-neumorphic' ? '#555' : 'var(--gray-10)';
+  const computedDesignClass = useMemo(() => {
+    switch (inputtype) {
+      case 'avatar-material': return 'vs-design-material';
+      case 'avatar-neumorphic': return 'vs-design-neumorphic';
+      case 'avatar-outline':
+      default: return 'vs-design-outline';
+    }
+  }, [inputtype]);
+
+  const iconColor = inputtype === 'avatar-neumorphic' ? '#8a94a6' : 'var(--gray-10)';
 
   return (
     <Column span={width} newLine={newRow}>
-    <Flex direction="column" align="center" gap="3" style={style}>
-      <Box
-        onClick={() => inputRef.current?.click()}
-        style={{
-          width: size,
-          height: size,
-          ...containerStyles,
-        }}
-      >
-        {previewUrl ? (
-          <>
-            <img
-              src={previewUrl}
-              alt="Avatar"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                display: 'block'
-              }}
-            />
-            <Box style={{ position: 'absolute', top: 4, right: 4 }}>
-              <IconButton
-                size="1"
-                variant="solid"
-                color="red"
-                radius="full"
-                onClick={handleRemove}
-                style={{ opacity: 0.9, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
-              >
-                <Icon name='close' />
-              </IconButton>
-            </Box>
+      <style>
+        {`
+          .vs-avatar-wrapper {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            user-select: none;
+          }
+          .vs-avatar-wrapper:not(.vs-readonly):hover {
+            transform: translateY(-2px);
+          }
+          
+          .vs-avatar-dropzone {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background-color: var(--gray-2);
+          }
+          .vs-readonly .vs-avatar-dropzone {
+            cursor: default;
+            opacity: 0.8;
+          }
 
-            <Box
-              style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                backgroundColor: 'rgba(0,0,0,0.5)',
-                padding: '4px',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <Icon name='camera' color="white" width="16" height="16" />
-            </Box>
-          </>
-        ) : (
-          <Flex direction="column" align="center" justify="center" height="100%" width="100%">
-            <Icon name='user' width={size * 0.4} height={size * 0.4} color={iconColor} style={{ opacity: 0.5 }} />
-            <Text size="1" color="gray" style={{ marginTop: 4, opacity: 0.8 }}>
-              Upload
-            </Text>
+          .vs-shape-circle { border-radius: 50%; }
+          .vs-shape-square { border-radius: 4px; }
+          .vs-shape-rounded { border-radius: 16px; }
+          .vs-shape-hexagon {
+            border-radius: 0;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+          }
+
+          .vs-design-outline {
+            border: 1px dashed var(--gray-8);
+            background: var(--gray-2);
+          }
+          .vs-avatar-wrapper:not(.vs-readonly):hover .vs-design-outline {
+            border-color: var(--accent-9);
+            background: var(--gray-3);
+          }
+          .vs-design-outline.vs-has-error { border: 1px solid var(--red-9); }
+
+          .vs-design-material {
+            border: 2px solid white;
+            background: var(--color-panel-solid, #ffffff);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+          }
+          .vs-avatar-wrapper:not(.vs-readonly):hover .vs-design-material {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06);
+          }
+          .vs-design-material.vs-has-error { border: 2px solid var(--red-9); }
+
+          .vs-design-neumorphic {
+            border: none;
+            background: #e0e5ec;
+            box-shadow: 8px 8px 16px rgba(163,177,198,0.6), -8px -8px 16px rgba(255,255,255,0.7);
+          }
+          .vs-avatar-wrapper:not(.vs-readonly):hover .vs-design-neumorphic {
+            box-shadow: inset 4px 4px 8px rgba(163,177,198,0.5), inset -4px -4px 8px rgba(255,255,255,0.8);
+          }
+          .vs-design-neumorphic.vs-has-error { border: 1px solid var(--red-9); }
+
+          .vs-avatar-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+          }
+          .vs-avatar-wrapper:not(.vs-readonly):hover .vs-avatar-overlay {
+            opacity: 1;
+          }
+
+          .vs-remove-btn {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease;
+          }
+          .vs-remove-btn:hover {
+            transform: scale(1.1);
+          }
+        `}
+      </style>
+
+      <Flex 
+        direction="column" 
+        align="start" 
+        gap="2" 
+        style={{ fontFamily: "'Libre Franklin', sans-serif", width: '100%', ...style }} 
+        className={className}
+      >
+        
+        {(inputLabel || isHinted) && (
+          <Flex align="center" gap="2" style={{ paddingLeft: '4px' }}>
+            {inputLabel && (
+              <Text id={`${alias}InputLabel`} as="label" size="2" weight="medium" style={{ color: 'var(--gray-11)' }} htmlFor={inputId}>
+                {inputLabel}
+              </Text>
+            )}
+            {isHinted && (
+              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5}>
+                <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Icon name="questionmarkcircled" height="15" width="15" style={{ cursor: 'pointer', color: 'var(--gray-9)', transition: 'color 0.2s' }} />
+                </a>
+              </Tooltip>
+            )}
           </Flex>
         )}
-      </Box>
 
-      <input
-        ref={inputRef}
-        id={inputId || alias}
-        name={alias}
-        readOnly={readOnly}
-        type="file"
-        accept={accept}
-        onChange={handleFileChange}
-        style={{ display: 'none' }}
-      />
-        <div>
-                {inputLabel && (
-                      <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" color='gray' highContrast={inputtype !== 'avatar-neumorphic'} htmlFor={inputId}>
-                        {inputLabel}
-                      </Text>)}
-                &nbsp;
-                {isHinted ?
-                  <>
-                  <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                      <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                      <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                      </a> 
-                  </Tooltip>
-                  </> : null} 
-                 {hasError ?
-                  <>
-                  <p id={errorId} className='core-input-label-error'>
-                      {errorText || `Required field`}
-                  </p>
-                  </> : null } 
-        </div>
-    </Flex>
+        <Box 
+          className={`vs-avatar-wrapper ${readOnly ? 'vs-readonly' : ''}`}
+          style={{ width: size, height: size }}
+        >
+          <Box
+            className={`vs-avatar-dropzone ${computedShapeClass} ${computedDesignClass} ${hasError ? 'vs-has-error' : ''}`}
+            onClick={() => inputRef.current?.click()}
+          >
+            {previewUrl ? (
+              <>
+                <img
+                  src={previewUrl}
+                  alt={inputLabel || "Avatar Profile"}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block'
+                  }}
+                />
+                {!readOnly && (
+                  <Box className="vs-avatar-overlay">
+                    <Icon name='camera' color="white" width="24" height="24" />
+                  </Box>
+                )}
+              </>
+            ) : (
+              <Flex direction="column" align="center" justify="center" gap="1">
+                <Icon name='user' width={size * 0.35} height={size * 0.35} color={iconColor} style={{ opacity: 0.6 }} />
+                <Text size="1" weight="medium" style={{ color: iconColor, opacity: 0.8, letterSpacing: '0.02em' }}>
+                  Upload
+                </Text>
+              </Flex>
+            )}
+          </Box>
+
+          {previewUrl && !readOnly && (
+            <IconButton
+              className="vs-remove-btn"
+              size="1"
+              variant="solid"
+              color="gray"
+              highContrast
+              radius="full"
+              onClick={handleRemove}
+              title="Remove image"
+            >
+              <Icon name='close' width="14" height="14" />
+            </IconButton>
+          )}
+        </Box>
+
+        <input
+          ref={inputRef}
+          id={inputId}
+          name={alias}
+          disabled={readOnly}
+          type="file"
+          accept={accept}
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+        />
+
+        {hasError && (
+          <Text id={errorId} size="1" style={{ color: 'var(--red-9)', fontWeight: 500, paddingLeft: '4px', marginTop: '2px' }}>
+            {errorText || fieldError?.toString() || `Required field`}
+          </Text>
+        )}
+
+      </Flex>
     </Column>
   );
 };

@@ -24,7 +24,6 @@ describe('VΣ Layouts(Column) Test', () => {
     expect(props.gridColumn.initial).toBe('span 12');
   });
 
-
   test('Column :: Rendered column on newLine', () => {
   render(<Column newLine>VΣ New Line Content</Column>);
 

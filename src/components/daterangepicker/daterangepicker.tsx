@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, forwardRef, useId } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { TextField, Flex, Text, Tooltip } from '@radix-ui/themes';
@@ -10,290 +10,446 @@ import '../../styles/main.scss';
 
 export type DateRangePickerDesign = 'daterangepicker' | 'daterangepicker-outline' | 'daterangepicker-material' | 'daterangepicker-neumorphic';
 
-interface DateRangePickerProps {
-    /**
-   * * The required unique identifier for the DateRangePicker input field in useFormikContext(). 
-   * Alias referenced as `name` attribute and Formik state key.
-   * * @example
-   * alias="hotelReservationDays"
+/**
+ * DateRangePickerProps Interface
+ * @description Configuration properties for the VectorSigma DateRangePicker component.
+ * Equipped with enterprise-grade aesthetics, intelligent context-aware neumorphism, 
+ * typography overrides, and strict Formik integration. Designed for LLM/MCP workflows.
+ */
+export interface DateRangePickerProps {
+  /**
+   * The aesthetic design language of the DateRangePicker component.
+   * - `daterangepicker-outline`: Minimalist, outlined aesthetic (Default).
+   * - `daterangepicker-material`: Elevated, sharp bottom-borders with a solid surface.
+   * - `daterangepicker-neumorphic`: Soft-UI with extruded inset shadows.
+   * @default "daterangepicker-outline"
    */
-    alias: string;
-    /**
-   * * The optional input label or description for the DateRangePicker input field. 
-   * * @example
-   * inputLabel="VΣ Hotel Reservation Dates"
+  inputtype?: DateRangePickerDesign;
+
+  /**
+   * The unique identifier bridging the input field to the Formik state.
+   * Must exactly match the schema property key.
+   * @example "hotelReservationDays"
    */
-    inputLabel?: string;
-    /**
-   * * The design variation of the DateRangePicker input. 
-   * Default: 'daterangepicker-outline' 
-   * Variants: 'daterangepicker', 'daterangepicker-outline', 'daterangepicker-material', 'daterangepicker-neumorphic',
-   * * @example
-   * inputtype="daterangepicker-neumorphic"
+  alias: string;
+
+  /**
+   * The primary semantic label rendered above the DateRangePicker field.
+   * @example "Hotel Reservation Dates"
    */
-    inputtype?: DateRangePickerDesign;
-    /**
-   * * The required viewport column width for the DateRangePicker input field.
-   * i.e. 1 - 12
-   * * @example
-   * width={6}
+  inputLabel?: string;
+
+  /**
+   * Defines the responsive grid column span for the component (1-12 based on the parent grid).
+   * @example 6
    */
-    width?: number;
-    /**
-   * * Option to render DateRangePicker input field on new row.
-   * * @example
-   * newRow
+  width?: number;
+
+  /**
+   * Forces the component to break into a new Flex/Grid row within the Form layout.
+   * @default false
    */
-    newRow?: boolean;
-    /**
-   * * Option to set the default placeholder text for the DateRangePicker input field.
-   * * @example
-   * placeholder="Select VΣ reservation dates"
+  newRow?: boolean;
+
+  /**
+   * Placeholder text utilized when the date state is empty or null.
+   * @example "Select reservation dates"
    */
-    placeholder?: string;
-    /**
-     * * Option to enable a hint for DateRangePicker input field.
-     * * @example
-     * isHinted
-     */ 
-    isHinted?: boolean;
-    /**
-   * * Option to specify hint text for DateRangePicker input field.
-   * * @example
-   * hintText="This is a hint for a VΣ DateRangePicker"
-   */ 
-    hintText?: string;
-    /**
-   * * Option to specify a hint url reference or resource for DateRangePicker input field.
-   * * @example
-   * hintUrl="https://www.mekaegwim.ca"
-   */ 
-    hintUrl?: string;
-    /**
-   * * Option to specify the isRequired error text for the DateRangePicker input field.
-   * * @example
-   * errorText="VΣ resrvation dates required"
+  placeholder?: string;
+
+  /**
+   * Disables interaction, mutating the visual state to reflect read-only/disabled mode.
+   * @default false
    */
-    errorText?: string;
-    /**
-   * * Option to disable edits for DateRangePicker input field.
-   * * @example
-   * readOnly
-   */ 
-    readOnly?: boolean;
-    /**
-   * * Option to specify the .scss class selector for the DateRangePicker input field.
-   * * @example
-   * className="teletraan-1-daterangepicker"
+  readOnly?: boolean;
+
+  /**
+   * Toggles the visibility of the contextual hint icon and tooltip next to the label.
+   * @default false
    */
-    className?: string;
-    /**
-     * * Optional explicit Formik context. Useful when bypassing duplicate 
-     * context issues in monorepos or bundled npm packages.
-     */
-    formikContext?: FormikContextType<any>;
+  isHinted?: boolean;
+
+  /**
+   * The text payload displayed inside the Tooltip when `isHinted` is true.
+   * @example "Check-in is at 3PM, Check-out at 11AM."
+   */
+  hintText?: string;
+
+  /**
+   * An optional URL bound to the hint icon, directing the user to external documentation.
+   * @example "https://docs.vectorsigma.io/hotel-policies"
+   */
+  hintUrl?: string;
+
+  /**
+   * Optional typographic color overrides. Allows explicit targeting of the DateRangePicker's
+   * internal CSS color assignments regardless of the global Radix theme.
+   */
+  typography?: {
+    /** Overrides the background color of the input field and calendar canvas */
+    background?: string;
+    /** Overrides the border/stroke color of the input field and calendar canvas */
+    stroke?: string;
+    /** Overrides the text color of the input, calendar header, and days */
+    textColor?: string;
+    /** Overrides the primary color used for the selected date and hover states */
+    accent?: string;
+  };
+
+  /**
+   * Explicit error string to override standard Formik validation messages.
+   * @example "Both a check-in and check-out date are required."
+   */
+  errorText?: string;
+
+  /**
+   * Optional custom SCSS class selector for external targeted styling overrides.
+   */
+  className?: string;
+
+  /**
+   * Inline React CSS properties applied to the outmost Flex wrapper.
+   */
+  style?: React.CSSProperties;
+
+  /**
+   * Injects an explicit Formik context. Required if the component operates outside 
+   * a standard `<FormikProvider>` tree.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
+const DateRangeInput = forwardRef<HTMLInputElement, any>((props, ref) => {
+  const { radixId, radixStyle, readOnly, typography, ...restProps } = props;
+  
+  return (
+    <TextField.Root 
+      {...restProps} 
+      id={radixId}
+      style={radixStyle}
+      variant="surface"
+      ref={ref}
+      disabled={readOnly}
+      placeholder={props.placeholder || props.placeholderText || "Select date range"}
+      autoComplete="off"
+    >
+      <TextField.Slot>
+        <Icon 
+          name="calendar" 
+          height="16" 
+          width="16" 
+          style={{ color: typography?.textColor || 'var(--gray-10)', transition: 'color 0.2s' }} 
+        />
+      </TextField.Slot>
+    </TextField.Root>
+  );
+});
+DateRangeInput.displayName = "DateRangeInput";
+
 export const DateRangePicker = ({
-    alias,
-    inputLabel,
-    inputtype = 'daterangepicker-outline',
-    width = 12,
-    newRow,
-    placeholder = "Select date range",
-    isHinted, hintText, hintUrl, errorText,
-    readOnly,
-    className,
-    formikContext
+  alias,
+  inputLabel,
+  inputtype = 'daterangepicker-outline',
+  width = 12,
+  newRow,
+  placeholder = "Select date range",
+  isHinted, 
+  hintText, 
+  hintUrl, 
+  errorText,
+  typography,
+  readOnly,
+  className,
+  style,
+  formikContext
 }: DateRangePickerProps) => {
 
-    const defaultFormikContext = useFormikContext<any>();
-    const activeContext = formikContext || defaultFormikContext;
+  const defaultFormikContext = useFormikContext<any>();
+  const activeContext = formikContext || defaultFormikContext;
 
-    if (!activeContext) {
-        console.error(`DateRangePicker '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
-        return null;
+  if (!activeContext) {
+      console.error(`[VectorSigma]: DateRangePicker '${alias}' must be used within a Formik provider or receive an explicit formikContext prop.`);
+      return null;
+  }
+
+  const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
+
+  const fieldValue = getIn(values, alias);
+  const fieldTouched = getIn(touched, alias);
+  const fieldError = getIn(errors, alias);
+
+  const fallbackId = useId();
+  const inputId = `${alias}FormInput-${fallbackId}`;
+  const labelId = `${alias}InputLabel`;
+  const errorId = `${alias}-error`;
+
+  const hasError = Boolean(fieldTouched && fieldError);
+  
+  const getDates = (): [Date | null, Date | null] => {
+      const val = fieldValue;
+      if (!val) return [null, null];
+      
+      if (typeof val === 'object' && 'from' in val) {
+          return [
+              val.from ? new Date(val.from) : null, 
+              val.to ? new Date(val.to) : null
+          ];
+      }
+      
+      if (Array.isArray(val)) {
+          return [
+              val[0] ? new Date(val[0]) : null, 
+              val[1] ? new Date(val[1]) : null
+          ];
+      }
+
+      return [null, null];
+  };
+
+  const [startDate, endDate] = getDates();
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+  
+  useEffect(() => {
+    if (inputtype === 'daterangepicker-neumorphic' && containerRef.current) {
+        const parentBg = getNearestParentBackground(containerRef.current.parentElement);
+        const computedBg = typography?.background || parentBg;
+        
+        setNeuVars({
+            '--neu-bg': computedBg,
+            '--neu-shadow-dark': adjustColor(computedBg, -20),
+            '--neu-shadow-light': adjustColor(computedBg, 20),
+        } as React.CSSProperties);
+    }
+  }, [inputtype, typography?.background]);
+
+  const typographyVars = {
+    '--vs-dp-bg': typography?.background || 'var(--color-panel-solid)',
+    '--vs-dp-stroke': typography?.stroke || 'var(--gray-6)',
+    '--vs-dp-text': typography?.textColor || 'var(--gray-12)',
+    '--vs-dp-accent': typography?.accent || 'var(--accent-9)',
+    '--vs-dp-accent-muted': typography?.accent ? adjustColor(typography.accent, 60) : 'var(--accent-4)', // Lighter version for the in-range span
+    '--vs-dp-accent-text': typography?.accent ? '#ffffff' : 'white', // Ensure contrast on custom accent
+  } as React.CSSProperties;
+
+  const getInputStyles = (): React.CSSProperties => {
+    const base: React.CSSProperties = { 
+      cursor: readOnly ? 'not-allowed' : 'pointer', 
+      transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)', 
+      width: '100%',
+      fontFamily: "inherit",
+      color: 'var(--vs-dp-text)'
+    };
+
+    if (inputtype === 'daterangepicker-neumorphic') {
+      return {
+          ...base,
+          backgroundColor: 'var(--neu-bg)', 
+          border: 'none',
+          boxShadow: hasError 
+            ? 'inset 2px 2px 5px rgba(255,0,0,0.2), inset -2px -2px 5px var(--neu-shadow-light)' 
+            : 'inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light)',
+          borderRadius: '12px', 
+          height: '42px', 
+          ...neuVars
+      };
+    }
+    
+    if (inputtype === 'daterangepicker-material') {
+      return {
+          ...base, 
+          backgroundColor: typography?.background || 'var(--gray-2)', 
+          border: 'none', 
+          borderBottom: hasError ? '2px solid var(--red-9)' : `2px solid ${typography?.stroke || 'var(--gray-8)'}`,
+          boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
+          borderRadius: '4px 4px 0 0',
+          height: '42px'
+      };
     }
 
-    const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
-
-    const fieldValue = getIn(values, alias);
-    const fieldTouched = getIn(touched, alias);
-    const fieldError = getIn(errors, alias);
-
-    const hasError = Boolean(fieldTouched && fieldError);
-    const inputId = `${alias}FormInput`;
-    const labelId = `${alias}InputLabel`;
-    
-    const getDates = (): [Date | null, Date | null] => {
-        const val = fieldValue;
-        if (!val) return [null, null];
-        if (typeof val === 'object' && 'from' in val) {
-            return [
-                val.from ? new Date(val.from) : null, 
-                val.to ? new Date(val.to) : null
-            ];
-        }
-        if (Array.isArray(val)) {
-            return [
-                val[0] ? new Date(val[0]) : null, 
-                val[1] ? new Date(val[1]) : null
-            ];
-        }
-
-        return [null, null];
+    return {
+        ...base, 
+        backgroundColor: typography?.background || 'transparent',
+        boxShadow: hasError ? '0 0 0 1.5px var(--red-9)' : '0 0 0 1px var(--vs-dp-stroke)',
+        borderRadius: '6px',
+        height: '42px'
     };
+  };
 
-    const [startDate, endDate] = getDates();
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
-    
-    useEffect(() => {
-        if (inputtype === 'daterangepicker-neumorphic' && containerRef.current) {
-            const parentBg = getNearestParentBackground(containerRef.current.parentElement);
-            setNeuVars({
-                '--neu-bg': parentBg,
-                '--neu-shadow-dark': adjustColor(parentBg, -20),
-                '--neu-shadow-light': adjustColor(parentBg, 20),
-                '--neu-text': 'var(--gray-12)',
-                '--accent': 'var(--accent-9)',
-            } as React.CSSProperties);
-        }
-    }, [inputtype]);
+  return (
+    <Column span={width} newLine={newRow}>
+      <Flex 
+        direction="column" 
+        gap="2" 
+        ref={containerRef} 
+        className={className} 
+        style={{ width: '100%', fontFamily: "'Libre Franklin', sans-serif", ...typographyVars, ...style }}
+      >
+        
+        <style>{`
+          .react-datepicker-popper { z-index: 9999 !important; }
+          .react-datepicker-wrapper { width: 100%; display: block; } 
+          
+          .react-datepicker {
+              font-family: inherit;
+              border: 1px solid var(--vs-dp-stroke) !important;
+              border-radius: 12px !important;
+              box-shadow: 0 12px 32px -8px rgba(0,0,0,0.15), 0 4px 12px -4px rgba(0,0,0,0.1);
+              background-color: var(--vs-dp-bg) !important;
+              padding: 16px;
+              display: inline-block;
+          }
 
-    // --- STYLES ---
-    const getInputStyles = () => {
-        const base = { cursor: 'pointer', transition: 'all 0.2s' };
-        if (inputtype === 'daterangepicker-neumorphic') return {
-            ...base,
-            backgroundColor: 'var(--neu-bg)', border: 'none',
-            boxShadow: hasError ? 'inset 2px 2px 5px var(--red-9), inset -2px -2px 5px var(--neu-shadow-light)' 
-                                : 'inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light)',
-            borderRadius: '12px', height: '40px', ...neuVars
-        };
-        if (inputtype === 'daterangepicker-material') return {
-            ...base, backgroundColor: 'var(--gray-2)', border: 'none', 
-            borderBottom: hasError ? '2px solid var(--red-9)' : '2px solid var(--gray-8)',
-            borderRadius: '4px 4px 0 0'
-        };
-        return {
-            ...base, backgroundColor: 'transparent',
-            boxShadow: hasError ? '0 0 0 1px var(--red-9)' : '0 0 0 1px var(--gray-7)',
-            borderRadius: '6px'
-        };
-    };
+          .react-datepicker__header {
+              background-color: transparent !important;
+              border-bottom: none !important;
+              padding-top: 0;
+          }
+          .react-datepicker__current-month {
+              font-weight: 600;
+              font-size: 1.1rem;
+              color: var(--vs-dp-text);
+              margin-bottom: 8px;
+          }
+          .react-datepicker__day-name { 
+              color: var(--vs-dp-text); 
+              opacity: 0.6;
+              font-weight: 600; 
+              text-transform: uppercase; 
+              font-size: 0.75rem; 
+              width: 32px;
+              margin: 4px;
+          }
 
-    return (
-        <Column span={width} newLine={newRow}>
-            <Flex direction="column" gap="2" ref={containerRef} className={className} style={{ width: '100%' }}>
-                <style>{`
-                    .react-datepicker-popper { z-index: 9999 !important; }
-                    .react-datepicker {
-                        font-family: var(--default-font-family, sans-serif);
-                        border: none !important;
-                        border-radius: 12px !important;
-                        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.2);
-                        background-color: var(--color-panel-solid) !important;
-                        padding: 12px;
-                    }
-                    .react-datepicker__header {
-                        background-color: transparent !important;
-                        border-bottom: none !important;
-                    }
-                    .react-datepicker__day-name { color: var(--gray-9); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
-                    .react-datepicker__day {
-                        width: 32px; height: 32px; line-height: 32px;
-                        border-radius: 50%;
-                        margin: 2px !important;
-                        color: var(--gray-12);
-                    }
-                    .react-datepicker__day:hover { background-color: var(--gray-4) !important; }
-                    
-                    /* Range Specific Styles */
-                    .react-datepicker__day--in-range {
-                        background-color: var(--accent-4) !important;
-                        color: var(--accent-11) !important;
-                        border-radius: 0 !important;
-                    }
-                    .react-datepicker__day--range-start {
-                        background-color: var(--accent-9) !important;
-                        color: white !important;
-                        border-radius: 50% 0 0 50% !important;
-                    }
-                    .react-datepicker__day--range-end {
-                        background-color: var(--accent-9) !important;
-                        color: white !important;
-                        border-radius: 0 50% 50% 0 !important;
-                    }
-                    /* If start and end are same day */
-                    .react-datepicker__day--range-start.react-datepicker__day--range-end {
-                        border-radius: 50% !important;
-                    }
+          .react-datepicker__navigation { top: 16px; }
+          .react-datepicker__navigation-icon::before {
+              border-color: var(--vs-dp-text);
+              opacity: 0.5;
+              border-width: 2px 2px 0 0;
+              transition: all 0.2s ease;
+          }
+          .react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
+              opacity: 1;
+          }
 
-                    .react-datepicker__day--keyboard-selected { background-color: transparent !important; color: inherit !important; outline: 2px solid var(--accent-9); }
-                    .react-datepicker__day--today { color: var(--accent-11); font-weight: 900; }
-                    
-                    /* Neumorphic Popup Overrides */
-                    ${inputtype === 'daterangepicker-neumorphic' ? `
-                        .react-datepicker {
-                            background-color: var(--neu-bg) !important;
-                            box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light);
-                        }
-                        .react-datepicker__day--in-range { box-shadow: inset 1px 1px 2px var(--neu-shadow-dark), inset -1px -1px 2px var(--neu-shadow-light); }
-                        .react-datepicker__day--range-start, .react-datepicker__day--range-end {
-                            box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light); 
-                            color: var(--accent) !important; background: var(--neu-bg) !important;
-                        }
-                    ` : ''}
-                `}</style>
+          .react-datepicker__day {
+              width: 32px; 
+              height: 32px; 
+              line-height: 32px;
+              border-radius: 50% !important;
+              margin: 4px !important;
+              color: var(--vs-dp-text);
+              font-weight: 500;
+              transition: all 0.2s ease;
+          }
+          .react-datepicker__day:hover { 
+              background-color: var(--gray-4) !important; 
+          }
+          
+          .react-datepicker__day--in-range {
+              background-color: var(--vs-dp-accent-muted) !important;
+              color: var(--vs-dp-text) !important;
+              border-radius: 0 !important; /* Flat edges for connecting the range */
+          }
+          .react-datepicker__day--range-start {
+              background-color: var(--vs-dp-accent) !important;
+              color: var(--vs-dp-accent-text) !important;
+              border-radius: 50% 0 0 50% !important;
+          }
+          .react-datepicker__day--range-end {
+              background-color: var(--vs-dp-accent) !important;
+              color: var(--vs-dp-accent-text) !important;
+              border-radius: 0 50% 50% 0 !important;
+          }
+          
+          .react-datepicker__day--range-start.react-datepicker__day--range-end {
+              border-radius: 50% !important;
+          }
+          
+          .react-datepicker__day--keyboard-selected { 
+              background-color: transparent !important; 
+              border: 1px dashed var(--vs-dp-accent) !important;
+          }
+          
+          .react-datepicker__day--today { 
+              color: var(--vs-dp-accent); 
+              font-weight: 700; 
+          }
+          
+          ${inputtype === 'daterangepicker-neumorphic' ? `
+              .react-datepicker {
+                  background-color: var(--neu-bg) !important;
+                  border: none !important;
+                  box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+              }
+              .react-datepicker__day:hover { 
+                  box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light); 
+                  background: transparent !important; 
+              }
+              .react-datepicker__day--in-range { 
+                  box-shadow: inset 1px 1px 3px var(--neu-shadow-dark), inset -1px -1px 3px var(--neu-shadow-light); 
+                  background-color: var(--neu-bg) !important;
+              }
+              .react-datepicker__day--range-start, .react-datepicker__day--range-end { 
+                  box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light); 
+                  color: var(--vs-dp-accent) !important; 
+                  background: var(--neu-bg) !important; 
+              }
+          ` : ''}
+        `}</style>
 
-                <ReactDatePicker
-                    id={`${alias}DatePicker`}
-                    selectsRange={true}
-                    startDate={startDate}
-                    endDate={endDate}
-                    onChange={(dates: [Date | null, Date | null]) => {
-                        const [start, end] = dates;
-                        setFieldValue(alias, { from: start, to: end });
-                        if (start && end) {
-                            setFieldTouched(alias, true, false);
-                        }
-                    }}
-                    disabled={readOnly}
-                    placeholderText={placeholder}
-                    dateFormat="MMM d, yyyy"
-                    aria-labelledby={labelId}
-                    customInput={
-                        <TextField.Root 
-                            id={inputId}
-                            variant="surface"
-                            style={getInputStyles()}
-                        >
-                            <TextField.Slot>
-                                <Icon name="calendar" height="16" width="16" style={{ color: 'var(--gray-10)' }} />
-                            </TextField.Slot>
-                        </TextField.Root>
-                    }
+        {(inputLabel || isHinted) && (
+          <Flex align="center" gap="2" style={{ paddingLeft: '2px' }}>
+            {inputLabel && (
+              <Text id={labelId} as="label" size="2" weight="medium" style={{ color: 'var(--gray-11)' }} htmlFor={inputId}>
+                {inputLabel}
+              </Text>
+            )}
+            {isHinted && (
+              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5}>
+                <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Icon name="questionmarkcircled" height="15" width="15" style={{ cursor: 'pointer', color: 'var(--gray-9)', transition: 'color 0.2s' }} />
+                </a> 
+              </Tooltip>
+            )}
+          </Flex>
+        )}
+
+        <ReactDatePicker
+            id={`${alias}DatePicker`}
+            selectsRange={true}
+            startDate={startDate}
+            endDate={endDate}
+            onChange={(dates: [Date | null, Date | null]) => {
+                const [start, end] = dates;
+                setFieldValue(alias, { from: start, to: end });
+                
+                if (start && end) {
+                    setFieldTouched(alias, true, false);
+                }
+            }}
+            disabled={readOnly}
+            placeholderText={placeholder}
+            dateFormat="MMM d, yyyy"
+            aria-labelledby={inputLabel ? labelId : undefined}
+            customInput={
+                <DateRangeInput 
+                    radixId={inputId}
+                    radixStyle={getInputStyles()}
+                    placeholder={placeholder}
+                    readOnly={readOnly}
+                    typography={typography}
                 />
+            }
+        />
 
-                <div>
-                    {inputLabel && <Text id={labelId} size="2" weight="bold" as="div" style={{ display: 'inline' }}>{inputLabel}</Text>}
-                    
-                    {isHinted && (
-                        <Tooltip content={hintText || "No hint"} align="start">
-                            <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 6 }}>
-                                <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                            </a>
-                        </Tooltip>
-                    )}
-                    
-                    {hasError && (
-                        <Text size="1" color="red" style={{ display: 'block' }}>
-                            {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
-                        </Text>
-                    )}
-                </div>
-            </Flex>
-        </Column>
-    );
+        {hasError && (
+          <Text id={errorId} size="1" style={{ color: 'var(--red-9)', fontWeight: 500, paddingLeft: '2px' }}>
+            {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
+          </Text>
+        )}
+      </Flex>
+    </Column>
+  );
 };

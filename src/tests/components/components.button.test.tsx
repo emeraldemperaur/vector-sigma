@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Theme } from '@radix-ui/themes';
 import { ButtonInput } from '../../components/button/button';
 
@@ -11,7 +11,6 @@ jest.mock('../../utils/vinci', () => ({
 const renderWithTheme = (ui: React.ReactElement) => {
   return render(<Theme>{ui}</Theme>);
 };
-
 
 describe('VΣ Component(ButtonInput | Input) Tests', () => {
   
@@ -26,7 +25,6 @@ describe('VΣ Component(ButtonInput | Input) Tests', () => {
     expect(button).toBeInTheDocument();
   });
 
-
   it('ButtonInput :: Rendered neumorphic variant', () => {
     renderWithTheme(
       <ButtonInput alias="neuBtn" width={12} inputtype="button-neumorphic">
@@ -36,7 +34,7 @@ describe('VΣ Component(ButtonInput | Input) Tests', () => {
 
     const button = screen.getByRole('button', { name: 'Neumorphic' });
     expect(button).toBeInTheDocument();
-    expect(button.classList.contains('neumorphic-btn')).toBe(true);
+    expect(button.className).toMatch(/neumorphic/i);
   });
  
 });

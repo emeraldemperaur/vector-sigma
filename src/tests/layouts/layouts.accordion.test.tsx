@@ -9,7 +9,7 @@ jest.mock('../../utils/vinci', () => ({
 }));
 
 jest.mock('../../components/icons/icons', () => ({
-  Icon: () => <span data-testid="mock-icon" />
+  Icon: (props: any) => <span data-testid="mock-icon" {...props} />
 }));
 
 describe('VΣ Layouts(Accordion) Test', () => {
@@ -70,7 +70,6 @@ describe('VΣ Layouts(Accordion) Test', () => {
     );
 
     const triggerBtn = screen.getByRole('button', { name: /Disabled Section/i });
-
     expect(triggerBtn).toBeDisabled();
   });
 });

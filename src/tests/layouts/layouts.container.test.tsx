@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { Container } from '../../layouts/container/container';
 import '@testing-library/jest-dom';
 
-
 jest.mock('@radix-ui/themes', () => ({
   Box: ({ children, className, ...props }: any) => (
     <div data-testid="radix-box" className={className} data-props={JSON.stringify(props)}>
@@ -28,7 +27,7 @@ describe('VΣ Layouts(Container) Test', () => {
     
     const props = JSON.parse(container.getAttribute('data-props') || '{}');
     expect(props.size).toBe('3');
-    expect(props.px).toBe('3');
+    expect(props.px).toEqual({ initial: '3', sm: '4' });
   });
 
   test('Container :: Rendered Fluid Box', () => {
@@ -40,7 +39,7 @@ describe('VΣ Layouts(Container) Test', () => {
 
     const props = JSON.parse(box.getAttribute('data-props') || '{}');
     expect(props.width).toBe('100%');
-    expect(props.px).toBe('3');
+    expect(props.px).toEqual({ initial: '3', sm: '4' });
   });
 
   test('Container :: Enabled custom props (className, id, etc.)', () => {

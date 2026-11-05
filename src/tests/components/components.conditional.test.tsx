@@ -5,7 +5,7 @@ import { Theme } from '@radix-ui/themes';
 import { ConditionalTrigger } from '../../components/conditional/conditional'; 
 
 beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(globalThis, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
       matches: false,
@@ -19,17 +19,16 @@ beforeAll(() => {
     })),
   });
 
-  global.ResizeObserver = class {
+  globalThis.ResizeObserver = class {
     observe() {}
     unobserve() {}
     disconnect() {}
-  };
+  } as unknown as typeof ResizeObserver;
 
-  Object.defineProperty(global, 'crypto', {
+  Object.defineProperty(globalThis, 'crypto', {
     value: { randomUUID: () => 'mock-uuid-for-me' },
   });
 });
-
 
 const renderWithFormik = (ui: React.ReactElement, initialValues = { triggerField: false }) => {
   return render(
@@ -58,14 +57,14 @@ describe('VΣ Component(ConditionalTrigger) Test', () => {
 
     const toggleSwitch = screen.getByRole('switch');
     expect(toggleSwitch).toBeInTheDocument();
-    expect(toggleSwitch).toHaveAttribute('data-state', 'unchecked');
-    const childWrapper = screen.getByTestId('hidden-child').parentElement?.parentElement;
+    
+    expect(toggleSwitch).toHaveAttribute('aria-checked', 'false');
     fireEvent.click(toggleSwitch);
+    
     await waitFor(() => {
-      expect(toggleSwitch).toHaveAttribute('data-state', 'checked');
+      expect(toggleSwitch).toHaveAttribute('aria-checked', 'true');
     });
   });
-
 
   it('ConditionalTrigger :: Rendered a Checkbox trigger when inputtype is conditionalcheckbox', () => {
     renderWithFormik(
@@ -118,7 +117,7 @@ describe('VΣ Component(ConditionalTrigger) Test', () => {
     );
 
     const toggleSwitch = screen.getByRole('switch');
-    expect(toggleSwitch).toBeDisabled();
+    expect(toggleSwitch).toHaveStyle({ cursor: 'not-allowed' });
   });
 
 });

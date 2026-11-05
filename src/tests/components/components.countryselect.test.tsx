@@ -3,14 +3,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Formik } from 'formik';
 import { CountrySelect } from '../../components/dropdown/countrydropdown';
 
-
-global.ResizeObserver = class {
+globalThis.ResizeObserver = class {
     observe() {}
     unobserve() {}
     disconnect() {}
-};
+} as unknown as typeof ResizeObserver;
 
-if (typeof window.PointerEvent === 'undefined') {
+if (typeof (globalThis as any).PointerEvent === 'undefined') {
     class PointerEvent extends MouseEvent {
         pointerId: number;
         constructor(type: string, params: PointerEventInit = {}) {
@@ -18,15 +17,14 @@ if (typeof window.PointerEvent === 'undefined') {
             this.pointerId = params.pointerId || 1;
         }
     }
-    window.PointerEvent = PointerEvent as any;
+    (globalThis as any).PointerEvent = PointerEvent;
 }
 
-if (typeof window.HTMLElement.prototype.hasPointerCapture === 'undefined') {
-    window.HTMLElement.prototype.hasPointerCapture = () => false;
-    window.HTMLElement.prototype.setPointerCapture = () => {};
-    window.HTMLElement.prototype.releasePointerCapture = () => {};
+if (typeof globalThis.HTMLElement.prototype.hasPointerCapture === 'undefined') {
+    globalThis.HTMLElement.prototype.hasPointerCapture = () => false;
+    globalThis.HTMLElement.prototype.setPointerCapture = () => {};
+    globalThis.HTMLElement.prototype.releasePointerCapture = () => {};
 }
-
 
 const FormikWrapper = ({ children, initialValues = { testCountry: '' } }: any) => (
     <Formik initialValues={initialValues} onSubmit={jest.fn()}>

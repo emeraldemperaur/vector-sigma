@@ -1,89 +1,135 @@
 import React from 'react';
 import { Box } from '@radix-ui/themes';
 
-type ColSize = number | "auto" | boolean;
+export type ColSize = number | "auto" | boolean;
 
-type ColProps = React.ComponentProps<typeof Box> & {
+/**
+ * ColumnProps Interface
+ * @description Configuration properties for the VectorSigma Column grid layout component.
+ * Provides mobile-first automatic stacking (12 columns on mobile devices) while strictly
+ * preserving desktop multi-column spans (`span`, `sm`, `md`, `lg`, `xl`) and new-row breaks.
+ */
+export interface ColumnProps extends Omit<React.ComponentProps<typeof Box>, 'span'> {
   /**
-     * * Option to specify a span number for the Column component.
-     * i.e. 1 - 12
-     * * @example
-     * span={6}
-     */
+   * The number of columns to span on a 12-column grid.
+   * - On mobile viewports (< 768px): Automatically stacks to full-width (12 columns)
+   *   to prevent input squeezing and horizontal overflow.
+   * - On tablet/desktop viewports (>= 768px): Spans the exact specified column width.
+   * @example 6 // Half-width on desktop, full-width on mobile
+   * @example 12 // Full-width across all viewports
+   */
   span?: number;
+
   /**
-     * * Option to render Column component on a line.
-     * * @example
-     * newRow
-     */
-  newLine?: boolean; 
-   /**
-     * * Option to enable or specify `xs` viewport column size/breakpoint.
-     * * @example
-     * xs={3}
-     */
+   * Forces the column to break onto a new grid line starting at column 1.
+   * @default false
+   */
+  newLine?: boolean;
+
+  /**
+   * Optional explicit column span override for the base mobile viewport (0px+).
+   * Overrides the automatic full-width mobile behavior when explicitly provided.
+   * @example 6 // Force half-width even on small phones
+   */
+  initial?: ColSize;
+
+  /**
+   * Optional explicit column span override for phablets / large phones (520px+).
+   * @example 6
+   */
   xs?: ColSize;
+
   /**
-     * * Option to enable or specify `sm` viewport column size/breakpoint.
-     * * @example
-     * sm={4}
-     */
+   * Optional explicit column span override for tablet portrait viewports (768px+).
+   * @example 6
+   */
   sm?: ColSize;
+
   /**
-     * * Option to enable or specify `md` viewport column size/breakpoint.
-     * * @example
-     * md={5}
-     */
+   * Optional explicit column span override for standard desktop / tablet landscape (1024px+).
+   * @example 4
+   */
   md?: ColSize;
+
   /**
-     * * Option to enable or specify `lg` viewport column size/breakpoint.
-     * * @example
-     * lg={6}
-     */
+   * Optional explicit column span override for wide desktop displays (1280px+).
+   * @example 3
+   */
   lg?: ColSize;
+
   /**
-     * * Option to enable or specify `xl` viewport column size/breakpoint.
-     * * @example
-     * xl={6}
-     */
+   * Optional explicit column span override for ultra-wide displays (1640px+).
+   * @example 2
+   */
   xl?: ColSize;
-    /**
-     * * Required Column child components.
-     * * @example
-     * children={
-     * <Text/>
-     * ......
-     * }
-     */ 
+
+  /**
+   * Children components rendered inside the Column.
+   */
   children?: React.ReactNode;
 }
 
-export const Column = ({ newLine, span, xs, sm, md, lg, xl, children, ...props }: ColProps) => {
+export type ColProps = ColumnProps;
+
+export const Column = ({
+  newLine = false,
+  span,
+  initial,
+  xs,
+  sm,
+  md,
+  lg,
+  xl,
+  children,
+  style,
+  ...props
+}: ColumnProps) => {
+
+  const toSpanString = (val?: ColSize): string | undefined => {
+    if (val === undefined || val === null) return undefined;
+    if (val === "auto") return "auto";
+    if (val === true || val === 12) return "span 12";
+    if (val === false) return undefined;
+    const num = Number(val);
+    if (isNaN(num) || num <= 0) return undefined;
+    return `span ${Math.min(12, Math.max(1, num))}`;
+  };
+
+  const formatGridCol = (spanStr?: string, isNewLine?: boolean): string | undefined => {
+    if (!spanStr) return undefined;
+    return isNewLine ? `1 / ${spanStr}` : spanStr;
+  };
+
   
-  const getSpan = (value?: ColSize) => {
-    if (value === undefined) return undefined;
-    if (value === "auto") return "auto";
-    if (value === true) return "span 12"; 
-    return `span ${value}`;
-  };
+  const initialSpan = toSpanString(initial) 
+    || (xs !== undefined && xs !== true ? toSpanString(xs) : undefined)
+    || (span === 12 ? "span 12" : "span 12");
 
-  const formatGridColumn = (spanValue?: string) => {
-    if (!spanValue) return undefined;
-    return newLine ? `1 / ${spanValue}` : spanValue;
-  };
+  const xsSpan = toSpanString(xs);
 
-  const baseSpan = span ? `span ${span}` : (getSpan(xs) || "span 12");
+  const smSpan = toSpanString(sm) 
+    || (span !== undefined ? (span <= 4 ? "span 6" : toSpanString(span)) : undefined);
+
+  const mdSpan = toSpanString(md) || toSpanString(span);
+
+  const lgSpan = toSpanString(lg);
+  const xlSpan = toSpanString(xl);
 
   return (
     <Box
       {...props}
       gridColumn={{
-        initial: formatGridColumn(baseSpan),
-        xs: formatGridColumn(getSpan(xs)),
-        sm: formatGridColumn(getSpan(sm)),
-        md: formatGridColumn(getSpan(md)),
-        lg: formatGridColumn(getSpan(lg)),
-        xl: formatGridColumn(getSpan(xl)),
+        initial: formatGridCol(initialSpan, newLine),
+        xs: formatGridCol(xsSpan, newLine),
+        sm: formatGridCol(smSpan, newLine),
+        md: formatGridCol(mdSpan, newLine),
+        lg: formatGridCol(lgSpan, newLine),
+        xl: formatGridCol(xlSpan, newLine),
+      }}
+      style={{
+        minWidth: 0, 
+        boxSizing: 'border-box',
+        ...style,
       }}
     >
       {children}

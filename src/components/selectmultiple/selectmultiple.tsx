@@ -1,130 +1,195 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { Popover, Flex, Text, Checkbox, ScrollArea, Box, Tooltip } from '@radix-ui/themes';
+import React, { ReactNode, useEffect, useRef, useState, useId, useMemo } from 'react';
+import { Popover, Flex, Text, Checkbox, ScrollArea, Box, Tooltip, TextField } from '@radix-ui/themes';
 import { adjustColor, getNearestParentBackground, InputOption } from "utils/vinci";
 import { Icon } from 'components/icons/icons';
 import { Column } from 'layouts/column/column';
 import { FormikContextType, useFormikContext, getIn } from 'formik';
 import '../../styles/main.scss';
 
-export type MultipleSelectDesign = 'multiselect' | 'multiselect-material' | 'multiselect-outline' | 'multiselect-neumorphic';
+export type MultipleSelectDesign = 
+  | 'multiselect' 
+  | 'multiselect-material' 
+  | 'multiselect-outline' 
+  | 'multiselect-neumorphic';
 
-interface MultipleSelectProps {
-    /**
-   * * The required unique identifier for the MultipleSelect input field in useFormikContext(). 
-   * Alias referenced as `name` attribute and Formik state key.
-   * * @example
-   * alias="productCategories"
+/**
+ * MultipleSelectProps Interface
+ * @description Configuration properties for the VectorSigma MultipleSelect component.
+ * Equipped with multi-option checkbox toggles, real-time search filtering (`enableSearch`),
+ * enterprise-grade aesthetics (Outline, Cohere Material, n8n Neumorphic),
+ * localized CSS variable typography overrides, and Formik array binding.
+ */
+export interface MultipleSelectProps {
+  /**
+   * The required unique identifier for the MultipleSelect field in Formik context.
+   * Alias referenced as `name` attribute and Formik state key (expects an array of strings/numbers).
+   * @example "assignedUserRoles"
    */
-    alias: string; 
-   /**
-   * * The design variation of the MultipleSelect input. 
-   * Default: 'multiselect-outline' 
-   * Variants: 'multiselect', 'multiselect-outline', 'multiselect-material', 'multiselect-neumorphic'.
-   * * @example
-   * inputtype="multiselect-neumorphic"
+  alias: string;
+
+  /**
+   * The primary semantic label rendered above the MultipleSelect field.
+   * @example "Assigned Workspace Roles"
    */
-    inputtype?: MultipleSelectDesign & {};
-    /**
-   * * The optional input label or description for the MultipleSelect input field. 
-   * * @example
-   * inputLabel="Choose at least one VΣ category"
+  inputLabel?: string;
+
+  /**
+   * The design aesthetic of the MultipleSelect trigger and dropdown popover.
+   * - `multiselect-outline`: Minimalist, outlined aesthetic (Default).
+   * - `multiselect-material`: Elevated solid card surface with soft drop shadows.
+   * - `multiselect-neumorphic`: Soft-UI with extruded inset/outset shadows.
+   * @default "multiselect-outline"
    */
-    inputLabel?: string;
-    /**
-   * * The required viewport column width for the MultipleSelect input field.
-   * i.e. 1 - 12
-   * * @example
-   * width={5}
-   */ 
-    width: number;
-    /**
-   * * Option to render MultipleSelect input field on new row.
-   * * @example
-   * newRow
+  inputtype?: MultipleSelectDesign;
+
+  /**
+   * Alternative prop name matching standard VectorSigma prop conventions.
    */
-    newRow?: boolean;
-    /**
-   * * Option to force set the placeholder text for a MultipleSelect input field.
-   * * @example
-   * placeholder="Select products of interest"
+  inputvariant?: MultipleSelectDesign;
+
+  /**
+   * Defines the responsive grid column span for the component (1-12 based on the parent grid).
+   * @example 6
    */
-    placeholder?: string;
-    /**
-   * * Option to disable edits for MultipleSelect input field.
-   * * @example
-   * readOnly
+  width: number;
+
+  /**
+   * Forces the component to break into a new Flex/Grid row within the Form layout.
+   * @default false
    */
-    readOnly?: boolean;
-    /**
-     * * Option to enable a hint for MultipleSelect input field.
-     * * @example
-     * isHinted
-     */
-    isHinted?: boolean; 
-    /**
-   * * Option to specify hint text for MultipleSelect input field.
-   * * @example
-   * hintText="This is a hint for a VΣ MultipleSelect"
+  newRow?: boolean;
+
+  /**
+   * Placeholder text utilized when no items are currently selected.
+   * @default "Select options..."
    */
-    hintText?: string;
-    /**
-   * * Option to specify a hint url reference or resource for MultipleSelect input field.
-   * * @example
-   * hintUrl="https://www.mekaegwim.ca"
-   */ 
-    hintUrl?: string;
-    /**
-   * * Required  inputOptions{} for the MultipleSelect input field.
-   * * @example
-   * inputOptions={
-            [
-              {optionid: 1, optionvalue: "Kaiju", optionurl:"https://github.com/emeraldemperaur", text: "Kaiju"},
-              {optionid: 2, optionvalue: "MekaGodzilla", optionurl:"https://github.com/emeraldemperaur", text: "MekaGodzilla"},
-              {optionid: 3, optionvalue: "Zaibatsu", optionurl:"https://github.com/emeraldemperaur", text: "Zaibatsu"},
-              ]}
-    */
-    inputOptions: InputOption[]; 
-    /**
-   * * Option to specify the isRequired error text for the MultipleSelect input field.
-   * * @example
-   * errorText="At least one product category selection is required"
+  placeholder?: string;
+
+  /**
+   * Disables interaction, mutating visual state to reflect read-only/disabled mode.
+   * @default false
    */
-    errorText?: ReactNode | string | null;
-    /**
-   * * Option to specify the .scss class selector for the MultipleSelect input field.
-   * * @example
-   * className="teletraan-1-multipleselect"
+  readOnly?: boolean;
+
+  /**
+   * Toggles the visibility of the contextual hint icon and tooltip next to the label.
+   * @default false
    */
-    className?: string;
-    /**
-   * * Option to inject custom CSS the MultipleSelect input field.
-   * * @example
-   * style={{ color: "#000000" }}
+  isHinted?: boolean;
+
+  /**
+   * The text payload displayed inside the Tooltip when `isHinted` is true.
+   * @example "Users inherit permissions from all selected security groups."
    */
-    style?: React.CSSProperties;
-    /**
-     * * Optional explicit Formik context. Useful when bypassing duplicate 
-     * context issues in monorepos or bundled npm packages.
-     */
-    formikContext?: FormikContextType<any>;
+  hintText?: string;
+
+  /**
+   * An optional URL bound to the hint icon, directing the user to external documentation.
+   * @example "https://docs.vectorsigma.io/iam/roles"
+   */
+  hintUrl?: string;
+
+  /**
+   * Array of selectable options rendered inside the multi-select menu.
+   * @example [
+   *   { optionid: 1, optionvalue: "admin", text: "Administrator" },
+   *   { optionid: 2, optionvalue: "editor", text: "Content Editor" }
+   * ]
+   */
+  inputOptions: InputOption[];
+
+  /**
+   * Enables a search filter input at the top of the popover menu for large option sets.
+   * @default false
+   */
+  enableSearch?: boolean;
+
+  /**
+   * Placeholder text for the search filter input.
+   * @default "Search options..."
+   */
+  searchPlaceholder?: string;
+
+  /**
+   * Optional callback fired when the selected value array changes.
+   * Executes alongside the standard Formik state update.
+   */
+  onValueChange?: (values: string[]) => void;
+
+  /**
+   * Explicit error string to override standard Formik validation messages.
+   * @example "At least one role assignment is required."
+   */
+  errorText?: ReactNode | string | null;
+
+  /**
+   * Sizing scale controlling trigger height and internal padding.
+   * @default "2"
+   */
+  size?: "1" | "2" | "3";
+
+  /**
+   * Optional typographic color overrides. Allows explicit targeting of the component's
+   * internal CSS color assignments regardless of the global Radix theme.
+   */
+  typography?: {
+    /** Overrides the background color of the trigger and popover canvas */
+    background?: string;
+    /** Overrides the border/stroke color of the trigger and popover canvas */
+    stroke?: string;
+    /** Overrides the text color of the trigger and menu items */
+    textColor?: string;
+    /** Overrides the active checkbox fill and highlight color */
+    accent?: string;
+  };
+
+  /**
+   * Optional custom SCSS class selector for external targeted styling overrides.
+   */
+  className?: string;
+
+  /**
+   * Inline React CSS properties applied to the outermost Flex wrapper.
+   */
+  style?: React.CSSProperties;
+
+  /**
+   * Injects an explicit Formik context. Required if the component operates outside 
+   * a standard `<FormikProvider>` tree.
+   */
+  formikContext?: FormikContextType<any>;
 }
 
 export const MultipleSelect = ({
+  alias,
+  inputLabel,
   inputtype = 'multiselect-outline',
-  alias, readOnly, width, inputLabel,
-  placeholder = 'Select...', newRow, isHinted, hintText, hintUrl, errorText,
-  style, inputOptions,
-  className, 
+  inputvariant,
+  width,
+  newRow,
+  placeholder = 'Select options...',
+  readOnly = false,
+  isHinted,
+  hintText,
+  hintUrl,
+  inputOptions = [],
+  enableSearch = false,
+  searchPlaceholder = 'Search options...',
+  errorText,
+  size = "2",
+  typography,
+  className,
+  style,
   formikContext,
-  ...props
+  onValueChange,
 }: MultipleSelectProps) => {
-  
+
   const defaultFormikContext = useFormikContext<any>();
   const activeContext = formikContext || defaultFormikContext;
 
   if (!activeContext) {
-      console.error(`MultipleSelect '${alias}' must be used within a Formik provider or receive a formikContext prop.`);
-      return null;
+    console.error(`[VectorSigma]: MultipleSelect '${alias}' must be used within a Formik provider or receive an explicit formikContext prop.`);
+    return null;
   }
 
   const { values, touched, errors, setFieldValue, setFieldTouched } = activeContext;
@@ -133,198 +198,396 @@ export const MultipleSelect = ({
   const fieldTouched = getIn(touched, alias);
   const fieldError = getIn(errors, alias);
 
-  const selectedValues = (Array.isArray(fieldValue) ? fieldValue : []) as string[];
+  const selectedValues: string[] = useMemo(() => {
+    if (Array.isArray(fieldValue)) {
+      return fieldValue.map(String);
+    }
+    return fieldValue !== undefined && fieldValue !== null ? [String(fieldValue)] : [];
+  }, [fieldValue]);
+
   const hasError = Boolean(fieldTouched && fieldError);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
-  const [isOpen, setIsOpen] = useState(false);
+
+  const fallbackId = useId();
+  const inputId = `${alias}FormInput-${fallbackId}`;
+  const labelId = `${alias}InputLabel`;
   const errorId = `${alias}-error`;
 
-  const handleToggle = (value: string) => {
-    const newValues = selectedValues.includes(value)
-      ? selectedValues.filter((v) => v !== value) // Remove Unselected Values
-      : [...selectedValues, value]; // Add Selected Values
-    
-    setFieldValue(alias, newValues);
-    setTimeout(() => setFieldTouched(alias, true, false), 0);
-  };
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [neuVars, setNeuVars] = useState<React.CSSProperties>({});
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const displayLabel = selectedValues.length > 0
-    ? inputOptions
-        .filter(inputoption => selectedValues.includes(String(inputoption.optionvalue)))
-        .map(inputoption => inputoption.text)
-        .join(', ')
-    : placeholder;
+  const resolvedVariant = inputvariant || inputtype || 'multiselect-outline';
 
   useEffect(() => {
-    if (inputtype === 'multiselect-neumorphic' && triggerRef.current) {
+    if (resolvedVariant.includes('neumorphic') && triggerRef.current) {
       const parentBg = getNearestParentBackground(triggerRef.current.parentElement);
+      const computedBg = typography?.background || parentBg;
+
       setNeuVars({
-        '--neu-bg': parentBg,
-        '--neu-shadow-dark': adjustColor(parentBg, -30),
-        '--neu-shadow-light': adjustColor(parentBg, 30),
-        '--neu-text': 'var(--gray-12)',
-        '--neu-error': 'var(--red-9)',
+        '--neu-bg': computedBg,
+        '--neu-shadow-dark': adjustColor(computedBg, -30),
+        '--neu-shadow-light': adjustColor(computedBg, 30),
       } as React.CSSProperties);
     }
-  }, [inputtype]);
+  }, [resolvedVariant, typography?.background]);
 
-  // --- STYLES ---
+  useEffect(() => {
+    if (!isOpen) setSearchQuery("");
+  }, [isOpen]);
+
+  const handleToggle = (value: string) => {
+    if (readOnly) return;
+    const stringVal = String(value);
+    const newValues = selectedValues.includes(stringVal)
+      ? selectedValues.filter((v) => v !== stringVal)
+      : [...selectedValues, stringVal];
+
+    setFieldValue(alias, newValues);
+    setFieldTouched(alias, true, false);
+
+    if (onValueChange) {
+      onValueChange(newValues);
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (readOnly) return;
+    const allValues = filteredOptions.map(opt => String(opt.optionvalue));
+    const merged = Array.from(new Set([...selectedValues, ...allValues]));
+    setFieldValue(alias, merged);
+    setFieldTouched(alias, true, false);
+    if (onValueChange) onValueChange(merged);
+  };
+
+  const handleClearAll = () => {
+    if (readOnly) return;
+    setFieldValue(alias, []);
+    setFieldTouched(alias, true, false);
+    if (onValueChange) onValueChange([]);
+  };
+
+  const filteredOptions = useMemo(() => {
+    if (!enableSearch || !searchQuery.trim()) return inputOptions;
+    const lowerQuery = searchQuery.toLowerCase();
+    return inputOptions.filter(opt => 
+      opt.text.toLowerCase().includes(lowerQuery) || 
+      String(opt.optionvalue).toLowerCase().includes(lowerQuery)
+    );
+  }, [inputOptions, enableSearch, searchQuery]);
+
+  const displayLabel = useMemo(() => {
+    if (selectedValues.length === 0) return placeholder;
+
+    const matchedOptions = inputOptions.filter(opt => 
+      selectedValues.includes(String(opt.optionvalue))
+    );
+
+    if (matchedOptions.length <= 2) {
+      return matchedOptions.map(opt => opt.text).join(', ');
+    }
+
+    return `${matchedOptions.length} items selected`;
+  }, [selectedValues, inputOptions, placeholder]);
+
+  const typographyVars = {
+    '--vs-ms-bg': typography?.background || 'var(--color-surface)',
+    '--vs-ms-stroke': typography?.stroke || 'var(--gray-7)',
+    '--vs-ms-text': typography?.textColor || 'var(--gray-12)',
+    '--vs-ms-accent': typography?.accent || 'var(--accent-9)',
+  } as React.CSSProperties;
 
   const baseTrigger: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    cursor: 'pointer',
+    cursor: readOnly ? 'not-allowed' : 'pointer',
     textAlign: 'left',
-    padding: '0 12px',
-    fontSize: 'var(--font-size-2)',
-    fontFamily: 'var(--default-font-family)',
+    padding: size === '1' ? '0 10px' : size === '3' ? '0 14px' : '0 12px',
+    fontSize: size === '1' ? '0.85rem' : size === '3' ? '1rem' : 'var(--font-size-2)',
+    fontFamily: 'inherit',
+    color: 'var(--vs-ms-text)',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
+    boxSizing: 'border-box',
+    opacity: readOnly ? 0.65 : 1,
+    transition: 'all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)',
   };
 
   const materialTrigger: React.CSSProperties = {
     ...baseTrigger,
-    backgroundColor: 'var(--color-surface)',
-    border: hasError ? '1px solid var(--red-9)' : 'none',
-    boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+    backgroundColor: 'var(--vs-ms-bg)',
+    border: hasError ? '1px solid var(--red-9)' : `1px solid ${typography?.stroke ? 'var(--vs-ms-stroke)' : 'transparent'}`,
+    boxShadow: '0 2px 5px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04)',
     borderRadius: '4px',
-    height: '32px',
+    height: size === '1' ? '32px' : size === '3' ? '44px' : '36px',
     fontWeight: 500,
   };
 
   const outlineTrigger: React.CSSProperties = {
     ...baseTrigger,
-    backgroundColor: 'transparent',
-    border: hasError ? '2px solid var(--red-9)' : '2px solid var(--gray-7)',
-    borderRadius: '4px',
-    height: '32px',
-    fontWeight: 600,
+    backgroundColor: typography?.background || 'transparent',
+    border: hasError ? '1.5px solid var(--red-9)' : '1.5px solid var(--vs-ms-stroke)',
+    borderRadius: '6px',
+    height: size === '1' ? '32px' : size === '3' ? '44px' : '36px',
+    fontWeight: 500,
   };
 
   const neumorphicTrigger: React.CSSProperties = {
     ...baseTrigger,
     backgroundColor: 'var(--neu-bg)',
-    color: hasError ? 'var(--neu-error)' : 'var(--neu-text)',
+    color: hasError ? 'var(--red-9)' : 'var(--vs-ms-text)',
     border: 'none',
     borderRadius: '12px',
-    height: '40px',
-    fontWeight: 600,
+    height: size === '1' ? '36px' : size === '3' ? '48px' : '40px',
+    fontWeight: 500,
     boxShadow: isOpen 
-      ? 'inset 6px 6px 12px var(--neu-shadow-dark), inset -6px -6px 12px var(--neu-shadow-light)'
+      ? 'inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light)'
       : '6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light)',
-    transition: 'all 0.2s ease',
   };
 
   const activeTrigger = 
-    inputtype === 'multiselect-material' ? materialTrigger :
-    inputtype === 'multiselect-outline' ? outlineTrigger :
-    { ...neumorphicTrigger, ...neuVars };
+    resolvedVariant.includes('material') ? materialTrigger :
+    resolvedVariant.includes('neumorphic') ? { ...neumorphicTrigger, ...neuVars } :
+    outlineTrigger;
 
   return (
     <Column span={width} newLine={newRow}>
-    <Flex direction="column" gap="2" style={{ width: '100%' }}>
-      <input type="hidden" name={alias} value={JSON.stringify(selectedValues)}/>
-      <Popover.Root onOpenChange={(open) => {
+      <Flex 
+        direction="column" 
+        gap="2" 
+        style={{ width: '100%', fontFamily: "'Libre Franklin', sans-serif", ...typographyVars, ...style }} 
+        ref={containerRef}
+        className={className}
+      >
+        <style>
+          {`
+            .vs-multiselect-trigger:not(:disabled):hover {
+              border-color: var(--vs-ms-accent) !important;
+            }
+            .vs-multiselect-trigger-material:not(:disabled):hover {
+              box-shadow: 0 4px 10px rgba(0,0,0,0.12) !important;
+            }
+            .vs-multiselect-trigger-neumorphic:not(:disabled):hover {
+              box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light) !important;
+            }
+
+            @keyframes vs-ms-dropdown-enter {
+              from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+              to { opacity: 1; transform: scale(1) translateY(0); }
+            }
+            @keyframes vs-ms-dropdown-exit {
+              from { opacity: 1; transform: scale(1) translateY(0); }
+              to { opacity: 0; transform: scale(0.96) translateY(-4px); }
+            }
+
+            .vs-ms-animated-popover[data-state="open"] {
+              animation: vs-ms-dropdown-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+              transform-origin: top center;
+            }
+            .vs-ms-animated-popover[data-state="closed"] {
+              animation: vs-ms-dropdown-exit 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+              transform-origin: top center;
+            }
+
+            .vs-ms-item {
+              padding: 8px 12px;
+              border-radius: 6px;
+              cursor: ${readOnly ? 'default' : 'pointer'};
+              transition: background-color 0.15s ease;
+              color: var(--vs-ms-text);
+              user-select: none;
+            }
+            .vs-ms-item:hover, .vs-ms-item.vs-selected {
+              background-color: var(--accent-a3);
+            }
+
+            .vs-ms-item .rt-CheckboxButton {
+              border-color: var(--vs-ms-stroke) !important;
+            }
+            .vs-ms-item[data-selected="true"] .rt-CheckboxButton {
+              background-color: var(--vs-ms-accent) !important;
+              border-color: var(--vs-ms-accent) !important;
+            }
+
+            .vs-ms-action-btn {
+              font-size: 0.75rem;
+              font-weight: 600;
+              color: var(--vs-ms-accent);
+              cursor: pointer;
+              background: none;
+              border: none;
+              padding: 2px 6px;
+              border-radius: 4px;
+              transition: background-color 0.15s ease;
+            }
+            .vs-ms-action-btn:hover {
+              background-color: var(--accent-a3);
+            }
+          `}
+        </style>
+
+        {/* Header Label Row */}
+        {(inputLabel || isHinted) && (
+          <Flex align="center" gap="2" style={{ paddingLeft: '2px' }}>
+            {inputLabel && (
+              <Text id={labelId} as="label" size="2" weight="medium" style={{ color: 'var(--gray-11)' }} htmlFor={inputId}>
+                {inputLabel}
+              </Text>
+            )}
+            {isHinted && (
+              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5}>
+                <a href={hintUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Icon name="questionmarkcircled" height="15" width="15" style={{ cursor: 'pointer', color: 'var(--gray-9)', transition: 'color 0.2s' }} />
+                </a> 
+              </Tooltip>
+            )}
+          </Flex>
+        )}
+
+        <Popover.Root open={isOpen} onOpenChange={(open) => {
+          if (readOnly) return;
           setIsOpen(open);
-          if(!open) {
-              setFieldTouched(alias, true, false);
+          if (!open) {
+            setFieldTouched(alias, true, false);
           }
-      }}>
-        <Popover.Trigger>
-          <button
-            id={`${alias}FormInput`}
-            type="button" 
-            ref={triggerRef}
-            className={className}
-            style={{ ...activeTrigger, ...style }}
-            aria-describedby={`${alias}InputLabel`}
-            disabled={readOnly}
+        }}>
+          <Popover.Trigger>
+            <button
+              id={inputId}
+              type="button"
+              ref={triggerRef}
+              className={`vs-multiselect-trigger ${
+                resolvedVariant.includes('material') ? 'vs-multiselect-trigger-material' : 
+                resolvedVariant.includes('neumorphic') ? 'vs-multiselect-trigger-neumorphic' : ''
+              }`}
+              style={activeTrigger}
+              aria-labelledby={inputLabel ? labelId : undefined}
+              aria-describedby={hasError ? errorId : undefined}
+              disabled={readOnly}
+            >
+              <span style={{ 
+                overflow: 'hidden', 
+                textOverflow: 'ellipsis', 
+                whiteSpace: 'nowrap',
+                color: selectedValues.length === 0 ? 'var(--gray-9)' : 'inherit',
+                fontWeight: selectedValues.length === 0 ? 400 : 500
+              }}>
+                {displayLabel}
+              </span>
+              <Icon 
+                name='chevrondown' 
+                style={{ 
+                  flexShrink: 0, 
+                  opacity: 0.5, 
+                  marginLeft: 8,
+                  transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)'
+                }} 
+              />
+            </button>
+          </Popover.Trigger>
+
+          <Popover.Content
+            align="start"
+            sideOffset={6}
+            className="vs-ms-animated-popover"
+            style={{
+              width: triggerRef.current?.offsetWidth || 240,
+              minWidth: '220px',
+              padding: 0,
+              overflow: 'hidden',
+              backgroundColor: resolvedVariant.includes('neumorphic') ? 'var(--neu-bg)' : 'var(--vs-ms-bg)',
+              border: resolvedVariant.includes('neumorphic') ? 'none' : '1px solid var(--vs-ms-stroke)',
+              borderRadius: resolvedVariant.includes('neumorphic') ? '12px' : '8px',
+              boxShadow: resolvedVariant.includes('neumorphic') 
+                ? '8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light)'
+                : '0 10px 30px -10px rgba(0,0,0,0.15), 0 4px 12px -4px rgba(0,0,0,0.1)',
+              fontFamily: 'inherit',
+              ...neuVars
+            }}
           >
-            <span style={{ 
-              overflow: 'hidden', 
-              textOverflow: 'ellipsis', 
-              color: selectedValues.length === 0 ? 'var(--gray-8)' : 'inherit' 
-            }}>
-              {displayLabel}
-            </span>
-            <Icon name='chevrondown' style={{ flexShrink: 0, opacity: 0.5 }} />
-          </button>
-        </Popover.Trigger>
+            {enableSearch && (
+              <Box p="2" style={{ borderBottom: `1px solid var(--vs-ms-stroke)` }}>
+                <TextField.Root
+                  placeholder={searchPlaceholder}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  variant={resolvedVariant.includes('neumorphic') ? 'soft' : 'surface'}
+                  size="1"
+                  autoFocus
+                  style={{
+                    backgroundColor: resolvedVariant.includes('neumorphic') ? 'transparent' : 'var(--gray-2)',
+                    boxShadow: resolvedVariant.includes('neumorphic') ? 'inset 2px 2px 4px var(--neu-shadow-dark), inset -2px -2px 4px var(--neu-shadow-light)' : 'none',
+                    color: 'var(--vs-ms-text)'
+                  }}
+                >
+                  <TextField.Slot>
+                    <Icon name="magnifyingglass" height="13" width="13" style={{ opacity: 0.5 }} />
+                  </TextField.Slot>
+                </TextField.Root>
+              </Box>
+            )}
 
-        <Popover.Content 
-          align="start" 
-          sideOffset={5}
-          style={{ 
-            width: triggerRef.current?.offsetWidth,
-            padding: 0,
-            overflow: 'hidden',
-            backgroundColor: inputtype === 'multiselect-neumorphic' ? 'var(--neu-bg)' : 'var(--color-panel-solid)',
-            ...neuVars 
-          }}
-        >
-          <ScrollArea type="auto" scrollbars="vertical" style={{ maxHeight: 200 }}>
-            <Box p="2">
-              <Flex direction="column" gap="1">
-                {inputOptions.map((inputoption) => {
-                    const isSelected = selectedValues.some((val: string | number) => String(val) 
-                    === String(inputoption.optionvalue));
-                  return (
-                    <Flex 
-                      id={String(inputoption.optionid) || ''}
-                      key={inputoption.optionid} 
-                      align="center" 
-                      gap="2"
-                      onClick={() => {
-                          if(!readOnly) handleToggle(String(inputoption.optionvalue));
-                      }}
-                      style={{ 
-                        padding: '8px', 
-                        cursor: readOnly ? 'default' : 'pointer', 
-                        borderRadius: '4px',
-                        backgroundColor: isSelected ? 'var(--accent-a3)' : 'transparent',
-                        transition: 'background-color 0.1s'
-                      }}
-                      className="multiselect-item"
-                    >
-                      <Checkbox 
-                        disabled={readOnly}
-                        checked={isSelected} 
-                        style={{ pointerEvents: 'none' }} 
-                      />
-                      <Text size="2">{inputoption.text}</Text>
-                    </Flex>
-                  );
-                })}
-                
+            {inputOptions.length > 3 && !readOnly && (
+              <Flex justify="between" align="center" px="3" py="1" style={{ borderBottom: `1px solid var(--vs-ms-stroke)`, opacity: 0.85 }}>
+                <button type="button" className="vs-ms-action-btn" onClick={handleSelectAll}>
+                  Select All
+                </button>
+                <button type="button" className="vs-ms-action-btn" onClick={handleClearAll}>
+                  Clear All
+                </button>
               </Flex>
-            </Box>
-          </ScrollArea>
-        </Popover.Content>
-      </Popover.Root>
+            )}
 
-      <div>
-                  <Text id={`${alias}InputLabel`} as="label" size="2" weight="bold" htmlFor={`${alias}FormInput`}>{inputLabel}</Text>
-                  &nbsp;
-                      {isHinted ?
-                              <>
-                              <Tooltip content={hintText || "No hint available"} align="start" sideOffset={5} className="core-input-tooltip">
-                                  <a href={hintUrl || ""} target="_blank" rel="noopener noreferrer">
-                                  <Icon name="questionmarkcircled" height="16" width="16" style={{ cursor: 'pointer', color: 'gray' }} />
-                                  </a> 
-                              </Tooltip>
-                              </> : null} 
-                       {hasError ?
-                              <>
-                              <p id={errorId} className='core-input-label-error'>
-                                  {errorText || (typeof fieldError === 'string' ? fieldError : `Required field`)}
-                              </p>
-                              </> : null } 
-       </div>
-    </Flex>
+            <ScrollArea type="auto" scrollbars="vertical" style={{ maxHeight: 240 }}>
+              <Box p="2">
+                <Flex direction="column" gap="1">
+                  {filteredOptions.length === 0 ? (
+                    <Text size="2" align="center" style={{ padding: '16px 0', color: 'var(--gray-9)' }}>
+                      No options found.
+                    </Text>
+                  ) : (
+                    filteredOptions.map((option, idx) => {
+                      const optionVal = String(option.optionvalue);
+                      const isSelected = selectedValues.includes(optionVal);
+                      const optionKey = `${alias}-opt-${option.optionid || idx}`;
+
+                      return (
+                        <Flex
+                          key={optionKey}
+                          align="center"
+                          gap="3"
+                          className={`vs-ms-item ${isSelected ? 'vs-selected' : ''}`}
+                          data-selected={isSelected}
+                          onClick={() => handleToggle(optionVal)}
+                        >
+                          <Checkbox
+                            checked={isSelected}
+                            disabled={readOnly}
+                            style={{ pointerEvents: 'none' }}
+                          />
+                          <Text size="2" weight={isSelected ? "medium" : "regular"} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {option.text}
+                          </Text>
+                        </Flex>
+                      );
+                    })
+                  )}
+                </Flex>
+              </Box>
+            </ScrollArea>
+          </Popover.Content>
+        </Popover.Root>
+
+        {hasError && (
+          <Text id={errorId} size="1" style={{ color: 'var(--red-9)', fontWeight: 500, paddingLeft: '2px' }}>
+            {errorText || (typeof fieldError === 'string' ? fieldError : "Required field")}
+          </Text>
+        )}
+      </Flex>
     </Column>
   );
 };

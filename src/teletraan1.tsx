@@ -1,3 +1,4 @@
+// teletraan1.tsx
 import React, { useState } from 'react';
 import { AvatarInput } from 'components/avatar/avatar';
 import { ButtonInput } from 'components/button/button';
@@ -28,297 +29,487 @@ import { Codex, CodexItem } from 'layouts/codex/codex';
 import { CodexControls } from 'layouts/codex/codexcontrols';
 import { SectionTitle } from 'components/xtitle/xtitle';
 import { Icon } from 'components/icons/icons';
+import { Flex, Text } from '@radix-ui/themes';
+import { TextAreaInput } from 'components/input/inputTextArea';
 import { 
-    avatarInputType, buttonInputType, checkboxInputType, conditionalInputType, countrydropdownInputType, countrymultiselectInputType, creditCardInputType, 
-    currencyInputType, datePickerInputType, dateRangePickerInputType, dateTimePickerInputType, dropdownInputType, 
-    fileInputType, fileMultipleInputType, imageOutputType, passwordInputType, phoneInputType, radioInputType, 
-    rangeSliderInputType, selectInputType, selectMultipleInputType, sliderInputType, 
-    stockInputType, textInputType, toggleInputType 
+  avatarInputType, buttonInputType, checkboxInputType, conditionalInputType, countrydropdownInputType, countrymultiselectInputType, creditCardInputType, 
+  currencyInputType, datePickerInputType, dateRangePickerInputType, dateTimePickerInputType, dropdownInputType, 
+  fileInputType, fileMultipleInputType, imageOutputType, passwordInputType, phoneInputType, radioInputType, 
+  rangeSliderInputType, selectInputType, selectMultipleInputType, sliderInputType, 
+  stockInputType, textInputType, toggleInputType, textAreaInputType 
 } from "utils/voltaire";
 import { XFormType, XFormQuery } from 'utils/voltron';
 import { DateTimePicker } from 'components/datetimepicker/datetimepicker';
 import { CountrySelect } from 'components/dropdown/countrydropdown';
 import { FormikHelpers } from 'formik';
-import { VectorSigma } from 'vectorSigma';
+import type { VectorSigma } from './vectorSigma';
 
 export type teletraan1Display = 'accordion' | 'codice' | 'codex' | 'dual';
 
+/**
+ * Teletraan1Props Interface
+ * @description Dynamic Form Rendering Engine for VectorSigma xForm models.
+ */
 export interface Teletraan1Props {
-    /**
-     * * The required xFormModel {} schema object that will be rendered as an xForm. 
-     * Renders all form sections and queries with the input and validation specified.
-     * * @example
-     * xFormModel={xFormJSONPrototype}
-     */
-    xFormModel: XFormType;
-    /**
-     * * Option to render xForm as readonly (inputs disabled). 
-     * * @example
-     * readOnlyMode
-     */
-    readOnlyMode?: boolean;
-    /**
-     * * Option to specify the xForm display mode. 
-     * Default: 'codice'
-     * * @example
-     * displayMode="codex"
-     */
-    displayMode?: teletraan1Display;
-    /**
-     * * Option to specify the xForm primary color. 
-     * Default: '#000000'
-     * * @example
-     * brandColor="#800020"
-     */
-    brandColor?: string;
-     /**
-     * * Optional callback for Codex display controls triggered before navigating to a previous step.
-     * Useful for triggering logic on clicking to previous step.
-     * * @example
-     * onPrev={console.log("Teletraan-1 Codex :: onPrev()")}
-     */
-    onPrev?: () => void;
-    /**
-     * * Optional callback for Codex display controls triggered before navigating to a next step.
-     * Useful for handling form validation.
-     * * @example
-     * onNext={console.log("Teletraan-1 Codex :: onNext()")}
-     */
-    onNext?: () => void;
-    /**
-     * * Optional callback for Codex display control triggered when the Finish button is clicked.
-     * Useful for handling application logic on finish/submit step.
-     * * @example
-     * onFinish={console.log("Teletraan-1 Codex :: onFinish()")}
-     */
-    onFinish?: (
-            values: any, 
-            actions: FormikHelpers<any>, 
-            instance: VectorSigma<any>
-        ) => void | Promise<any>;
+  /**
+   * The structural schema object describing form sections, queries, layout, and validation rules.
+   */
+  xFormModel: XFormType;
 
+  /**
+   * Disables all interactive inputs across all sections.
+   * @default false
+   */
+  readOnlyMode?: boolean;
+
+  /**
+   * Layout presentation strategy for form sections:
+   * - `codice`: Standard vertical document flow with section title banners (Default).
+   * - `codex`: Multi-step sequential wizard with responsive stepper progress bar.
+   * - `accordion`: Multi-panel expandable and collapsible sections.
+   * - `dual`: Interactive toggle permitting switching between accordion and vertical cards.
+   * @default "codice"
+   */
+  displayMode?: teletraan1Display;
+
+  /**
+   * Primary brand color used for section banners, active step nodes, and accents.
+   * @default "#000000"
+   */
+  brandColor?: string;
+
+  /**
+   * Enables section-by-section Formik validation when operating in `codex` mode.
+   * Blocks forward step advancement if fields in the active step are invalid.
+   * @default false
+   */
+  strictValidation?: boolean;
+
+  /**
+   * Callback fired before navigating backwards in `codex` mode.
+   */
+  onPrev?: () => void;
+
+  /**
+   * Callback fired before advancing forwards in `codex` mode.
+   */
+  onNext?: () => void;
+
+  /**
+   * Callback fired upon terminal form completion or submission.
+   */
+  onFinish?: (
+    values: any, 
+    actions: FormikHelpers<any>, 
+    instance: VectorSigma<any>
+  ) => void | Promise<any>;
 }
 
 export const Teletraan1 = ({ 
-    xFormModel, 
-    readOnlyMode = false, 
-    displayMode = 'codice', 
-    brandColor = "#000000",
-    onPrev, onNext, onFinish
+  xFormModel, 
+  readOnlyMode = false, 
+  displayMode = 'codice', 
+  brandColor = "#000000",
+  strictValidation = true,
+  onPrev, 
+  onNext, 
+  onFinish
 }: Teletraan1Props) => {
 
-    const [dualToggled, setDualToggled] = useState(false);
-      const [neuVars] = useState<React.CSSProperties>({
-          '--neu-bg': '#ecf0f3',
-          '--neu-shadow-light': '#ffffff',
-          '--neu-shadow-dark': '#d1d9e6'
-      } as React.CSSProperties);
+  const [dualToggled, setDualToggled] = useState(false);
 
-    const inputAlphaTrion = (
-        inputAlias: string, inputType: string, inputWidth: number, inputLabel: string, 
-        inputMinValue: number | string, inputMaxValue: number | string, defaultValue: any, inputOptions?: InputOption[],
-        stepValue?: number | string, inputHeight?: number | string, toggledInput?: React.ReactNode, triggerValue?: any,
-        newRow?: boolean, inputPlaceholder?: string, readOnly?: boolean, isHinted?: boolean, 
-        hintText?: string, hintUrl?: string, errorText?: string, inputUID?: string
-    ) => {
-        if(inputWidth == null || inputWidth > 12) inputWidth = 4;
-        if(inputHeight == null) inputHeight = 4;
-        if(inputUID == null) inputUID = crypto.randomUUID();
-        if(readOnlyMode) readOnly = true;
+  /**
+   * Resolves an individual XFormQuery schema node into its matching VectorSigma input primitive.
+   */
+  const renderInputPrimitive = (query: XFormQuery, childInputNode?: React.ReactNode) => {
+    const {
+      inputAlias,
+      inputType,
+      inputWidth,
+      inputLabel,
+      inputPlaceholder,
+      newRow = false,
+      isRequired,
+      isHinted,
+      hintText,
+      hintUrl,
+      errorText,
+      defaultValue,
+      inputOptions,
+      triggerValue,
+      minValue,
+      maxValue,
+      stepValue,
+      inputHeight,
+      readOnly: fieldReadOnly,
+    } = query;
 
-        const normalizedType = inputType.toLocaleLowerCase();
+    const normalizedWidth = (inputWidth == null || inputWidth > 12 || inputWidth < 1) ? 12 : inputWidth;
+    const isFieldReadOnly = readOnlyMode || Boolean(fieldReadOnly);
+    const normalizedType = (inputType || 'text').toLowerCase();
 
-        const layoutProps = {
-            alias: inputAlias,
-            width: inputWidth,
-            inputLabel: inputLabel,
-            key: inputUID,
-            newRow: newRow,
-            readOnly: readOnly,
-            isHinted: isHinted,
-            hintText: hintText,
-            hintUrl: hintUrl,
-            errorText: errorText
-        };
-
-        switch(true){
-            case avatarInputType.includes(normalizedType):
-                return <AvatarInput {...layoutProps} />
-            case buttonInputType.includes(normalizedType):
-                return <ButtonInput {...layoutProps}>{defaultValue}</ButtonInput>
-            case checkboxInputType.includes(normalizedType):
-                return <CheckboxGroupInput {...layoutProps} direction='row' inputOptions={inputOptions || [InputOptionsPlaceholder]} />
-            case conditionalInputType.includes(normalizedType):
-                return <ConditionalTrigger {...layoutProps} inputOptions={inputOptions} 
-                inputtype={inputType as any} 
-                triggerValue={triggerValue} children={toggledInput}/>
-            case datePickerInputType.includes(normalizedType):
-                return <DatePicker {...layoutProps} placeholder={inputPlaceholder} />
-            case dateRangePickerInputType.includes(normalizedType):
-                return <DateRangePicker {...layoutProps} placeholder={inputPlaceholder}/>
-            case dateTimePickerInputType.includes(normalizedType):
-                return <DateTimePicker {...layoutProps} placeholder={inputPlaceholder}/>
-            case dropdownInputType.includes(normalizedType):
-                return <Dropdown {...layoutProps} placeholder={inputPlaceholder} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
-            case countrydropdownInputType.includes(normalizedType):
-                return <CountrySelect displayFlag enableSearch {...layoutProps} placeholder={inputPlaceholder} />
-            case countrymultiselectInputType.includes(normalizedType):
-                return <CountrySelect displayFlag enableSearch multiselect {...layoutProps} placeholder={inputPlaceholder} />
-            case fileInputType.includes(normalizedType):
-                return <File {...layoutProps} preview/>
-            case fileMultipleInputType.includes(normalizedType):
-                return <FileMultiple {...layoutProps} placeholder={inputPlaceholder} preview/>
-            case imageOutputType.includes(normalizedType):
-                return <ImageOutput id={inputAlias} src={defaultValue} alt={inputPlaceholder} width={inputWidth} height={inputHeight as number} key={inputUID}/>
-            case textInputType.includes(normalizedType):
-                return <Input {...layoutProps} placeholder={inputPlaceholder} />
-            case passwordInputType.includes(normalizedType):
-                return <PasswordInput {...layoutProps} placeholder={inputPlaceholder} />
-            case phoneInputType.includes(normalizedType):
-                return <PhoneInput {...layoutProps} placeholder={inputPlaceholder} />
-            case creditCardInputType.includes(normalizedType):
-                return <CreditCardInput {...layoutProps} placeholder={inputPlaceholder} />
-            case currencyInputType.includes(normalizedType):
-                return <CurrencyInput {...layoutProps} placeholder={inputPlaceholder} />
-            case stockInputType.includes(normalizedType):
-                return <StockInput {...layoutProps} placeholder={inputPlaceholder} defaultvalue={defaultValue} />
-            case radioInputType.includes(normalizedType):
-                return <RadioGroupInput {...layoutProps} direction="row" inputOptions={inputOptions || [InputOptionsPlaceholder]} />
-            case selectInputType.includes(normalizedType):
-                return <OptionSelect {...layoutProps} placeholder={inputPlaceholder} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
-            case selectMultipleInputType.includes(normalizedType):
-                return <MultipleSelect {...layoutProps} placeholder={inputPlaceholder} inputOptions={inputOptions || [InputOptionsPlaceholder]} />
-            case sliderInputType.includes(normalizedType):
-                return <SliderInput {...layoutProps} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} />
-            case rangeSliderInputType.includes(normalizedType):
-                return <RangeSlider {...layoutProps} stepvalue={Number(stepValue)} minvalue={Number(inputMinValue)} maxvalue={Number(inputMaxValue)} />
-            case toggleInputType.includes(normalizedType):
-                return <Toggle {...layoutProps} icon="layers"/>
-            default:
-                return <Input {...layoutProps} placeholder={inputPlaceholder} />
-        }
+    const layoutProps = {
+      alias: inputAlias,
+      width: normalizedWidth,
+      inputLabel: inputLabel,
+      key: inputAlias,
+      newRow: newRow,
+      readOnly: isFieldReadOnly,
+      isHinted: isHinted,
+      hintText: hintText,
+      hintUrl: hintUrl,
+      errorText: errorText
     };
 
-    const renderQueries = (queries: XFormQuery[]) => {
-        if (!queries) return null;
-        return queries.map((xFormelement) => {
-            const childInput = xFormelement.toggledInput ? inputAlphaTrion(
-                xFormelement.toggledInput.inputAlias, xFormelement.toggledInput.inputType, xFormelement.toggledInput.inputWidth, 
-                xFormelement.toggledInput.inputLabel, String(xFormelement.toggledInput.minValue), String(xFormelement.toggledInput.maxValue), 
-                xFormelement.toggledInput.defaultValue, xFormelement.toggledInput.inputOptions, xFormelement.toggledInput.stepValue, 
-                xFormelement.toggledInput.inputHeight, null, 
-                null, xFormelement.toggledInput.newRow, 
-                xFormelement.toggledInput.inputPlaceholder, readOnlyMode, xFormelement.toggledInput.isHinted, xFormelement.toggledInput.hintText || "", 
-                xFormelement.toggledInput.hintUrl || "", xFormelement.toggledInput.errorText, String(xFormelement.toggledInput.queryId) || crypto.randomUUID()
-            ) : null;
+    const parsedMin = minValue !== undefined && minValue !== '' ? Number(minValue) : undefined;
+    const parsedMax = maxValue !== undefined && maxValue !== '' ? Number(maxValue) : undefined;
+    const parsedStep = stepValue !== undefined && stepValue !== '' ? Number(stepValue) : undefined;
 
-            return inputAlphaTrion(
-                xFormelement.inputAlias, xFormelement.inputType, xFormelement.inputWidth, xFormelement.inputLabel,
-                String(xFormelement.minValue), String(xFormelement.maxValue), xFormelement.defaultValue, xFormelement.inputOptions, 
-                xFormelement.stepValue, xFormelement.inputHeight, 
-                childInput,
-                xFormelement.triggerValue, xFormelement.newRow, 
-                xFormelement.inputPlaceholder, readOnlyMode, xFormelement.isHinted, xFormelement.hintText || "", 
-                xFormelement.hintUrl || "", xFormelement.errorText, String(xFormelement.queryId) || crypto.randomUUID()
-            );
-        });
-    };
+    switch (true) {
+      case avatarInputType.includes(normalizedType):
+        return <AvatarInput {...layoutProps} />;
 
-    const renderDisplayMode = () => {
-        switch (displayMode) {
-            case 'dual':
-                return (
-                    <>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '20px' }}>
-                            <div 
-                                className="neu-toggle-wrapper"
-                                style={{ ...neuVars, opacity: readOnlyMode ? 0.6 : 1, pointerEvents: readOnlyMode ? 'none' : 'auto' }}
-                                onClick={() => setDualToggled(!dualToggled)}
-                            >
-                                <style dangerouslySetInnerHTML={{__html: `
-                                    .neu-toggle-wrapper { isolation: isolate; position: relative; height: 30px; width: 60px; border-radius: 15px; overflow: hidden; cursor: pointer; background: var(--neu-bg); box-shadow: -8px -4px 8px 0px var(--neu-shadow-light), 8px 4px 12px 0px var(--neu-shadow-dark), 4px 4px 4px 0px var(--neu-shadow-dark) inset, -4px -4px 4px 0px var(--neu-shadow-light) inset; }
-                                    .neu-toggle-state { display: none; }
-                                    .neu-indicator { height: 100%; width: 200%; background: var(--neu-bg); border-radius: 15px; transform: translate3d(-75%, 0, 0); transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35); box-shadow: -8px -4px 8px 0px var(--neu-shadow-light), 8px 4px 12px 0px var(--neu-shadow-dark); }
-                                    .neu-toggle-state:checked ~ .neu-indicator { transform: translate3d(25%, 0, 0); }
-                                `}} />
-                                <input className="neu-toggle-state" type="checkbox" checked={dualToggled} readOnly />
-                                <div className="neu-indicator"></div>
-                            </div>
-                            <Icon name="layers" height="20" width="20" color={brandColor} style={{ opacity: readOnlyMode ? 0.5 : 1, cursor: 'pointer' }} onClick={() => setDualToggled(!dualToggled)} />
-                        </div>
-                        {dualToggled ? 
-                            <Accordion defaultOpenId={xFormModel.model?.[0]?.sectionId ? String(xFormModel.model[0].sectionId) : ''} allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
-                                {xFormModel.model.map((formsection) => (
-                                    <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} 
-                                    subtitle={ formsection.subtitle ? formsection.subtitle : undefined } icon={<Icon name={formsection.icon || "fontfamily"}/>}>
-                                        <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
-                                    </AccordionItem>
-                                ))}
-                            </Accordion>
-                        : 
-                            xFormModel.model.map((formsection) => (
-                                <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-                                    <SectionTitle withSeparator={false} backgroundColor={brandColor} titleColor='#FFFFFF' title={formsection.title} 
-                                    subtitleColor='#FFFFFF'
-                                    subTitle={formsection.subtitle ? formsection.subtitle : undefined} icon={<Icon name={formsection.icon || "fontfamily"}/>}/>
-                                    <Row>{renderQueries(formsection.queries)}</Row>
-                                </React.Fragment>
-                            ))
-                        }
-                    </>
-                );
+      case buttonInputType.includes(normalizedType):
+        return <ButtonInput {...layoutProps}>{defaultValue}</ButtonInput>;
 
-            case 'accordion':
-                return (
-                    <Accordion defaultOpenId={xFormModel.model?.[0]?.sectionId ? String(xFormModel.model[0].sectionId) : ''} allowMultiple brandcolor={brandColor} titleColor='#ffffff'>
-                        {xFormModel.model.map((formsection) => (
-                            <AccordionItem key={formsection.sectionId} sectionId={String(formsection.sectionId)} title={formsection.title} 
-                            subtitle={ formsection.subtitle ? formsection.subtitle : undefined } icon={<Icon name={formsection.icon || "fontfamily"}/>}>
-                                <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
-                            </AccordionItem>
-                        ))}
-                    </Accordion>
-                );
+      case checkboxInputType.includes(normalizedType):
+        return (
+          <CheckboxGroupInput 
+            {...layoutProps} 
+            direction="row" 
+            inputOptions={inputOptions || [InputOptionsPlaceholder]} 
+          />
+        );
 
-            case 'codex':
-                return (
-                    <Codex brandColor={brandColor}>
-                        {xFormModel.model.map((formsection, index, array) => (
-                            <CodexItem key={formsection.sectionId} stepId={String(formsection.sectionId)} title={formsection.title}
-                            subtitleDescription={formsection.subtitle ? formsection.subtitle : undefined} icon={<Icon name={formsection.icon || "fontfamily"}/>}>
-                                <Row key={formsection.sectionId}>{renderQueries(formsection.queries)}</Row>
-                                <CodexControls 
-                                    prevStepId={index > 0 ? String(array[index - 1].sectionId) : undefined} 
-                                    nextStepId={index < array.length - 1 ? String(array[index + 1].sectionId) : undefined}
-                                    onPrev={onPrev}
-                                    onNext={onNext}
-                                    onFinish={() => onFinish}
-                                />
-                            </CodexItem>
-                        ))}
-                    </Codex>
-                );
+      case conditionalInputType.includes(normalizedType):
+        return (
+          <ConditionalTrigger 
+            {...layoutProps} 
+            inputOptions={inputOptions} 
+            inputtype={inputType as any} 
+            triggerValue={triggerValue}
+          >
+            {childInputNode}
+          </ConditionalTrigger>
+        );
 
-            case 'codice':
-            default:
-                return (
-                    <React.Fragment key={xFormModel.uuid}>
-                        {xFormModel.model.map((formsection) => (
-                            <React.Fragment key={formsection.sectionId || crypto.randomUUID()}>
-                                <SectionTitle withSeparator={false} backgroundColor={brandColor} titleColor='#FFFFFF' title={formsection.title}
-                                subtitleColor='#FFFFFF' 
-                                subTitle={formsection.subtitle ? formsection.subtitle : undefined} icon={<Icon name={String(formsection.icon)}/>}/>
-                                <Row>{renderQueries(formsection.queries)}</Row>
-                            </React.Fragment>
-                        ))}
-                    </React.Fragment>
-                );
-        }
-    };
+      case datePickerInputType.includes(normalizedType):
+        return <DatePicker {...layoutProps} placeholder={inputPlaceholder} />;
 
-    return (
-        <>
-            {renderDisplayMode()}
-        </>
-    );
+      case dateRangePickerInputType.includes(normalizedType):
+        return <DateRangePicker {...layoutProps} placeholder={inputPlaceholder} />;
+
+      case dateTimePickerInputType.includes(normalizedType):
+        return <DateTimePicker {...layoutProps} placeholder={inputPlaceholder} />;
+
+      case dropdownInputType.includes(normalizedType):
+        return (
+          <Dropdown 
+            {...layoutProps} 
+            placeholder={inputPlaceholder} 
+            inputOptions={inputOptions || [InputOptionsPlaceholder]} 
+          />
+        );
+
+      case countrydropdownInputType.includes(normalizedType):
+        return (
+          <CountrySelect 
+            displayFlag 
+            enableSearch 
+            {...layoutProps} 
+            placeholder={inputPlaceholder} 
+          />
+        );
+
+      case countrymultiselectInputType.includes(normalizedType):
+        return (
+          <CountrySelect 
+            displayFlag 
+            enableSearch 
+            multiselect 
+            {...layoutProps} 
+            placeholder={inputPlaceholder} 
+          />
+        );
+
+      case fileInputType.includes(normalizedType):
+        return <File {...layoutProps} preview />;
+
+      case fileMultipleInputType.includes(normalizedType):
+        return <FileMultiple {...layoutProps} placeholder={inputPlaceholder} preview />;
+
+      case imageOutputType.includes(normalizedType):
+        return (
+          <ImageOutput 
+            id={inputAlias} 
+            src={defaultValue} 
+            alt={inputPlaceholder} 
+            width={normalizedWidth} 
+            height={inputHeight ? Number(inputHeight) : 200} 
+            key={inputAlias}
+          />
+        );
+
+      case textAreaInputType.includes(normalizedType):
+        return <TextAreaInput {...layoutProps} placeholder={inputPlaceholder} defaultValue={defaultValue} />;
+
+      case textInputType.includes(normalizedType):
+        return <Input {...layoutProps} placeholder={inputPlaceholder} />;
+
+      case passwordInputType.includes(normalizedType):
+        return <PasswordInput {...layoutProps} placeholder={inputPlaceholder} />;
+
+      case phoneInputType.includes(normalizedType):
+        return <PhoneInput {...layoutProps} placeholder={inputPlaceholder} />;
+
+      case creditCardInputType.includes(normalizedType):
+        return <CreditCardInput {...layoutProps} placeholder={inputPlaceholder} />;
+
+      case currencyInputType.includes(normalizedType):
+        return <CurrencyInput {...layoutProps} placeholder={inputPlaceholder} />;
+
+      case stockInputType.includes(normalizedType):
+        return <StockInput {...layoutProps} placeholder={inputPlaceholder} defaultvalue={defaultValue} />;
+
+      case radioInputType.includes(normalizedType):
+        return (
+          <RadioGroupInput 
+            {...layoutProps} 
+            direction="row" 
+            inputOptions={inputOptions || [InputOptionsPlaceholder]} 
+          />
+        );
+
+      case selectInputType.includes(normalizedType):
+        return (
+          <OptionSelect 
+            {...layoutProps} 
+            placeholder={inputPlaceholder} 
+            inputOptions={inputOptions || [InputOptionsPlaceholder]} 
+          />
+        );
+
+      case selectMultipleInputType.includes(normalizedType):
+        return (
+          <MultipleSelect 
+            {...layoutProps} 
+            placeholder={inputPlaceholder} 
+            inputOptions={inputOptions || [InputOptionsPlaceholder]} 
+          />
+        );
+
+      case sliderInputType.includes(normalizedType):
+        return (
+          <SliderInput 
+            {...layoutProps} 
+            stepvalue={parsedStep} 
+            minvalue={parsedMin} 
+            maxvalue={parsedMax} 
+          />
+        );
+
+      case rangeSliderInputType.includes(normalizedType):
+        return (
+          <RangeSlider 
+            {...layoutProps} 
+            stepvalue={parsedStep} 
+            minvalue={parsedMin} 
+            maxvalue={parsedMax} 
+          />
+        );
+
+      case toggleInputType.includes(normalizedType):
+        return <Toggle {...layoutProps} icon="layers" />;
+
+      default:
+        return <Input {...layoutProps} placeholder={inputPlaceholder} />;
+    }
+  };
+
+  /**
+   * Recursively traverses and renders an array of XFormQuery nodes, resolving nested conditional children.
+   */
+  const renderQueries = (queries: XFormQuery[]) => {
+    if (!queries || !Array.isArray(queries)) return null;
+
+    return queries.map((queryNode, index) => {
+      const stableKey = queryNode.inputAlias || `query-${index}`;
+
+      const childInput = queryNode.toggledInput 
+        ? renderInputPrimitive(queryNode.toggledInput) 
+        : null;
+
+      return (
+        <React.Fragment key={stableKey}>
+          {renderInputPrimitive(queryNode, childInput)}
+        </React.Fragment>
+      );
+    });
+  };
+
+  /**
+   * Renders the form model according to the configured display strategy.
+   */
+  const renderDisplayMode = () => {
+    const sections = xFormModel.model || [];
+    const defaultSectionId = sections[0]?.sectionId ? String(sections[0].sectionId) : '';
+
+    switch (displayMode) {
+      case 'dual':
+        return (
+          <div style={{ width: '100%' }}>
+            <Flex align="center" justify="center" gap="3" style={{ marginBottom: '24px' }}>
+              <div
+                onClick={() => setDualToggled(!dualToggled)}
+                role="switch"
+                aria-checked={dualToggled}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setDualToggled(!dualToggled);
+                  }
+                }}
+                style={{
+                  width: '44px',
+                  height: '24px',
+                  borderRadius: '12px',
+                  backgroundColor: dualToggled ? (brandColor || 'var(--accent-9)') : 'var(--gray-5)',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  transition: 'background-color 0.2s ease',
+                  padding: '2px',
+                  boxSizing: 'border-box'
+                }}
+              >
+                <div
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    backgroundColor: '#ffffff',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                    transform: dualToggled ? 'translateX(20px)' : 'translateX(0)',
+                    transition: 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
+                  }}
+                />
+              </div>
+              <Icon 
+                name="layers" 
+                height="20" 
+                width="20" 
+                color={dualToggled ? (brandColor || 'var(--accent-9)') : 'var(--gray-9)'} 
+                style={{ opacity: readOnlyMode ? 0.5 : 1, cursor: 'pointer', transition: 'color 0.2s ease' }} 
+                onClick={() => setDualToggled(!dualToggled)} 
+              />
+            </Flex>
+
+            {dualToggled ? (
+              <Accordion 
+                defaultOpenId={defaultSectionId} 
+                allowMultiple 
+                brandcolor={brandColor} 
+                titleColor="#ffffff"
+              >
+                {sections.map((formsection) => (
+                  <AccordionItem 
+                    key={String(formsection.sectionId)} 
+                    sectionId={String(formsection.sectionId)} 
+                    title={formsection.title} 
+                    subtitle={formsection.subtitle || undefined} 
+                    icon={<Icon name={formsection.icon || "layers"} />}
+                  >
+                    <Row>{renderQueries(formsection.queries)}</Row>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            ) : (
+              sections.map((formsection) => (
+                <React.Fragment key={String(formsection.sectionId)}>
+                  <SectionTitle 
+                    withSeparator={false} 
+                    backgroundColor={brandColor} 
+                    titleColor="#ffffff" 
+                    subtitleColor="#ffffff"
+                    title={formsection.title} 
+                    subTitle={formsection.subtitle || undefined} 
+                    icon={<Icon name={formsection.icon || "layers"} />}
+                  />
+                  <Row>{renderQueries(formsection.queries)}</Row>
+                </React.Fragment>
+              ))
+            )}
+          </div>
+        );
+
+      case 'accordion':
+        return (
+          <Accordion 
+            defaultOpenId={defaultSectionId} 
+            allowMultiple 
+            brandcolor={brandColor} 
+            titleColor="#ffffff"
+          >
+            {sections.map((formsection) => (
+              <AccordionItem 
+                key={String(formsection.sectionId)} 
+                sectionId={String(formsection.sectionId)} 
+                title={formsection.title} 
+                subtitle={formsection.subtitle || undefined} 
+                icon={<Icon name={formsection.icon || "layers"} />}
+              >
+                <Row>{renderQueries(formsection.queries)}</Row>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        );
+
+      case 'codex':
+        return (
+          <Codex brandColor={brandColor} strictValidation={strictValidation}>
+            {sections.map((formsection, index, array) => (
+              <CodexItem 
+                key={String(formsection.sectionId)} 
+                stepId={String(formsection.sectionId)} 
+                title={formsection.title}
+                subtitleDescription={formsection.subtitle || undefined} 
+                icon={<Icon name={formsection.icon || "layers"} />}
+              >
+                <Row>{renderQueries(formsection.queries)}</Row>
+                <CodexControls 
+                  prevStepId={index > 0 ? String(array[index - 1].sectionId) : undefined} 
+                  nextStepId={index < array.length - 1 ? String(array[index + 1].sectionId) : undefined}
+                  onPrev={onPrev}
+                  onNext={onNext}
+                  onFinish={onFinish as any}
+                />
+              </CodexItem>
+            ))}
+          </Codex>
+        );
+
+      case 'codice':
+      default:
+        return (
+          <React.Fragment key={xFormModel.uuid}>
+            {sections.map((formsection) => (
+              <React.Fragment key={String(formsection.sectionId)}>
+                <SectionTitle 
+                  withSeparator={false} 
+                  backgroundColor={brandColor} 
+                  titleColor="#ffffff" 
+                  subtitleColor="#ffffff" 
+                  title={formsection.title}
+                  subTitle={formsection.subtitle || undefined} 
+                  icon={<Icon name={formsection.icon || "layers"} />}
+                />
+                <Row>{renderQueries(formsection.queries)}</Row>
+              </React.Fragment>
+            ))}
+          </React.Fragment>
+        );
+    }
+  };
+
+  return <>{renderDisplayMode()}</>;
 };
