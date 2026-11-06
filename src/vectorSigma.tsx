@@ -186,7 +186,11 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
                 const isNumber = numberTypes.includes(normalizedType);
 
                 if (q.defaultValue !== undefined && q.defaultValue !== null) {
-                    initialValues[q.inputAlias] = q.defaultValue;
+                    if (isNumber && typeof q.defaultValue === 'string' && isNaN(Number(q.defaultValue))) {
+                        initialValues[q.inputAlias] = ""; 
+                    } else {
+                        initialValues[q.inputAlias] = q.defaultValue;
+                    }
                 } else if (isArray) {
                     initialValues[q.inputAlias] = []; 
                 } else if (isBoolean) {
