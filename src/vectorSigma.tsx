@@ -462,48 +462,55 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
                         }}
                     >
                         {({ isSubmitting }) => (
-                            <div className="form-parent-container" style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-                                <div className="form-scroll-area" style={{ flex: 1, overflowY: 'auto', paddingBottom: '16px' }}>
-                                    <Form className="vs-form-root" style={{ fontFamily: "'Libre Franklin', sans-serif" }}>
-                                        {isSubmitting ? this.isSubmitting = isSubmitting : null}
-                                        <FormikStateObserver<T> instance={this} />
+                            <Form 
+                                className="vs-form-root" 
+                                style={{ 
+                                    fontFamily: "'Libre Franklin', sans-serif", 
+                                    display: 'flex', 
+                                    flexDirection: 'column',
+                                    minHeight: '100%',
+                                    width: '100%'
+                                }}
+                            >
+                                {isSubmitting ? this.isSubmitting = isSubmitting : null}
+                                <FormikStateObserver<T> instance={this} />
 
-                                        {sanitizedData.logo && (
-                                            <div style={{ display: 'flex', width: '100%', marginBottom: '24px', 
-                                                justifyContent: 
-                                                    sanitizedData.logoPosition === 'center' ? 'center' :
-                                                    sanitizedData.logoPosition === 'right' ? 'flex-end' : 
-                                                    'flex-start'
-                                            }}>
-                                                <img 
-                                                    src={sanitizedData.logo} 
-                                                    alt={`${sanitizedData.name || 'Form'} Logo`} 
-                                                    style={{ maxHeight: '64px', maxWidth: '100%', objectFit: 'contain' }} 
-                                                />
-                                            </div>
-                                        )}
+                                <div className="vs-form-content" style={{ flexGrow: 1, paddingBottom: '24px' }}>
+                                    {sanitizedData.logo && (
+                                        <div style={{ display: 'flex', width: '100%', marginBottom: '24px', 
+                                            justifyContent: 
+                                                sanitizedData.logoPosition === 'center' ? 'center' :
+                                                sanitizedData.logoPosition === 'right' ? 'flex-end' : 
+                                                'flex-start'
+                                        }}>
+                                            <img 
+                                                src={sanitizedData.logo} 
+                                                alt={`${sanitizedData.name || 'Form'} Logo`} 
+                                                style={{ maxHeight: '64px', maxWidth: '100%', objectFit: 'contain' }} 
+                                            />
+                                        </div>
+                                    )}
 
-                                        <Teletraan1 
-                                            brandColor={sanitizedData.brandColor} 
-                                            xFormModel={sanitizedData} 
-                                            {...options} 
-                                        />
-                                    </Form>
+                                    <Teletraan1 
+                                        brandColor={sanitizedData.brandColor} 
+                                        xFormModel={sanitizedData} 
+                                        {...options} 
+                                    />
                                 </div>
 
                                 {!isCodexMode && !options?.readOnlyMode && !options?.buttonOverride && (
                                     <div 
                                         className="form-submit-footer"
                                         style={{ 
-                                            flexShrink: 0, 
-                                            position: 'relative',
                                             width: '100%', 
                                             paddingTop: '20px', 
                                             paddingBottom: '20px', 
                                             borderTop: '1px solid var(--gray-5)',
                                             backgroundColor: themeConfig.appearance === 'dark' ? '#111111' : '#ffffff',
                                             display: 'flex',
-                                            justifyContent: 'flex-end'
+                                            justifyContent: 'flex-end',
+                                            marginTop: 'auto', 
+                                            zIndex: 10
                                         }}
                                     >
                                         <style>
@@ -553,9 +560,7 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
                                             `}
                                         </style>
                                         <button 
-                                            // The button must trigger the Formik submit outside the Form tag context 
-                                            // so we tie it directly to the button type or onClick handler
-                                            onClick={() => document.querySelector('.vs-form-root')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))}
+                                            type="submit"
                                             disabled={isSubmitting}
                                             className="vs-submit-btn"
                                         >
@@ -564,7 +569,7 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
                                         </button>
                                     </div>
                                 )}
-                            </div>
+                            </Form>
                         )}
                     </Formik>
                 </Theme>
