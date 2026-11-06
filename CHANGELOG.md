@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.8
+
+### Patch Changes
+
+- cbfbaa1: Accordion UI Update
+
 ## 1.7.7
 
 ### Patch Changes
