@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.1
+
+### Patch Changes
+
+- bca2ee7: Radix UI Selector Fix
+
 ## 1.7.0
 
 ### Minor Changes
