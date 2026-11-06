@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.6.0
+
+### Minor Changes
+
+- 3455ac3: RC 1.6.0. :: UI Update
+
 ## 1.5.0
 
 ### Minor Changes
