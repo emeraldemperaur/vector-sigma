@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Theme, Flex, ThemeProps } from '@radix-ui/themes';
 import { Formik, Form, useFormikContext, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import { VectorSigmaErrorBoundary } from './layouts/vectorsigmaErrorBoundary';
 import './styles/main.scss';
 
 export interface VectorSigmaRenderProps<T extends Record<string, any> = Record<string, any>> extends Omit<Teletraan1Props, 'xFormModel'> {
@@ -43,6 +44,10 @@ export interface VectorSigmaRenderProps<T extends Record<string, any> = Record<s
      * buttonOverride={true}
      */
     buttonOverride?: boolean;
+    /**
+     * Optional callback fired if the underlying VectorSigma rendering engine crashes.
+     */
+    onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
 }
 
 const FormikStateObserver = <T extends Record<string, any>>({ instance }: { instance: VectorSigma<T> }) => {
@@ -65,7 +70,6 @@ const FormikStateObserver = <T extends Record<string, any>>({ instance }: { inst
             };
         }
 
-        
         if (formikContext.dirty && instance.statusCode === 0) {
             instance.statusCode = 1;
             instance.timeInProgress = Date.now();
@@ -426,125 +430,127 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
         };
         
         return (
-            <Theme {...themeConfig}>
-                <Formik<T>
-                    initialValues={initialValues as unknown as T}
-                    validationSchema={validationSchema}
-                    onSubmit={async (values, actions) => {
-                        try {
-                            this.statusCode = 2;
-                            this.timeSubmitted = Date.now();
-                            this.hydrateQueryResponses(values);
-                            console.log(`VectorSigma xForm Submitted: [${sanitizedData.name}]`, values);
-                            
-                            if (options?.onSubmit) {
-                                await options.onSubmit(values, actions, this);
+            <VectorSigmaErrorBoundary onError={options?.onError} brandColor={sanitizedData.brandColor}>
+                <Theme {...themeConfig}>
+                    <Formik<T>
+                        initialValues={initialValues as unknown as T}
+                        validationSchema={validationSchema}
+                        onSubmit={async (values, actions) => {
+                            try {
+                                this.statusCode = 2;
+                                this.timeSubmitted = Date.now();
+                                this.hydrateQueryResponses(values);
+                                console.log(`VectorSigma xForm Submitted: [${sanitizedData.name}]`, values);
+                                
+                                if (options?.onSubmit) {
+                                    await options.onSubmit(values, actions, this);
+                                }
+                                
+                                if (options?.onFinish) {
+                                    options.onFinish(values as any, actions as any, this as any);
+                                }
+                            } catch (error) {
+                                console.error(`VectorSigma xForm Submission Error:`, error);
+                            } finally {
+                                actions.setSubmitting(false);
                             }
-                            
-                            if (options?.onFinish) {
-                                options.onFinish(values as any, actions as any, this as any);
-                            }
-                        } catch (error) {
-                            console.error(`VectorSigma xForm Submission Error:`, error);
-                        } finally {
-                            actions.setSubmitting(false);
-                        }
-                    }}
-                >
-                    {({ isSubmitting }) => (
-                        <Form className="vs-form-root" style={{ fontFamily: "'Libre Franklin', sans-serif" }}>
-                            {isSubmitting ? this.isSubmitting = isSubmitting : null}
-                            <FormikStateObserver<T> instance={this} />
+                        }}
+                    >
+                        {({ isSubmitting }) => (
+                            <Form className="vs-form-root" style={{ fontFamily: "'Libre Franklin', sans-serif" }}>
+                                {isSubmitting ? this.isSubmitting = isSubmitting : null}
+                                <FormikStateObserver<T> instance={this} />
 
-                            <style>
-                                {`
-                                    .vs-submit-btn {
-                                        font-family: inherit;
-                                        display: inline-flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        font-weight: 600;
-                                        border-radius: 8px;
-                                        cursor: pointer;
-                                        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-                                        height: 40px;
-                                        padding: 0 24px;
-                                        border: none;
-                                        background-color: ${sanitizedData.brandColor || '#000000'};
-                                        color: #ffffff;
-                                        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
-                                        font-size: 0.875rem;
-                                    }
-                                    .vs-submit-btn:hover:not(:disabled) {
-                                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-                                        transform: translateY(-1px);
-                                    }
-                                    .vs-submit-btn:active:not(:disabled) {
-                                        transform: translateY(0) scale(0.98);
-                                    }
-                                    .vs-submit-btn:disabled {
-                                        opacity: 0.6;
-                                        cursor: not-allowed;
-                                        transform: none;
-                                        box-shadow: none;
-                                    }
-                                    .vs-submit-spinner {
-                                        width: 16px;
-                                        height: 16px;
-                                        border: 2px solid rgba(255, 255, 255, 0.3);
-                                        border-radius: 50%;
-                                        border-top-color: #ffffff;
-                                        animation: vsSubmitSpin 0.6s linear infinite;
-                                        margin-right: 8px;
-                                    }
-                                    @keyframes vsSubmitSpin {
-                                        to { transform: rotate(360deg); }
-                                    }
-                                `}
-                            </style>
+                                <style>
+                                    {`
+                                        .vs-submit-btn {
+                                            font-family: inherit;
+                                            display: inline-flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            font-weight: 600;
+                                            border-radius: 8px;
+                                            cursor: pointer;
+                                            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+                                            height: 40px;
+                                            padding: 0 24px;
+                                            border: none;
+                                            background-color: ${sanitizedData.brandColor || '#000000'};
+                                            color: #ffffff;
+                                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+                                            font-size: 0.875rem;
+                                        }
+                                        .vs-submit-btn:hover:not(:disabled) {
+                                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+                                            transform: translateY(-1px);
+                                        }
+                                        .vs-submit-btn:active:not(:disabled) {
+                                            transform: translateY(0) scale(0.98);
+                                        }
+                                        .vs-submit-btn:disabled {
+                                            opacity: 0.6;
+                                            cursor: not-allowed;
+                                            transform: none;
+                                            box-shadow: none;
+                                        }
+                                        .vs-submit-spinner {
+                                            width: 16px;
+                                            height: 16px;
+                                            border: 2px solid rgba(255, 255, 255, 0.3);
+                                            border-radius: 50%;
+                                            border-top-color: #ffffff;
+                                            animation: vsSubmitSpin 0.6s linear infinite;
+                                            margin-right: 8px;
+                                        }
+                                        @keyframes vsSubmitSpin {
+                                            to { transform: rotate(360deg); }
+                                        }
+                                    `}
+                                </style>
 
-                            {sanitizedData.logo && (
-                                <div style={{ display: 'flex', width: '100%', marginBottom: '24px', 
-                                    justifyContent: 
-                                        sanitizedData.logoPosition === 'center' ? 'center' :
-                                        sanitizedData.logoPosition === 'right' ? 'flex-end' : 
-                                        'flex-start'
-                                }}>
-                                    <img 
-                                        src={sanitizedData.logo} 
-                                        alt={`${sanitizedData.name || 'Form'} Logo`} 
-                                        style={{ maxHeight: '64px', maxWidth: '100%', objectFit: 'contain' }} 
-                                    />
-                                </div>
-                            )}
+                                {sanitizedData.logo && (
+                                    <div style={{ display: 'flex', width: '100%', marginBottom: '24px', 
+                                        justifyContent: 
+                                            sanitizedData.logoPosition === 'center' ? 'center' :
+                                            sanitizedData.logoPosition === 'right' ? 'flex-end' : 
+                                            'flex-start'
+                                    }}>
+                                        <img 
+                                            src={sanitizedData.logo} 
+                                            alt={`${sanitizedData.name || 'Form'} Logo`} 
+                                            style={{ maxHeight: '64px', maxWidth: '100%', objectFit: 'contain' }} 
+                                        />
+                                    </div>
+                                )}
 
-                            <Teletraan1 
-                                brandColor={sanitizedData.brandColor} 
-                                xFormModel={sanitizedData} 
-                                {...options} 
-                            />
-                            
-                            {!isCodexMode && !options?.readOnlyMode && !options?.buttonOverride && (
-                                <Flex 
-                                    mt="6" 
-                                    justify="end" 
-                                    style={{ width: '100%', paddingTop: '20px', borderTop: '1px solid var(--gray-5)' }}
-                                >
-                                    <button 
-                                        type="submit" 
-                                        disabled={isSubmitting}
-                                        className="vs-submit-btn"
+                                <Teletraan1 
+                                    brandColor={sanitizedData.brandColor} 
+                                    xFormModel={sanitizedData} 
+                                    {...options} 
+                                />
+                                
+                                {!isCodexMode && !options?.readOnlyMode && !options?.buttonOverride && (
+                                    <Flex 
+                                        mt="6" 
+                                        justify="end" 
+                                        style={{ width: '100%', paddingTop: '20px', borderTop: '1px solid var(--gray-5)' }}
                                     >
-                                        {isSubmitting && <div className="vs-submit-spinner" aria-hidden="true" />}
-                                        <span>{isSubmitting ? 'Submitting...' : 'Submit'}</span>
-                                    </button>
-                                </Flex>
-                            )}
-                            
-                        </Form>
-                    )}
-                </Formik>
-            </Theme>
+                                        <button 
+                                            type="submit" 
+                                            disabled={isSubmitting}
+                                            className="vs-submit-btn"
+                                        >
+                                            {isSubmitting && <div className="vs-submit-spinner" aria-hidden="true" />}
+                                            <span>{isSubmitting ? 'Submitting...' : 'Submit'}</span>
+                                        </button>
+                                    </Flex>
+                                )}
+                                
+                            </Form>
+                        )}
+                    </Formik>
+                </Theme>
+            </VectorSigmaErrorBoundary>
         );
     }
 

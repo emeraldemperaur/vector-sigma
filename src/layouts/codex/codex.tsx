@@ -486,7 +486,11 @@ export const Codex = ({
             `}
           </style>
 
-          <Box className={`v-stepper-${resolvedDesign}`} style={{ paddingTop: '8px', paddingBottom: '16px', flexShrink: 0 }}>
+          <Box 
+            className={`v-stepper-${resolvedDesign}`} 
+            pb={{ initial: '4', sm: '9' }} 
+            style={{ paddingTop: '8px', flexShrink: 0 }}
+          >
             <Flex align="center" width="100%">
               {steps.map((step, index) => {
                 const isCompleted = index < activeIndex;

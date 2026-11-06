@@ -210,7 +210,7 @@ export const Accordion = ({
                 box-sizing: border-box;
                 cursor: pointer;
                 user-select: none;
-                transition: background-color 0.15s ease;
+                transition: filter 0.15s ease, background-color 0.15s ease;
                 background-color: var(--accordion-header-bg, transparent);
               }
               .vs-accordion-trigger:focus-visible {
@@ -233,6 +233,14 @@ export const Accordion = ({
                 color: var(--accordion-title-color, var(--accent-9));
               }
 
+              /* 
+                 FIX: Use brightness filter on hover instead of hardcoded background colors 
+                 so custom brand colors are preserved and remain legible.
+              */
+              .vs-accordion-trigger:hover:not(:disabled) {
+                 filter: brightness(0.92);
+              }
+
               .vs-accordion-root-outline {
                 border: 1px solid var(--gray-6);
                 border-radius: 8px;
@@ -245,9 +253,6 @@ export const Accordion = ({
               }
               .vs-accordion-item-outline:last-child {
                 border-bottom: none;
-              }
-              .vs-accordion-item-outline:not([data-disabled]) .vs-accordion-trigger:hover {
-                background-color: var(--gray-a2);
               }
 
               .vs-accordion-root-material {
@@ -264,9 +269,6 @@ export const Accordion = ({
               }
               .vs-accordion-item-material:last-child {
                 border-bottom: none;
-              }
-              .vs-accordion-item-material:not([data-disabled]) .vs-accordion-trigger:hover {
-                background-color: var(--accent-a2);
               }
               .vs-accordion-item-material[data-state='open'] {
                 border-left-color: var(--accent-9);

@@ -218,8 +218,8 @@ export const QuerySchema: z.ZodType<XFormQuery> = z.lazy(() =>
       .coerce
       .number()
       .int()
-      .min(1)
-      .max(12)
+      .transform(val => (val > 12 ? 12 : val < 1 ? 1 : val))
+      .catch(12) 
       .default(12)
       .describe("Responsive grid span across a 12-column grid (1-12). Stacks to 12 automatically on mobile viewports."),
 

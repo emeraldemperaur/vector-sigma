@@ -1,4 +1,3 @@
-// teletraan1.tsx
 import React, { useState } from 'react';
 import { AvatarInput } from 'components/avatar/avatar';
 import { ButtonInput } from 'components/button/button';
@@ -29,7 +28,7 @@ import { Codex, CodexItem } from 'layouts/codex/codex';
 import { CodexControls } from 'layouts/codex/codexcontrols';
 import { SectionTitle } from 'components/xtitle/xtitle';
 import { Icon } from 'components/icons/icons';
-import { Flex, Text } from '@radix-ui/themes';
+import { Box, Flex, Text } from '@radix-ui/themes';
 import { TextAreaInput } from 'components/input/inputTextArea';
 import { 
   avatarInputType, buttonInputType, checkboxInputType, conditionalInputType, countrydropdownInputType, countrymultiselectInputType, creditCardInputType, 
@@ -43,6 +42,7 @@ import { DateTimePicker } from 'components/datetimepicker/datetimepicker';
 import { CountrySelect } from 'components/dropdown/countrydropdown';
 import { FormikHelpers } from 'formik';
 import type { VectorSigma } from './vectorSigma';
+import { VectorSigmaErrorBoundary } from 'layouts/vectorsigmaErrorBoundary';
 
 export type teletraan1Display = 'accordion' | 'codice' | 'codex' | 'dual';
 
@@ -357,7 +357,7 @@ export const Teletraan1 = ({
     switch (displayMode) {
       case 'dual':
         return (
-          <div style={{ width: '100%' }}>
+          <Box px={{ initial: '4', sm: '6', md: '8' }} style={{ width: '100%', boxSizing: 'border-box' }}>
             <Flex align="center" justify="center" gap="3" style={{ marginBottom: '24px' }}>
               <div
                 onClick={() => setDualToggled(!dualToggled)}
@@ -426,20 +426,30 @@ export const Teletraan1 = ({
             ) : (
               sections.map((formsection) => (
                 <React.Fragment key={String(formsection.sectionId)}>
-                  <SectionTitle 
-                    withSeparator={false} 
-                    backgroundColor={brandColor} 
-                    titleColor="#ffffff" 
-                    subtitleColor="#ffffff"
-                    title={formsection.title} 
-                    subTitle={formsection.subtitle || undefined} 
-                    icon={<Icon name={formsection.icon || "layers"} />}
-                  />
-                  <Row>{renderQueries(formsection.queries)}</Row>
+                  <Box 
+                    style={{ 
+                      backgroundColor: brandColor || 'var(--accent-9)', 
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      marginBottom: '16px'
+                    }}
+                  >
+                    <SectionTitle 
+                      withSeparator={false} 
+                      titleColor="#ffffff" 
+                      subtitleColor="#ffffff" 
+                      title={formsection.title}
+                      subTitle={formsection.subtitle || undefined} 
+                      icon={<Icon name={formsection.icon || "layers"} color="#ffffff" />}
+                    />
+                  </Box>
+                  <Box mb="6">
+                    <Row>{renderQueries(formsection.queries)}</Row>
+                  </Box>
                 </React.Fragment>
               ))
             )}
-          </div>
+          </Box>
         );
 
       case 'accordion':
@@ -491,25 +501,35 @@ export const Teletraan1 = ({
       case 'codice':
       default:
         return (
-          <React.Fragment key={xFormModel.uuid}>
+          <Box key={xFormModel.uuid} px={{ initial: '4', sm: '6', md: '8' }} style={{ width: '100%', boxSizing: 'border-box' }}>
             {sections.map((formsection) => (
               <React.Fragment key={String(formsection.sectionId)}>
-                <SectionTitle 
-                  withSeparator={false} 
-                  backgroundColor={brandColor} 
-                  titleColor="#ffffff" 
-                  subtitleColor="#ffffff" 
-                  title={formsection.title}
-                  subTitle={formsection.subtitle || undefined} 
-                  icon={<Icon name={formsection.icon || "layers"} />}
-                />
-                <Row>{renderQueries(formsection.queries)}</Row>
+                <Box 
+                  style={{ 
+                    backgroundColor: brandColor || 'var(--accent-9)', 
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    marginBottom: '16px'
+                  }}
+                >
+                  <SectionTitle 
+                    withSeparator={false} 
+                    titleColor="#ffffff" 
+                    subtitleColor="#ffffff" 
+                    title={formsection.title}
+                    subTitle={formsection.subtitle || undefined} 
+                    icon={<Icon name={formsection.icon || "layers"} color="#ffffff" />}
+                  />
+                </Box>
+                <Box mb="6">
+                  <Row>{renderQueries(formsection.queries)}</Row>
+                </Box>
               </React.Fragment>
             ))}
-          </React.Fragment>
+          </Box>
         );
     }
   };
 
-  return <>{renderDisplayMode()}</>;
+  return <><VectorSigmaErrorBoundary brandColor={brandColor}>{renderDisplayMode()}</VectorSigmaErrorBoundary></>;
 };
