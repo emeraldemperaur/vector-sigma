@@ -18,6 +18,8 @@ const makeExternalPredicate = (id) => {
     return externalPackages.some(pkgName => id === pkgName || id.startsWith(`${pkgName}/`));
 };
 
+const extensions = ['.js', '.jsx', '.ts', '.tsx'];
+
 export default [
     {
         input: "src/index.ts",
@@ -30,13 +32,17 @@ export default [
             if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.message.includes('node_modules')) return;
             if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
             if (warning.code === 'THIS_IS_UNDEFINED') return;
+            if (warning.code === 'INVALID_ANNOTATION' || warning.message.includes('@__PURE__')) return;
             warn(warning);
         },
         plugins: [
             del({ targets: ["lib/*"]}),
-            typescript({ useTsconfigDeclarationDir: true }),
-            resolve(),
-            commonjs(),
+            resolve({ extensions }), 
+            typescript({ 
+                useTsconfigDeclarationDir: true,
+                include: ["**/*.ts", "**/*.tsx"] 
+            }), 
+            commonjs(),              
             postcss({ extract: false, inject: true, minimize: true, use: [['sass', { implementation: sass, silenceDeprecations: ['legacy-js-api'] }]] }),
             visualizer({ filename: 'vector-sigma-bundle-analysis.html', open: true }),
         ]
@@ -59,11 +65,15 @@ export default [
             if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.message.includes('node_modules')) return;
             if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
             if (warning.code === 'THIS_IS_UNDEFINED') return;
+            if (warning.code === 'INVALID_ANNOTATION' || warning.message.includes('@__PURE__')) return;
             warn(warning);
         },
         plugins: [
-            typescript({ useTsconfigDeclarationDir: true }),
-            resolve({ browser: true }), 
+            resolve({ browser: true, extensions }), 
+            typescript({ 
+                useTsconfigDeclarationDir: true,
+                include: ["**/*.ts", "**/*.tsx"] 
+            }),
             commonjs(),
             postcss({ extract: false, inject: true, minimize: true, use: [['sass', { implementation: sass, silenceDeprecations: ['legacy-js-api'] }]] }),
         ]
