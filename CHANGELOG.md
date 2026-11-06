@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.0
+
+### Minor Changes
+
+- a30db5c: v6 UI Fixes
+
 ## 1.6.0
 
 ### Minor Changes
