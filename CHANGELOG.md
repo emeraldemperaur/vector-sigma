@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.5
+
+### Patch Changes
+
+- d116779: VectorSigma UI Update 1.7.5
+
 ## 1.7.4
 
 ### Patch Changes
