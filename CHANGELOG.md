@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.2
+
+### Patch Changes
+
+- 001f961: VectorSigma validation update
+
 ## 1.7.1
 
 ### Patch Changes
