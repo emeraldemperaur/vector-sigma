@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.3
+
+### Patch Changes
+
+- 053f52c: Radix Style Overrides
+
 ## 1.7.2
 
 ### Patch Changes
