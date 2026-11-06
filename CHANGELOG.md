@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.6
+
+### Patch Changes
+
+- d66bb52: VectorSigma Rollup.js Build v2
+
 ## 1.7.5
 
 ### Patch Changes
