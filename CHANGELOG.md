@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.4
+
+### Patch Changes
+
+- 4cbc859: Tooltip Style Fix
+
 ## 1.7.3
 
 ### Patch Changes
