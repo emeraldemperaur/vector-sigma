@@ -84,6 +84,11 @@
     color: #ffffff !important;
     }
 
+    [data-radix-accordion-content][data-state="open"] {
+    height: auto !important;
+    overflow: visible !important; 
+    }
+
 
 }
 
