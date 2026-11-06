@@ -75,4 +75,15 @@
     }
 
 
+    [data-radix-popper-content-wrapper] .rt-TooltipContent {
+    background-color: var(--gray-12, #111111) !important;
+    }
+
+    [data-radix-popper-content-wrapper] .rt-TooltipContent,
+    [data-radix-popper-content-wrapper] .rt-TooltipContent * {
+    color: #ffffff !important;
+    }
+
+
 }
+
