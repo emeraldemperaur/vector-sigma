@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.7
+
+### Patch Changes
+
+- 4a2de0c: xForm Layout Fix
+
 ## 1.7.6
 
 ### Patch Changes
