@@ -426,6 +426,7 @@ export class VectorSigma<T extends Record<string, any> = Record<string, any>> {
             appearance: 'inherit', 
             accentColor: 'blue',
             radius: 'medium',
+            panelBackground: 'solid',
             ...options?.theme
         };
         
