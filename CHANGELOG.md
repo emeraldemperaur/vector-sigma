@@ -1,5 +1,11 @@
 # @emeraldemperaur/vector-sigma
 
+## 1.7.9
+
+### Patch Changes
+
+- 92720e6: VectorSigma Storybook v1.7
+
 ## 1.7.8
 
 ### Patch Changes
