@@ -17,9 +17,9 @@ export type FileMultipleInputDesign = 'filemultiple' | 'filemultiple-material' |
 export interface FileMultipleInputProps {
   /**
    * The aesthetic design language of the File dropzone and selected file cards.
-   * - `filemultiple-outline`: Minimalist, Cohere-inspired dashed outline aesthetic (Default).
+   * - `filemultiple-outline`: Minimalist, outlined aesthetic (Default).
    * - `filemultiple-material`: Elevated, sharp drop-shadows with a solid surface.
-   * - `filemultiple-neumorphic`: n8n-inspired soft-UI with extruded inset/outset shadows.
+   * - `filemultiple-neumorphic`: Soft-UI with extruded inset/outset shadows.
    * @default "filemultiple-outline"
    */
   inputtype?: FileMultipleInputDesign;

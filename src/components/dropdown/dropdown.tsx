@@ -17,9 +17,9 @@ export type xDropDownDesign = 'dropdown' | 'dropdown-material' | 'dropdown-outli
 export interface xDropDownProps {
   /**
    * The aesthetic design language of the Dropdown trigger and menu.
-   * - `dropdown-outline`: Minimalist, Cohere-inspired outlined aesthetic (Default).
+   * - `dropdown-outline`: Minimalist, outlined aesthetic (Default).
    * - `dropdown-material`: Elevated, sharp drop-shadows with a solid surface.
-   * - `dropdown-neumorphic`: n8n-inspired soft-UI with extruded inset/outset shadows.
+   * - `dropdown-neumorphic`: Soft-UI with extruded inset/outset shadows.
    * @default "dropdown-outline"
    */
   inputtype?: xDropDownDesign;
@@ -346,7 +346,7 @@ export const Dropdown = ({
         {(inputLabel || isHinted) && (
           <Flex align="center" gap="2" style={{ paddingLeft: '2px' }}>
             {inputLabel && (
-              <Text id={`${alias}InputLabel`} as="label" size="2" weight="medium" style={{ color: 'var(--gray-11)' }} htmlFor={inputId}>
+              <Text id={`${alias}InputLabel`} as="label" size="2" weight="medium" style={{ color: typography?.textColor || 'var(--gray-11)' }} htmlFor={inputId}>
                 {inputLabel}
               </Text>
             )}

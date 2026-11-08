@@ -488,6 +488,7 @@ export const OptionSelect = ({
                 ? '8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light)'
                 : '0 10px 30px -10px rgba(0,0,0,0.15), 0 4px 12px -4px rgba(0,0,0,0.1)',
               fontFamily: 'inherit',
+              ...typographyVars, 
               ...neuVars
             }}
           >

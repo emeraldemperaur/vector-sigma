@@ -401,7 +401,7 @@ export const MultipleSelect = ({
               user-select: none;
             }
             .vs-ms-item:hover, .vs-ms-item.vs-selected {
-              background-color: var(--accent-a3);
+              background-color: var(--accent-a3) !important;
             }
 
             .vs-ms-item .rt-CheckboxButton {
@@ -506,6 +506,7 @@ export const MultipleSelect = ({
                 ? '8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light)'
                 : '0 10px 30px -10px rgba(0,0,0,0.15), 0 4px 12px -4px rgba(0,0,0,0.1)',
               fontFamily: 'inherit',
+              ...typographyVars,
               ...neuVars
             }}
           >

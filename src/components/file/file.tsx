@@ -17,9 +17,9 @@ export type FileInputDesign = 'fileinput' | 'fileinput-material' | 'fileinput-ou
 export interface FileInputProps {
   /**
    * The aesthetic design language of the File dropzone.
-   * - `fileinput-outline`: Minimalist, Cohere-inspired dashed outline aesthetic (Default).
+   * - `fileinput-outline`: Minimalist, outline aesthetic (Default).
    * - `fileinput-material`: Elevated, sharp drop-shadows with a solid surface.
-   * - `fileinput-neumorphic`: n8n-inspired soft-UI with extruded inset/outset shadows.
+   * - `fileinput-neumorphic`: Soft-UI with extruded inset/outset shadows.
    * @default "fileinput-outline"
    */
   inputtype?: FileInputDesign;

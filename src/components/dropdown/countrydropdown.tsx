@@ -21,9 +21,9 @@ export type CountrySelectDesign = 'countryselect' | 'countryselect-material' | '
 export interface CountryDropdownProps {
   /**
    * The aesthetic design language of the CountrySelect trigger.
-   * - `countryselect-outline`: Minimalist, Cohere-inspired outlined aesthetic (Default).
+   * - `countryselect-outline`: Minimalist, outlined aesthetic (Default).
    * - `countryselect-material`: Elevated, sharp drop-shadows with a solid surface.
-   * - `countryselect-neumorphic`: n8n-inspired soft-UI with extruded inset/outset shadows.
+   * - `countryselect-neumorphic`: Soft-UI with extruded inset/outset shadows.
    * @default "countryselect-outline"
    */
   inputtype?: CountrySelectDesign;

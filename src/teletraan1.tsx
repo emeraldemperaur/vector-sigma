@@ -129,7 +129,6 @@ export const Teletraan1 = ({
       inputLabel,
       inputPlaceholder,
       newRow = false,
-      isRequired,
       isHinted,
       hintText,
       hintUrl,

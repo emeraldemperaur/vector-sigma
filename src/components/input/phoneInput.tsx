@@ -12,7 +12,6 @@ import { adjustColor, getNearestParentBackground } from "utils/vinci";
 import { InputDesign } from './input';
 import '../../styles/main.scss';
 
-
 /**
  * PhoneInputProps Interface
  * @description Configuration properties for the VectorSigma PhoneInput component.
@@ -254,6 +253,7 @@ export const PhoneInput = ({
                 maxHeight: '300px', 
                 fontFamily: "'Libre Franklin', sans-serif",
                 backgroundColor: inputvariant === 'input-neumorphic' ? 'var(--neu-bg)' : 'var(--vs-in-bg)',
+                ...typographyVars, // FIX: Injected variables into portal context
                 ...neuVars
             }}
             className={inputvariant === 'input-neumorphic' ? 'vs-select-neumorphic' : ''}

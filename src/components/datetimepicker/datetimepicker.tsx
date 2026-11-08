@@ -19,9 +19,9 @@ export type DateTimePickerDesign = 'datetimepicker' | 'datetimepicker-outline' |
 export interface DateTimePickerProps {
   /**
    * The aesthetic design language of the DateTimePicker component.
-   * - `datetimepicker-outline`: Minimalist, Cohere-inspired outlined aesthetic (Default).
+   * - `datetimepicker-outline`: Minimalist, outlined aesthetic (Default).
    * - `datetimepicker-material`: Elevated, sharp bottom-borders with a solid surface.
-   * - `datetimepicker-neumorphic`: n8n-inspired soft-UI with extruded inset shadows.
+   * - `datetimepicker-neumorphic`: Soft-UI with extruded inset/outset shadows.
    * @default "datetimepicker-outline"
    */
   inputtype?: DateTimePickerDesign;
